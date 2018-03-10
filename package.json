@@ -1,0 +1,49 @@
+{
+  "name": "pirates-oasis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.jsx",
+  "dependencies": {
+    "express": "^4.16.2",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-dom": "^16.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-toggle": "^4.0.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "core-js": "^2.5.3",
+    "cross-env": "^5.1.3",
+    "forever": "^0.15.3",
+    "git-revision-webpack-plugin": "^2.5.1",
+    "nodemon": "^1.14.11",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.11",
+    "webpack-dev-server": "^3.1.1"
+  },
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --mode development",
+    "devbackend": "cross-env NODE_ENV=development nodemon server.js",
+    "prodbuild": "cross-env NODE_ENV=production webpack --mode production",
+    "prodbackend": "forever start server.js",
+    "foreverrestart": "forever restart server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpvonly/pirates-oasis.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fpvonly/pirates-oasis/issues"
+  },
+  "homepage": "https://github.com/fpvonly/pirates-oasis#readme"
+}
