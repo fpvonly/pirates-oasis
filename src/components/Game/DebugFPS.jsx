@@ -30,7 +30,7 @@ class DebugFPS extends React.Component {
   render() {
     return createPortal(
       this.state.degugFPS,
-      this.el,
+      this.el
     );
   }
 }

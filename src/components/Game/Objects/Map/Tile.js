@@ -44,14 +44,15 @@ class Tile {
       }
       this.curretnSubtr = this.curretnSubtr + this.speed;
     }
+
     this.context.drawImage(this.img, this.offX, this.offY, this.baseTileSprite.width, this.baseTileSprite.height - this.curretnSubtr);
 
     if (this.layers !== null) {
       let layer = null;
       let layerTile = null;
-      for (let i = 0; i < this.layers.length; i++) {
-        layer = this.layers[i];
+      for (let layer of this.layers) {
         layerTile = this.MapData.tiles[layer.tileId];
+    //TODO preload sprites
         let img = new Image();
         img.src = layerTile.src;
         this.context.drawImage(

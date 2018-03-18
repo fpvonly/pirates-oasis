@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 
 import DebugFPS from './DebugFPS.jsx';
 //import Sprites from './Objects/Sprite';
-import {MapData} from './Objects/Map_L1.js'
-import {Tile} from './Objects/Tile.js';
+import {MapData} from './Objects/Map/Map_L1.js'
+import {Tile} from './Objects/Map/Tile.js';
+import Player from './Objects/Player.js';
 import * as C from './Constants';
 
 const DEBUG = (process.env.NODE_ENV === 'development' ? true : false);
@@ -19,14 +20,16 @@ class Game extends React.Component {
     this.context = null;
     this.debugFPSREF = null;
 
+    this.canvasOffsetTop = 0;
+    this.canvasOffsetLeft = 0;
+
     this.GAME_OVER = false;
     this.animation = null; // the requested animation frame
     this.scrollSpeed = 1;
     this.scrollY = 0;
     this.scrollX = 0;
-    this.ship = null;
+    this.playerObjects = []; // all player controlled units
     this.enemies = [];
-    this.points = 0;
 
     this.maxXSpan = 0;
     this.originX = 0;
@@ -36,8 +39,8 @@ class Game extends React.Component {
 
     this.selectedX = null;
     this.selectedY = null;
-    this.mousePointY = 0;
-    this.mousePointX = 0;
+    this.mousePointY = null;
+    this.mousePointX = null;
 
     this.fps = 0;
     this.previousFrameTime = 0;
@@ -143,8 +146,8 @@ class Game extends React.Component {
     // which tile????? ->
     let selectedX = e.pageX;
     let selectedY = e.pageY;
-    selectedX = selectedX - this.originX - MapData.tileDiagonalWidth/2 - this.canvas.getBoundingClientRect().left;
-    selectedY = selectedY - this.originY - MapData.tileDiagonalHeight/2 - this.canvas.getBoundingClientRect().top ;
+    selectedX = selectedX - this.originX - MapData.tileDiagonalWidth/2 -this.canvasOffsetLeft;
+    selectedY = selectedY - this.originY - MapData.tileDiagonalHeight/2 - this.canvasOffsetTop;
     let tileX = Math.round(selectedX / MapData.tileDiagonalWidth - selectedY / MapData.tileDiagonalHeight);
     let tileY = Math.round(selectedX / MapData.tileDiagonalWidth + selectedY / MapData.tileDiagonalHeight);
     this.selectedX = tileX;
@@ -159,7 +162,7 @@ class Game extends React.Component {
       this.mousePointX = null;
     }
 
-    console.log('this.selectedX', this.selectedX, 'this.selectedY', this.selectedY);
+    //console.log('this.selectedX', this.selectedX, 'this.selectedY', this.selectedY);
   }
 
   endGame = (e) => {
@@ -178,11 +181,14 @@ class Game extends React.Component {
     this.context = this.canvas.getContext('2d');
     this.clearCanvas();
     cancelAnimRequestFrame(this.animation);
+    this.canvasOffsetTop = this.canvas.getBoundingClientRect().top;
+    this.canvasOffsetLeft = this.canvas.getBoundingClientRect().left;
     this.originX = this.canvas.width / 2 - MapData.cols * MapData.tileDiagonalWidth / 2; // tile coord is 0,0 (left tip of the map)
     this.originY = this.canvas.height / 2;
     this.maxXSpan = MapData.tileDiagonalWidth/2 * MapData.cols;
 
     this.initMapTiles();
+    this.initPlayerObjects();
   }
 
   gameOver = () => {
@@ -217,6 +223,10 @@ class Game extends React.Component {
         this.generatedTileObjects[x].push(tile);
       }
     }
+  }
+
+  initPlayerObjects = () => {
+    this.playerObjects.push(new Player(this.context, this.canvas, 100, 100, 24*75, 0));
   }
 
   animate = (time) => {
@@ -256,6 +266,10 @@ class Game extends React.Component {
       }
     }
 
+    for (let playerObj of this.playerObjects) {
+      playerObj.draw();
+    }
+
     return true;
   }
 
@@ -266,13 +280,16 @@ class Game extends React.Component {
   }
 
   render() {
+    let canvasWidth = (window.innerWidth > 1024 ? window.innerWidth * 0.8 : window.innerWidth);
+    let canvasHeight = (window.innerHeight > 768 ? window.innerHeight * 0.8 : window.innerHeight);
+
     return <div className='container'>
       <div className={'bg'} />
       <canvas
         ref={this.getCanvasRef}
         id='canvas'
-        width={1200}
-        height={650}>
+        width={canvasWidth}
+        height={canvasHeight}>
           Your browser doesn't support HTML5 canvas API. Please update your browser.
       </canvas>
       {(DEBUG === true ? <DebugFPS ref={this.getDebugFPSRef} /> : null)}
