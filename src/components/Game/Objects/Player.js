@@ -1,20 +1,19 @@
 import GameObject from './GameObject';
-//import Sprites from './Sprite';
+import Sprites from './Sprite';
 //import Bullet from './Bullet';
 //import Explosion from './Explosion';
 import * as C from '../Constants';
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY) {
 
     super(context, canvas, width, height, x, y);
 
-    this.canvasOffsetTop = canvas.getBoundingClientRect().top;
-    this.canvasOffsetLeft = canvas.getBoundingClientRect().left;
+    this.getOriginX = getOriginX;
+    this.getOriginY = getOriginY;
 
-    this.bg = new Image();
-    this.bg.src = 'assets/images/player/cannon/cannonMobile_NE.png';
+    this.bg = Sprites.getPlayerCannon();
 
   //this.shipBg = Sprites.getPlayerShipSprite();
   /*  this.explosions = [
@@ -55,6 +54,18 @@ class Player extends GameObject {
   }
 
   steer = () => {
+    if (this.targetX < this.x) {
+      this.moveLeft(10);
+    } else {
+      this.moveRight(10);
+    }
+    if (this.targetY < this.y) {
+      this.moveUp(10);
+    } else {
+      this.moveDown(10);
+    }
+
+
 
     return true;
   }
@@ -69,10 +80,10 @@ class Player extends GameObject {
   }
 
   handleMouseDown = (e) => {
-    this.targetX = e.pageX - this.canvasOffsetLeft;
-    this.targetY = e.pageY - this.canvasOffsetTop;
+    this.targetX = e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX();
+    this.targetY = e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY();
 
-    console.log(this.targetX, this.targetY);
+    console.log(this.getOriginX(), this.targetY);
 
   }
 

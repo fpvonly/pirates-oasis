@@ -1,33 +1,45 @@
+import Sprites from '../Sprite';
+
 class Tile {
 
-  constructor(x, y, offX, offY, MapData, animate = false, layers, context) {
-    this.x = x;
-    this.y = y;
+  constructor(xI, yI, offX, offY, MapData, animate = false, layers, canvas, context, getOriginX, getOriginY) {
+
+    this.canvas = canvas;
+    this.context = context;
+
+    this.xI = xI;
+    this.yI = yI;
     this.offX = offX;
     this.offY = offY;
-    this.context = context;
-    this.subtr = 0;
+
+    this.animationThreshold = 0;
     this.MapData = MapData;
-    this.baseTileSprite = MapData.tiles[MapData.map[x][y]];
+    this.baseTileSprite = Sprites.getTile(MapData.map[xI][yI]);
     if (this.baseTileSprite.src.indexOf('water_waves') !== -1) {
-      this.subtr = Math.random() * 20;
+      this.animationThreshold = Math.random() * 20;
     }
-    this.curretnSubtr = this.subtr;
+    this.currentAnimationIncVal = this.animationThreshold;
     this.speed = 0.5;
     this.animate = animate;
     this.layers = layers;
 
-// TODO use preloaded sprites
-    this.img = new Image();
+    this.getOriginX = getOriginX;
+    this.getOriginY = getOriginY;
   }
 
   draw = (selected = false) => {
-    this.img.src = this.baseTileSprite.src;
-
     if (selected === true) {
       this.context.fillStyle = 'white';
     } else {
       this.context.fillStyle = 'green';
+    }
+
+    let isOnScreen = false;
+    if (this.getOriginX() + this.offX >= -150 &&
+      this.getOriginX() + this.offX <= this.canvas.width &&
+      this.getOriginY() + this.offY >= -150 &&
+      this.getOriginY() + this.offY <= this.canvas.height) {
+        isOnScreen = true;
     }
   /*  context.moveTo(offX, offY + tileDiagonalHeight / 2);
     context.lineTo(offX + tileDiagonalWidth / 2, offY, offX + tileDiagonalWidth, offY + tileDiagonalHeight / 2);
@@ -37,26 +49,25 @@ class Tile {
     context.fill();*/
 
     if (this.animate === true) {
-      if (this.curretnSubtr > this.subtr) {
+      if (this.currentAnimationIncVal > this.animationThreshold) {
         this.speed = this.speed * -1;
-      } else if (this.curretnSubtr <= 0) {
+      } else if (this.currentAnimationIncVal <= 0) {
         this.speed = this.speed * -1;
       }
-      this.curretnSubtr = this.curretnSubtr + this.speed;
+      this.currentAnimationIncVal = this.currentAnimationIncVal + this.speed;
     }
 
-    this.context.drawImage(this.img, this.offX, this.offY, this.baseTileSprite.width, this.baseTileSprite.height - this.curretnSubtr);
+    if (isOnScreen === true) {
+      this.context.drawImage(this.baseTileSprite, this.offX, this.offY, this.baseTileSprite.width, this.baseTileSprite.height - this.currentAnimationIncVal);
+    }
 
-    if (this.layers !== null) {
+    if (isOnScreen === true && this.layers !== null) {
       let layer = null;
       let layerTile = null;
       for (let layer of this.layers) {
-        layerTile = this.MapData.tiles[layer.tileId];
-    //TODO preload sprites
-        let img = new Image();
-        img.src = layerTile.src;
+        layerTile = Sprites.getTile(layer.tileId);
         this.context.drawImage(
-          img,
+          layerTile,
           (layerTile.width < 150 ? this.offX + layer.offsetX : this.offX),
           this.offY - layer.offsetY,
           layerTile.width,
@@ -72,7 +83,7 @@ class Tile {
     this.drawOutline(this.offX + this.MapData.tileDiagonalWidth / 2, this.offY + this.MapData.tileDiagonalHeight, this.offX, this.offY + this.MapData.tileDiagonalHeight / 2, color);
     */
     //context.fillStyle = 'white';
-    this.context.fillText(this.x + ", " + this.y, this.offX + this.MapData.tileDiagonalWidth/2 - 9, this.offY + this.MapData.tileDiagonalHeight/2 + 3);
+    this.context.fillText(this.xI + ", " + this.yI, this.offX + this.MapData.tileDiagonalWidth/2 - 9, this.offY + this.MapData.tileDiagonalHeight/2 + 3);
 
     return true;
   }

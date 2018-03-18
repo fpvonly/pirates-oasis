@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 
 //import Sounds from './Game/Objects/Sound'; // preload sound pool
-//import Sprites from './Game/Objects/Sprite'; // preload sprites
+import Sprites from './Game/Objects/Sprite'; // preload sprites
 import * as C from './Game/Constants';
 import Game from './Game/Game.jsx';
 import Menu from './Menu.jsx';

@@ -3,7 +3,7 @@ import {render} from 'react-dom';
 import PropTypes from 'prop-types';
 
 import DebugFPS from './DebugFPS.jsx';
-//import Sprites from './Objects/Sprite';
+import Sprites from './Objects/Sprite';
 import {MapData} from './Objects/Map/Map_L1.js'
 import {Tile} from './Objects/Map/Tile.js';
 import Player from './Objects/Player.js';
@@ -165,6 +165,14 @@ class Game extends React.Component {
     //console.log('this.selectedX', this.selectedX, 'this.selectedY', this.selectedY);
   }
 
+  getOriginX = () => {
+    return this.originX;
+  }
+
+  getOriginY = () => {
+    return this.originY;
+  }
+
   endGame = (e) => {
     if (e.key === 'Escape' || e.keyCode === 27 || e.type === 'mousedown') {
       this.resetGame();
@@ -218,7 +226,10 @@ class Game extends React.Component {
           MapData,
           (MapData.tiles[MapData.map[x][y]].src.indexOf('water_waves.png') !== -1 ? true: false),
           layers,
-          this.context
+          this.canvas,
+          this.context,
+          this.getOriginX,
+          this.getOriginY
         );
         this.generatedTileObjects[x].push(tile);
       }
@@ -226,7 +237,7 @@ class Game extends React.Component {
   }
 
   initPlayerObjects = () => {
-    this.playerObjects.push(new Player(this.context, this.canvas, 100, 100, 24*75, 0));
+    this.playerObjects.push(new Player(this.context, this.canvas, 100, 100, 24*75, 0, this.getOriginX, this.getOriginY));
   }
 
   animate = (time) => {
