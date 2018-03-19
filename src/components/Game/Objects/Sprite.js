@@ -4,7 +4,7 @@ import {MapData} from './Map/Map_L1.js'
 class Sprite {
 
   static explosionSpriteAnimFrames = [];
-  static playercannon = null;
+  static playerCannon = [];
   static tiles = [];
 
   static initializeStaticClass() {
@@ -19,14 +19,26 @@ class Sprite {
       let tileBg = new Image();
       tileBg.src = tile.src;
       tileBg.width = tile.width;
-      tileBg.height = tile.height;      
+      tileBg.height = tile.height;
       Sprite.tiles.push(tileBg);
     }
 
     // player cannon sprite
-    let cannon = new Image();
-    cannon.src = 'assets/images/player/cannon/cannonMobile_NE.png';
-    Sprite.playercannon = cannon;
+    let cannonSpriteSources = [
+      'assets/images/player/cannon/cannonMobile_N.png',
+      'assets/images/player/cannon/cannonMobile_NE.png',
+      'assets/images/player/cannon/cannonMobile_E.png',
+      'assets/images/player/cannon/cannonMobile_SE.png',
+      'assets/images/player/cannon/cannonMobile_S.png',
+      'assets/images/player/cannon/cannonMobile_SW.png',
+      'assets/images/player/cannon/cannonMobile_W.png',
+      'assets/images/player/cannon/cannonMobile_NW.png'
+    ];
+    for (let src of cannonSpriteSources) {
+      let cannon = new Image();
+      cannon.src = src;
+      Sprite.playerCannon.push(cannon);
+    }
   }
 
   static getLoadingStatusInfo = () => {
@@ -51,10 +63,10 @@ class Sprite {
       if (frame.complete === false) {
         loaded = false;
       }
-    }*/
-    if (Sprite.playercannon.complete === false) {
-      loaded = false;
     }
+    if (Sprite.playerCannon.complete === false) {
+      loaded = false;
+    }*/
 
     return loaded;
   }
@@ -64,7 +76,7 @@ class Sprite {
   }
 
   static getPlayerCannon = () => {
-    return Sprite.playercannon;
+    return Sprite.playerCannon;
   }
 
 }

@@ -224,7 +224,6 @@ class Game extends React.Component {
           offX,
           offY,
           MapData,
-          (MapData.tiles[MapData.map[x][y]].src.indexOf('water_waves.png') !== -1 ? true: false),
           layers,
           this.canvas,
           this.context,

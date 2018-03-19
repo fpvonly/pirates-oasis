@@ -54,18 +54,27 @@ class Player extends GameObject {
   }
 
   steer = () => {
-    if (this.targetX < this.x) {
-      this.moveLeft(10);
-    } else {
-      this.moveRight(10);
-    }
-    if (this.targetY < this.y) {
-      this.moveUp(10);
-    } else {
-      this.moveDown(10);
-    }
+    if (this.targetX !== null && this.targetY !== null) {
+      let dist = 0;
 
-
+      if (this.targetX < this.x) {
+        dist = (this.x - this.targetX < 10 ? this.x - this.targetX : 10);
+        this.moveLeft(dist);
+      } else {
+        dist = (this.targetX - this.x < 10 ? this.targetX - this.x : 10);
+        this.moveRight(dist);
+      }
+      if (this.targetY < this.y) {
+        dist = (this.y - this.targetY < 10 ? this.y - this.targetY : 10);
+        this.moveUp(dist);
+      } else {
+        dist = (this.targetY - this.y < 10 ? this.targetY - this.y : 10);
+        this.moveDown(dist);
+      }
+    } else {
+      this.targetX = null;
+      this.targetY = null;
+    }
 
     return true;
   }
@@ -80,10 +89,13 @@ class Player extends GameObject {
   }
 
   handleMouseDown = (e) => {
-    this.targetX = e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX();
-    this.targetY = e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY();
+    this.targetX = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
+    this.targetY = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
 
-    console.log(this.getOriginX(), this.targetY);
+    let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
+    this.angle = Math.atan2(this.targetX - wrapperCenter[0], - (this.targetY - wrapperCenter[1])) * (180/Math.PI);
+    console.log('targetX', this.targetX, 'centerx', this.x + this.width/2);
+    console.log('angle', this.angle);
 
   }
 
@@ -104,6 +116,30 @@ class Player extends GameObject {
 
   }
 
+  getPlayerCannonSprite = () => {
+    let angleSprite = this.bg[0];
+
+    if (this.angle >= -22.5 && this.angle <= 22.5) {
+      angleSprite = this.bg[0];
+    } else if (this.angle > 22.5 && this.angle <= 67.5) {
+      angleSprite = this.bg[1];
+    } else if (this.angle > 67.5 && this.angle <= 112.5) {
+      angleSprite = this.bg[2];
+    } else if (this.angle > 112.5 && this.angle <= 157.5) {
+      angleSprite = this.bg[3];
+    } else if ((this.angle > 157.5 && this.angle <= 180) || (this.angle > -180 && this.angle <= -157.5)) {
+      angleSprite = this.bg[4];
+    } else if (this.angle > -157.5 && this.angle <= -112.5) {
+      angleSprite = this.bg[5];
+    } else if (this.angle > -112.5 && this.angle <= -67.5) {
+      angleSprite = this.bg[6];
+    } else if (this.angle > -67.5 && this.angle <= -22.5) {
+      angleSprite = this.bg[7];
+    }
+
+    return angleSprite;
+  }
+
   draw = () => {
     // move pixels and shoot new ammo per this current frame
     if (this.destroyed === false) {
@@ -116,7 +152,7 @@ class Player extends GameObject {
       }
     }*/
     // draw ship bg
-    this.context.drawImage(this.bg, this.x, this.y, this.width, this.height);
+    this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
     // if ship was destroyed, play three complete explosion animations
     /*if (this.destroyed === true && this.explosions.length > 0) {
       this.explosions[0].moveToX(this.x + (this.explosions.length === 2 ? 30 : (this.explosions.length * 15)));

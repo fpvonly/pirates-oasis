@@ -2,29 +2,27 @@ import Sprites from '../Sprite';
 
 class Tile {
 
-  constructor(xI, yI, offX, offY, MapData, animate = false, layers, canvas, context, getOriginX, getOriginY) {
+  constructor(xI, yI, offX, offY, MapData, layers, canvas, context, getOriginX, getOriginY) {
 
     this.canvas = canvas;
     this.context = context;
-
     this.xI = xI;
     this.yI = yI;
     this.offX = offX;
     this.offY = offY;
 
-    this.animationThreshold = 0;
     this.MapData = MapData;
     this.baseTileSprite = Sprites.getTile(MapData.map[xI][yI]);
-    if (this.baseTileSprite.src.indexOf('water_waves') !== -1) {
-      this.animationThreshold = Math.random() * 20;
-    }
-    this.currentAnimationIncVal = this.animationThreshold;
-    this.speed = 0.5;
-    this.animate = animate;
     this.layers = layers;
-
-    this.getOriginX = getOriginX;
-    this.getOriginY = getOriginY;
+    this.speed = 0.5;
+    this.animate = false;
+    if (this.baseTileSprite.src.indexOf('water_waves') !== -1) {
+      this.animate = true;
+      this.animationThreshold = Math.random() * 20;
+      this.currentAnimationIncVal = this.animationThreshold;
+    }
+    this.getOriginX = getOriginX; // get canvas origo x
+    this.getOriginY = getOriginY; // get canvas origo y
   }
 
   draw = (selected = false) => {
@@ -34,12 +32,12 @@ class Tile {
       this.context.fillStyle = 'green';
     }
 
-    let isOnScreen = false;
+    let shouldBeDrawn = false; // do not draw all tiles that are off canvas visible area
     if (this.getOriginX() + this.offX >= -150 &&
       this.getOriginX() + this.offX <= this.canvas.width &&
       this.getOriginY() + this.offY >= -150 &&
       this.getOriginY() + this.offY <= this.canvas.height) {
-        isOnScreen = true;
+        shouldBeDrawn = true;
     }
   /*  context.moveTo(offX, offY + tileDiagonalHeight / 2);
     context.lineTo(offX + tileDiagonalWidth / 2, offY, offX + tileDiagonalWidth, offY + tileDiagonalHeight / 2);
@@ -48,20 +46,23 @@ class Tile {
     context.closePath();
     context.fill();*/
 
-    if (this.animate === true) {
-      if (this.currentAnimationIncVal > this.animationThreshold) {
-        this.speed = this.speed * -1;
-      } else if (this.currentAnimationIncVal <= 0) {
-        this.speed = this.speed * -1;
+    if (shouldBeDrawn === true) {
+      if (this.animate === true) {
+        if (this.currentAnimationIncVal > this.animationThreshold) {
+          this.speed = this.speed * -1;
+        } else if (this.currentAnimationIncVal <= 0) {
+          this.speed = this.speed * -1;
+        }
+        this.currentAnimationIncVal = this.currentAnimationIncVal + this.speed;
+        this.context.drawImage(this.baseTileSprite, this.offX, this.offY, this.baseTileSprite.width, this.baseTileSprite.height - this.currentAnimationIncVal);
+      } else {
+        this.context.drawImage(this.baseTileSprite, this.offX, this.offY, this.baseTileSprite.width, this.baseTileSprite.height);
+
+  //      this.context.drawImage(this.baseTileSprite, this.offX, this.offY);
       }
-      this.currentAnimationIncVal = this.currentAnimationIncVal + this.speed;
     }
 
-    if (isOnScreen === true) {
-      this.context.drawImage(this.baseTileSprite, this.offX, this.offY, this.baseTileSprite.width, this.baseTileSprite.height - this.currentAnimationIncVal);
-    }
-
-    if (isOnScreen === true && this.layers !== null) {
+    if (shouldBeDrawn === true && this.layers !== null) {
       let layer = null;
       let layerTile = null;
       for (let layer of this.layers) {
