@@ -36,6 +36,8 @@ class Game extends React.Component {
     this.originY = 0;
     this.tileImages = []; // loaded sprite images for map, empty for this example
     this.generatedTileObjects = [];
+    this.allowedTilesOnLandMap = [];
+    this.allowedTilesOnWaterMap = [];
 
     this.selectedX = null;
     this.selectedY = null;
@@ -233,6 +235,43 @@ class Game extends React.Component {
         this.generatedTileObjects[x].push(tile);
       }
     }
+
+    this.allowedTilesOnLandMap = this.createMovableMapBase('land');
+    this.allowedTilesOnWaterMap = this.createMovableMapBase('water');
+
+    console.log('this.allowedTilesOnLandMap', this.allowedTilesOnLandMap);
+    console.log('this.allowedTilesOnWaterMap', this.allowedTilesOnWaterMap);
+
+  }
+
+  createMovableMapBase = (on = 'land') => {
+    let movableMap = [];
+    let allowedTiles = (on === 'land' ? MapData.allowedTilesOnLand : MapData.allowedTilesOnWater);
+    for (let col in MapData.map) {
+      let layers = MapData.mapLayers[col];
+      movableMap[col] = MapData.map[col].map((tileId, row) => {
+        if (allowedTiles.indexOf(tileId) !== -1) {
+          let notAllowed = false;
+          let tileLayers = layers[row];
+          if (Array.isArray(tileLayers) === true) {
+            for (let layer of tileLayers) {
+              if (allowedTiles.indexOf(layer.tileId) === -1) {
+                notAllowed = true;
+              }
+            }
+          }
+          if (notAllowed === false) {
+            return 1;
+          } else {
+            return 0;
+          }
+        } else {
+          return 0;
+        }
+      });
+    }
+
+    return movableMap;
   }
 
   initPlayerObjects = () => {
