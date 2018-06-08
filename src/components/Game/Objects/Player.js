@@ -64,6 +64,7 @@ class Player extends GameObject {
         dist = (this.targetX - this.x < 10 ? this.targetX - this.x : 10);
         this.moveRight(dist);
       }
+
       if (this.targetY < this.y) {
         dist = (this.y - this.targetY < 10 ? this.y - this.targetY : 10);
         this.moveUp(dist);
@@ -152,7 +153,7 @@ class Player extends GameObject {
       }
     }*/
     // draw ship bg
-    this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
+    this.context.drawImage(this.getPlayerCannonSprite(), this.x - this.width/2, this.y - this.height/2, this.width, this.height);
     // if ship was destroyed, play three complete explosion animations
     /*if (this.destroyed === true && this.explosions.length > 0) {
       this.explosions[0].moveToX(this.x + (this.explosions.length === 2 ? 30 : (this.explosions.length * 15)));
