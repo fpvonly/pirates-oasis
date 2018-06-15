@@ -120,9 +120,9 @@ class Player extends GameObject {
   getPlayerCannonSprite = () => {
     let angleSprite = this.bg[0];
 
-    if (this.angle >= -22.5 && this.angle <= 22.5) {
+    if (this.angle >= -42.5 && this.angle <= 42.5) {
       angleSprite = this.bg[0];
-    } else if (this.angle > 22.5 && this.angle <= 67.5) {
+    } else if (this.angle > 42.5 && this.angle <= 67.5) {
       angleSprite = this.bg[1];
     } else if (this.angle > 67.5 && this.angle <= 112.5) {
       angleSprite = this.bg[2];
@@ -134,7 +134,7 @@ class Player extends GameObject {
       angleSprite = this.bg[5];
     } else if (this.angle > -112.5 && this.angle <= -67.5) {
       angleSprite = this.bg[6];
-    } else if (this.angle > -67.5 && this.angle <= -22.5) {
+    } else if (this.angle > -67.5 && this.angle <= -42.5) {
       angleSprite = this.bg[7];
     }
 

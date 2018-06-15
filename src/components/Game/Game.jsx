@@ -275,7 +275,7 @@ class Game extends React.Component {
   }
 
   initPlayerObjects = () => {
-    this.playerObjects.push(new Player(this.context, this.canvas, 100, 100, 24*75, 0, this.getOriginX, this.getOriginY));
+    this.playerObjects.push(new Player(this.context, this.canvas, 40, 40, 24*75, 0, this.getOriginX, this.getOriginY));
   }
 
   animate = (time) => {
