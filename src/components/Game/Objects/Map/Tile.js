@@ -14,6 +14,7 @@ class Tile {
     this.MapData = MapData;
     this.baseTileSprite = Sprites.getTile(MapData.map[xI][yI]);
     this.layers = layers;
+    this.allowPlayerMovement = layers === null ? false : true; // if there are layers on the tile, no player movement allowed
     this.speed = 0.5;
     this.animate = false;
     if (this.baseTileSprite.src.indexOf('water_waves') !== -1) {
@@ -23,21 +24,23 @@ class Tile {
     }
     this.getOriginX = getOriginX; // get canvas origo x
     this.getOriginY = getOriginY; // get canvas origo y
+
+    this.shouldBeDrawn = false;
   }
 
-  draw = (selected = false) => {
+  drawBaseTile = (selected = false) => {
     if (selected === true) {
       this.context.fillStyle = 'white';
     } else {
       this.context.fillStyle = 'green';
     }
 
-    let shouldBeDrawn = false; // do not draw all tiles that are off canvas visible area
+    this.shouldBeDrawn = false; // do not draw all tiles that are off canvas visible area
     if (this.getOriginX() + this.offX >= -150 &&
       this.getOriginX() + this.offX <= this.canvas.width &&
       this.getOriginY() + this.offY >= -150 &&
       this.getOriginY() + this.offY <= this.canvas.height) {
-        shouldBeDrawn = true;
+        this.shouldBeDrawn = true;
     }
   /*  context.moveTo(offX, offY + tileDiagonalHeight / 2);
     context.lineTo(offX + tileDiagonalWidth / 2, offY, offX + tileDiagonalWidth, offY + tileDiagonalHeight / 2);
@@ -46,7 +49,7 @@ class Tile {
     context.closePath();
     context.fill();*/
 
-    if (shouldBeDrawn === true) {
+    if (this.shouldBeDrawn === true) {
       if (this.animate === true) {
         if (this.currentAnimationIncVal > this.animationThreshold) {
           this.speed = this.speed * -1;
@@ -62,7 +65,7 @@ class Tile {
       }
     }
 
-    if (shouldBeDrawn === true && this.layers !== null) {
+    if (this.shouldBeDrawn === true && this.layers !== null) {
       let layer = null;
       let layerTile = null;
       for (let layer of this.layers) {
@@ -85,6 +88,26 @@ class Tile {
     */
     //context.fillStyle = 'white';
     this.context.fillText(this.xI + ", " + this.yI, this.offX + this.MapData.tileDiagonalWidth/2 - 9, this.offY + this.MapData.tileDiagonalHeight/2 + 3);
+
+    return true;
+  }
+
+  drawTileLayers = (selected = false) => {
+    if (this.shouldBeDrawn === true && this.layers !== null) {
+      let layer = null;
+      let layerTile = null;
+      for (let layer of this.layers) {
+        layerTile = Sprites.getTile(layer.tileId);
+        this.context.drawImage(
+          layerTile,
+          (layerTile.width < 150 ? this.offX + layer.offsetX : this.offX),
+          this.offY - layer.offsetY,
+          layerTile.width,
+          layerTile.height
+        );
+      }
+    }
+
 
     return true;
   }

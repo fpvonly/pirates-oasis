@@ -307,16 +307,21 @@ class Game extends React.Component {
     } else if (this.mousePointX !== null && this.mousePointX > window.innerWidth*0.8) {
       this.originX -= 55;
     }
-    this.context.setTransform(1, 0, 0, 1, this.originX, this.originY);
+    this.context.setTransform(1, 0, 0, 1, this.originX, this.originY); // move origo
 
-    for(let x = (this.generatedTileObjects.length - 1); x >= 0; x--) {
+    for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
       for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-        let done = this.generatedTileObjects[x][y].draw((this.selectedX === x && this.selectedY === y ? true : false));
+        let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedX === x && this.selectedY === y ? true : false));
       }
     }
 
-    for (let playerObj of this.playerObjects) {
-      playerObj.draw();
+    this.playerObjects[0].draw(); // only one player object in this game version
+
+    for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
+      for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
+        let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedX === x && this.selectedY === y ? true : false));
+
+      }
     }
 
     return true;
