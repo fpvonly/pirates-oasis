@@ -239,32 +239,33 @@ class Game extends React.Component {
     this.allowedTilesOnLandMap = this.createMovableMapBase('land');
     this.allowedTilesOnWaterMap = this.createMovableMapBase('water');
 
-    console.log('this.allowedTilesOnLandMap', this.allowedTilesOnLandMap);
-    console.log('this.allowedTilesOnWaterMap', this.allowedTilesOnWaterMap);
+  //  console.log('this.allowedTilesOnLandMap', this.allowedTilesOnLandMap);
+  //  console.log('this.allowedTilesOnWaterMap', this.allowedTilesOnWaterMap);
 
   }
 
   createMovableMapBase = (on = 'land') => {
     let movableMap = [];
     let allowedTiles = (on === 'land' ? MapData.allowedTilesOnLand : MapData.allowedTilesOnWater);
-    for (let col in MapData.map) {
-      let layers = MapData.mapLayers[col];
-      movableMap[col] = MapData.map[col].map((tileId, row) => {
+    for (let diagonalXToTopRight in MapData.map) {
+      let layers = MapData.mapLayers[diagonalXToTopRight];
+      movableMap[diagonalXToTopRight] = MapData.map[diagonalXToTopRight].map((tileId, diagonalYToBottomRight) => {
+        let allowed = true;
         if (allowedTiles.indexOf(tileId) !== -1) {
-          let notAllowed = false;
-          let tileLayers = layers[row];
+          let tileLayers = layers[diagonalYToBottomRight];
           if (Array.isArray(tileLayers) === true) {
             for (let layer of tileLayers) {
               if (allowedTiles.indexOf(layer.tileId) === -1) {
-                notAllowed = true;
+                allowed = false;
               }
             }
           }
-          if (notAllowed === false) {
-            return 1;
-          } else {
-            return 0;
-          }
+        } else {
+          allowed = false;
+        }
+
+        if (allowed === true) {
+          return 1;
         } else {
           return 0;
         }

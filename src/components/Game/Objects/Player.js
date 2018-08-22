@@ -26,19 +26,12 @@ class Player extends GameObject {
     this.shootFPS = 12; // shoot approx 12 shots/second at approx 60fps of the game
     this.allowPlayerMovement = false;
 
-
     this.targetX = null;
     this.targetY = null;
 
-    if (!("ontouchstart" in document.documentElement)) {
-      this.mouseTimer = null;
-      window.addEventListener('mousemove', this.handleMouseMove, false);
-      window.addEventListener('mousedown', this.handleMouseDown, false);
-      window.addEventListener('mouseup', this.handleMouseUp, false);
-    } else {
-    //  this.canvas.addEventListener('touchmove', this.handleTouchMove, false);
-    //  this.canvas.addEventListener('touchend', this.handleTouchEnd, false);
-    }
+    window.addEventListener('mousedown', this.handleMouseDown, false);
+    window.addEventListener('mouseup', this.handleMouseUp, false);
+
   }
 
   shoot = () => {
@@ -80,15 +73,6 @@ class Player extends GameObject {
     return true;
   }
 
-  handleMouseMove = (e) => {
-    clearTimeout(this.mouseTimer);
-
-  }
-
-  handleMouseStop = (e) => {
-
-  }
-
   handleMouseDown = (e) => {
     this.targetX = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
     this.targetY = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
@@ -101,19 +85,6 @@ class Player extends GameObject {
   }
 
   handleMouseUp = (e) => {
-
-  }
-
-  handleTouchMove = (e) => {
-    e.preventDefault();
-
-  }
-
-  handleTouchEnd = (e) => {
-
-  }
-
-  handleTouchShoot = (shoot = false) => {
 
   }
 
