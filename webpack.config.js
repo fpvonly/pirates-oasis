@@ -30,19 +30,21 @@ var config = {
     historyApiFallback: true
   },
   plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production')
-    })
+
   ]
 };
 
-if (process.env.NODE_ENV === 'production') {
-  config.devServer = {};
-  config.bail = true;
-  config.stats = 'verbose';
-  config.plugins = config.plugins.concat([
-    new GitRevisionPlugin()
-  ]);
-}
 
-module.exports = config;
+
+module.exports = (env, argv) => {
+  if (argv.mode === 'production') {
+    config.devServer = {};
+    config.bail = true;
+    config.stats = 'verbose';
+    config.plugins = config.plugins.concat([
+      new GitRevisionPlugin()
+    ]);
+  }
+
+   return config;
+};

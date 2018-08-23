@@ -1,3 +1,6 @@
+import PF from 'pathfinding';
+
+import {MapData} from './Map/Map_L1.js';
 import GameObject from './GameObject';
 import Sprites from './Sprite';
 //import Bullet from './Bullet';
@@ -6,7 +9,7 @@ import * as C from '../Constants';
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedTilesOnLandMap, getTargetTile) {
 
     super(context, canvas, width, height, x, y);
 
@@ -15,7 +18,7 @@ class Player extends GameObject {
 
     this.bg = Sprites.getPlayerCannon();
 
-  //this.shipBg = Sprites.getPlayerShipSprite();
+    //this.shipBg = Sprites.getPlayerShipSprite();
   /*  this.explosions = [
       new Explosion(this.context, this.canvas),
       new Explosion(this.context, this.canvas),
@@ -26,8 +29,10 @@ class Player extends GameObject {
     this.shootFPS = 12; // shoot approx 12 shots/second at approx 60fps of the game
     this.allowPlayerMovement = false;
 
-    this.targetX = null;
-    this.targetY = null;
+    this.targetXScreen = null;
+    this.targetYScreen = null;
+
+    this.allowedTilesOnLandMap = allowedTilesOnLandMap;
 
     window.addEventListener('mousedown', this.handleMouseDown, false);
     window.addEventListener('mouseup', this.handleMouseUp, false);
@@ -47,40 +52,60 @@ class Player extends GameObject {
   }
 
   steer = () => {
-    if (this.targetX !== null && this.targetY !== null) {
+    if (this.targetXScreen !== null && this.targetYScreen !== null) {
       let dist = 0;
 
-      if (this.targetX < this.x) {
-        dist = (this.x - this.targetX < 10 ? this.x - this.targetX : 10);
+      if (this.targetXScreen < this.x) {
+        dist = (this.x - this.targetXScreen < 10 ? this.x - this.targetXScreen : 10);
         this.moveLeft(dist);
       } else {
-        dist = (this.targetX - this.x < 10 ? this.targetX - this.x : 10);
+        dist = (this.targetXScreen - this.x < 10 ? this.targetXScreen - this.x : 10);
         this.moveRight(dist);
       }
 
-      if (this.targetY < this.y) {
-        dist = (this.y - this.targetY < 10 ? this.y - this.targetY : 10);
+      if (this.targetYScreen < this.y) {
+        dist = (this.y - this.targetYScreen < 10 ? this.y - this.targetYScreen : 10);
         this.moveUp(dist);
       } else {
-        dist = (this.targetY - this.y < 10 ? this.targetY - this.y : 10);
+        dist = (this.targetYScreen - this.y < 10 ? this.targetYScreen - this.y : 10);
         this.moveDown(dist);
       }
     } else {
-      this.targetX = null;
-      this.targetY = null;
+      this.targetXScreen = null;
+      this.targetYScreen = null;
     }
 
     return true;
   }
 
   handleMouseDown = (e) => {
-    this.targetX = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
-    this.targetY = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
 
+    // global screen coordinates and angle on the map
+    this.targetXScreen = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
+    this.targetYScreen = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
     let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
-    this.angle = Math.atan2(this.targetX - wrapperCenter[0], - (this.targetY - wrapperCenter[1])) * (180/Math.PI);
-    console.log('targetX', this.targetX, 'centerx', this.x + this.width/2);
-    console.log('angle', this.angle);
+    this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
+
+    // The actual x,y coordinates (i.e. order numbers) of the map tile (not screen coordinates)
+    let selectedXScreen = e.pageX;
+    let selectedYScreen = e.pageY;
+    selectedXScreen = selectedXScreen - this.getOriginX() - MapData.tileDiagonalWidth/2 - this.canvas.getBoundingClientRect().left;
+    selectedYScreen = selectedYScreen - this.getOriginY() - MapData.tileDiagonalHeight/2 -  this.canvas.getBoundingClientRect().top;
+    let selectedXTile = Math.round(selectedXScreen / MapData.tileDiagonalWidth - selectedYScreen / MapData.tileDiagonalHeight);
+    let selectedYTile = Math.round(selectedXScreen / MapData.tileDiagonalWidth + selectedYScreen / MapData.tileDiagonalHeight);
+
+    let matrixOfMap = this.allowedTilesOnLandMap;
+    let grid = new PF.Grid(matrixOfMap);
+    let finder = new PF.AStarFinder({allowDiagonal: true});
+    let path = finder.findPath(8, 7, selectedXTile, selectedYTile, grid);
+
+    if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
+      console.log('coord', selectedXTile, ', ', selectedYTile);
+      console.log('grid', grid);
+      console.log('path', path);
+      //console.log('targetX', this.targetXScreen, 'centerx', this.x + this.width/2);
+      //console.log('angle', this.angle);
+    }
 
   }
 

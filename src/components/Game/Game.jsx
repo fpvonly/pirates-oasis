@@ -1,6 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import PropTypes from 'prop-types';
+import PF from 'pathfinding';
 
 import DebugFPS from './DebugFPS.jsx';
 import Sprites from './Objects/Sprite';
@@ -39,8 +40,8 @@ class Game extends React.Component {
     this.allowedTilesOnLandMap = [];
     this.allowedTilesOnWaterMap = [];
 
-    this.selectedX = null;
-    this.selectedY = null;
+    this.selectedXTile = null;
+    this.selectedYTile = null;
     this.mousePointY = null;
     this.mousePointX = null;
 
@@ -152,11 +153,11 @@ class Game extends React.Component {
     selectedY = selectedY - this.originY - MapData.tileDiagonalHeight/2 - this.canvasOffsetTop;
     let tileX = Math.round(selectedX / MapData.tileDiagonalWidth - selectedY / MapData.tileDiagonalHeight);
     let tileY = Math.round(selectedX / MapData.tileDiagonalWidth + selectedY / MapData.tileDiagonalHeight);
-    this.selectedX = tileX;
-    this.selectedY = tileY;
+    this.selectedXTile = tileX;
+    this.selectedYTile = tileY;
 
     // for scroll ->
-    if (this.selectedX >= 0 && this.selectedX <= 23 && this.selectedY >= 0 && this.selectedY <= 23) {
+    if (this.selectedXTile >= 0 && this.selectedXTile <= 23 && this.selectedYTile >= 0 && this.selectedYTile <= 23) {
       this.mousePointY = e.pageY;
       this.mousePointX = e.pageX;
     } else {
@@ -164,7 +165,7 @@ class Game extends React.Component {
       this.mousePointX = null;
     }
 
-    //console.log('this.selectedX', this.selectedX, 'this.selectedY', this.selectedY);
+    //console.log('this.selectedXTile', this.selectedXTile, 'this.selectedYTile', this.selectedYTile);
   }
 
   getOriginX = () => {
@@ -173,6 +174,10 @@ class Game extends React.Component {
 
   getOriginY = () => {
     return this.originY;
+  }
+
+  getTargetTile = () => {
+    return {tileX: this.selectedXTile, tileY: this.selectedYTile}
   }
 
   endGame = (e) => {
@@ -265,9 +270,9 @@ class Game extends React.Component {
         }
 
         if (allowed === true) {
-          return 1;
-        } else {
           return 0;
+        } else {
+          return 1;
         }
       });
     }
@@ -276,7 +281,7 @@ class Game extends React.Component {
   }
 
   initPlayerObjects = () => {
-    this.playerObjects.push(new Player(this.context, this.canvas, 40, 40, 24*75, 0, this.getOriginX, this.getOriginY));
+    this.playerObjects.push(new Player(this.context, this.canvas, 40, 40, 24*75, 0, this.getOriginX, this.getOriginY, this.allowedTilesOnLandMap, this.getTargetTile));
   }
 
   animate = (time) => {
@@ -312,7 +317,7 @@ class Game extends React.Component {
 
     for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
       for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-        let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedX === x && this.selectedY === y ? true : false));
+        let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedXTile === x && this.selectedYTile === y ? true : false));
       }
     }
 
@@ -320,7 +325,7 @@ class Game extends React.Component {
 
     for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
       for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-        let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedX === x && this.selectedY === y ? true : false));
+        let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
 
       }
     }
