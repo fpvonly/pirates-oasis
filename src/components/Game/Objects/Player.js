@@ -9,7 +9,7 @@ import * as C from '../Constants';
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedTilesOnLandMap, getTargetTile) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedTilesOnLandMap, getTargetTileCoordinates) {
 
     super(context, canvas, width, height, x, y);
 
@@ -33,6 +33,9 @@ class Player extends GameObject {
     this.targetYScreen = null;
 
     this.allowedTilesOnLandMap = allowedTilesOnLandMap;
+    this.getTargetTileCoordinates = getTargetTileCoordinates;
+
+    this.path = [];
 
     window.addEventListener('mousedown', this.handleMouseDown, false);
     window.addEventListener('mouseup', this.handleMouseUp, false);
@@ -52,27 +55,39 @@ class Player extends GameObject {
   }
 
   steer = () => {
-    if (this.targetXScreen !== null && this.targetYScreen !== null) {
-      let dist = 0;
+    if (Array.isArray(this.path) === true && this.path.length > 0) {
+      let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
+  // TODO: movement logic and path updating works but wrong coordinates...
+  console.log('tileCoords', tileCoords);
 
-      if (this.targetXScreen < this.x) {
-        dist = (this.x - this.targetXScreen < 10 ? this.x - this.targetXScreen : 10);
-        this.moveLeft(dist);
-      } else {
-        dist = (this.targetXScreen - this.x < 10 ? this.targetXScreen - this.x : 10);
-        this.moveRight(dist);
+      this.targetXScreen = tileCoords.tileX;
+      this.targetYScreen = tileCoords.tileY;
+
+      if (this.targetXScreen !== null && this.targetYScreen !== null) {
+        let dist = 0;
+
+        if (this.targetXScreen < this.x) {
+          dist = (this.x - this.targetXScreen < 10 ? this.x - this.targetXScreen : 10);
+          this.moveLeft(dist);
+        } else {
+          dist = (this.targetXScreen - this.x < 10 ? this.targetXScreen - this.x : 10);
+          this.moveRight(dist);
+        }
+
+        if (this.targetYScreen < this.y) {
+          dist = (this.y - this.targetYScreen < 10 ? this.y - this.targetYScreen : 10);
+          this.moveUp(dist);
+        } else {
+          dist = (this.targetYScreen - this.y < 10 ? this.targetYScreen - this.y : 10);
+          this.moveDown(dist);
+        }
       }
 
-      if (this.targetYScreen < this.y) {
-        dist = (this.y - this.targetYScreen < 10 ? this.y - this.targetYScreen : 10);
-        this.moveUp(dist);
-      } else {
-        dist = (this.targetYScreen - this.y < 10 ? this.targetYScreen - this.y : 10);
-        this.moveDown(dist);
+      if (this.targetXScreen === this.x && this.targetYScreen === this.y) {
+        this.path.shift();
       }
-    } else {
-      this.targetXScreen = null;
-      this.targetYScreen = null;
+      console.log('this.path', this.path);
+      console.log('this.targetXScreen', this.targetXScreen);
     }
 
     return true;
@@ -97,12 +112,12 @@ class Player extends GameObject {
     let matrixOfMap = this.allowedTilesOnLandMap;
     let grid = new PF.Grid(matrixOfMap);
     let finder = new PF.AStarFinder({allowDiagonal: true});
-    let path = finder.findPath(8, 7, selectedXTile, selectedYTile, grid);
+    this.path = finder.findPath(8, 7, selectedXTile, selectedYTile, grid);
 
     if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
       console.log('coord', selectedXTile, ', ', selectedYTile);
       console.log('grid', grid);
-      console.log('path', path);
+      //console.log('path', this.path);
       //console.log('targetX', this.targetXScreen, 'centerx', this.x + this.width/2);
       //console.log('angle', this.angle);
     }

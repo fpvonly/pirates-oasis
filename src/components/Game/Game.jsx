@@ -176,8 +176,11 @@ class Game extends React.Component {
     return this.originY;
   }
 
-  getTargetTile = () => {
-    return {tileX: this.selectedXTile, tileY: this.selectedYTile}
+  getTargetTileCoordinates = (x, y) => {
+    let xCoord = this.generatedTileObjects[x][y].offX;
+    let yCoord = this.generatedTileObjects[x][y].offY;
+console.log('xCoord', xCoord, 'yCoord', yCoord);
+    return {tileX: xCoord, tileY: yCoord}
   }
 
   endGame = (e) => {
@@ -281,7 +284,7 @@ class Game extends React.Component {
   }
 
   initPlayerObjects = () => {
-    this.playerObjects.push(new Player(this.context, this.canvas, 40, 40, 24*75, 0, this.getOriginX, this.getOriginY, this.allowedTilesOnLandMap, this.getTargetTile));
+    this.playerObjects.push(new Player(this.context, this.canvas, 40, 40, 24*75, 0, this.getOriginX, this.getOriginY, this.allowedTilesOnLandMap, this.getTargetTileCoordinates));
   }
 
   animate = (time) => {
