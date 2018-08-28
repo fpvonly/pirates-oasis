@@ -29,6 +29,9 @@ class Player extends GameObject {
     this.shootFPS = 12; // shoot approx 12 shots/second at approx 60fps of the game
     this.allowPlayerMovement = false;
 
+    this.xI = 12;
+    this.yI = 11;
+
     this.targetXScreen = null;
     this.targetYScreen = null;
 
@@ -56,6 +59,7 @@ class Player extends GameObject {
 
   steer = () => {
     if (Array.isArray(this.path) === true && this.path.length > 0) {
+
       let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
   // TODO: movement logic and path updating works but wrong coordinates...
   console.log('tileCoords', tileCoords);
@@ -84,6 +88,8 @@ class Player extends GameObject {
       }
 
       if (this.targetXScreen === this.x && this.targetYScreen === this.y) {
+        this.xI = this.path[0][0];
+        this.yI = this.path[0][1];
         this.path.shift();
       }
       console.log('this.path', this.path);
@@ -106,18 +112,23 @@ class Player extends GameObject {
     let selectedYScreen = e.pageY;
     selectedXScreen = selectedXScreen - this.getOriginX() - MapData.tileDiagonalWidth/2 - this.canvas.getBoundingClientRect().left;
     selectedYScreen = selectedYScreen - this.getOriginY() - MapData.tileDiagonalHeight/2 -  this.canvas.getBoundingClientRect().top;
-    let selectedXTile = Math.round(selectedXScreen / MapData.tileDiagonalWidth - selectedYScreen / MapData.tileDiagonalHeight);
-    let selectedYTile = Math.round(selectedXScreen / MapData.tileDiagonalWidth + selectedYScreen / MapData.tileDiagonalHeight);
+    let selectedXTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth - selectedYScreen / MapData.tileDiagonalHeight);
+    let selectedYTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth + selectedYScreen / MapData.tileDiagonalHeight);
 
     let matrixOfMap = this.allowedTilesOnLandMap;
     let grid = new PF.Grid(matrixOfMap);
     let finder = new PF.AStarFinder({allowDiagonal: true});
-    this.path = finder.findPath(8, 7, selectedXTile, selectedYTile, grid);
+    console.log('this.xI', this.xI);
+    console.log('this.yI', this.yI);
+
+    console.log('selectedXTileI', selectedXTileI);
+    console.log('selectedYTileI', selectedYTileI);
+    this.path = finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
 
     if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
-      console.log('coord', selectedXTile, ', ', selectedYTile);
+      //console.log('SELECTED coord', selectedXTileI, ', ', selectedYTileI);
       console.log('grid', grid);
-      //console.log('path', this.path);
+      console.log('path', this.path);
       //console.log('targetX', this.targetXScreen, 'centerx', this.x + this.width/2);
       //console.log('angle', this.angle);
     }
