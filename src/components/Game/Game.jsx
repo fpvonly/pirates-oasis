@@ -312,7 +312,7 @@ class Game extends React.Component {
   drawFrame = () => {
     this.context.setTransform(1, 0, 0, 1, 0, 0);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
     // scroll ->
     if (this.mousePointY !== null && this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
       this.originY += 25;

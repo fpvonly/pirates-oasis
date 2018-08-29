@@ -9,7 +9,7 @@ import * as C from '../Constants';
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedTilesOnLandMap, getTargetTileCoordinates) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, matrixOfMap, getTargetTileCoordinates) {
 
     super(context, canvas, width, height, x, y);
 
@@ -35,10 +35,11 @@ class Player extends GameObject {
     this.targetXScreen = null;
     this.targetYScreen = null;
 
-    this.allowedTilesOnLandMap = allowedTilesOnLandMap;
     this.getTargetTileCoordinates = getTargetTileCoordinates;
 
     this.path = [];
+    this.matrixOfMap = matrixOfMap;
+    this.finder = new PF.AStarFinder({allowDiagonal: true});
 
     window.addEventListener('mousedown', this.handleMouseDown, false);
     window.addEventListener('mouseup', this.handleMouseUp, false);
@@ -92,6 +93,8 @@ class Player extends GameObject {
         this.yI = this.path[0][1];
         this.path.shift();
       }
+      console.log('this.xI', this.xI);
+      console.log('this.yI', this.yI);
       console.log('this.path', this.path);
       console.log('this.targetXScreen', this.targetXScreen);
     }
@@ -115,20 +118,20 @@ class Player extends GameObject {
     let selectedXTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth - selectedYScreen / MapData.tileDiagonalHeight);
     let selectedYTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth + selectedYScreen / MapData.tileDiagonalHeight);
 
-    let matrixOfMap = this.allowedTilesOnLandMap;
-    let grid = new PF.Grid(matrixOfMap);
-    let finder = new PF.AStarFinder({allowDiagonal: true});
-    console.log('this.xI', this.xI);
-    console.log('this.yI', this.yI);
+
+    //console.log('this.xI', this.xI);
+    //console.log('this.yI', this.yI);
 
     console.log('selectedXTileI', selectedXTileI);
     console.log('selectedYTileI', selectedYTileI);
-    this.path = finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
+
+    let grid = new PF.Grid(this.matrixOfMap);
+    this.path = this.finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
 
     if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
       //console.log('SELECTED coord', selectedXTileI, ', ', selectedYTileI);
-      console.log('grid', grid);
-      console.log('path', this.path);
+      console.log('this.matrixOfMap', this.matrixOfMap);
+      console.log('path', this.path.toString());
       //console.log('targetX', this.targetXScreen, 'centerx', this.x + this.width/2);
       //console.log('angle', this.angle);
     }

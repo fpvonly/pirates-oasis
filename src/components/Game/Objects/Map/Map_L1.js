@@ -4,7 +4,7 @@ const MapData = {
   tileDiagonalWidth: 150,
   tileDiagonalHeight: 75,
   allowedTilesOnWater: [4],
-  allowedTilesOnLand: [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 43, 44],
+  allowedTilesOnLand: [0, 1, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 43],
   tiles: [
     {src: 'assets/images/base.png', width: 150, height: 75}, // 0
     {src: 'assets/images/b1-2.png', width: 150, height: 150}, // 1
