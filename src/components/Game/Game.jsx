@@ -287,7 +287,19 @@ class Game extends React.Component {
       });
     }
 
-    return movableMap;
+    // We have to convert allowed tiles x,y map to y,x map for Pathfinding.js to work
+    let movableMapInYXCoordinates = [];
+    for (let yI = 0; yI < MapData.rows; yI++) {
+      for (let xI in movableMap) {
+        let tiles = movableMap[xI][yI];
+        if (typeof movableMapInYXCoordinates[yI] === 'undefined') {
+          movableMapInYXCoordinates[yI] = [];
+        }
+        movableMapInYXCoordinates[yI].push(tiles);
+      }
+    }
+
+    return movableMapInYXCoordinates;
   }
 
   initPlayerObjects = () => {
