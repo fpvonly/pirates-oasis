@@ -34,6 +34,8 @@ class Player extends GameObject {
 
     this.targetXScreen = null;
     this.targetYScreen = null;
+    this.targetXScreenFinalPos = null;
+    this.targetYScreenFinalPos = null;
 
     this.getTargetTileCoordinates = getTargetTileCoordinates;
 
@@ -62,11 +64,15 @@ class Player extends GameObject {
     if (Array.isArray(this.path) === true && this.path.length > 0) {
 
       let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
-  // TODO: movement logic and path updating works but wrong coordinates...
-  console.log('tileCoords', tileCoords);
 
-      this.targetXScreen = tileCoords.tileX;
-      this.targetYScreen = tileCoords.tileY;
+      // if there's only one end point of the path left, use the actual coordinates of the clicked map area, instead of general tile position coordinate
+      if (this.path.length === 1) {
+        this.targetXScreen = this.targetXScreenFinalPos;
+        this.targetYScreen = this.targetYScreenFinalPos;
+      } else {
+        this.targetXScreen = tileCoords.tileX + MapData.tileDiagonalWidth/2;
+        this.targetYScreen = tileCoords.tileY + MapData.tileDiagonalHeight/2;
+      }
 
       if (this.targetXScreen !== null && this.targetYScreen !== null) {
         let dist = 0;
@@ -107,6 +113,8 @@ class Player extends GameObject {
     // global screen coordinates and angle on the map
     this.targetXScreen = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
     this.targetYScreen = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
+    this.targetXScreenFinalPos = this.targetXScreen;
+    this.targetYScreenFinalPos = this.targetYScreen;
     let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
     this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
 
