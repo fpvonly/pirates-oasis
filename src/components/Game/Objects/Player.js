@@ -29,6 +29,7 @@ class Player extends GameObject {
     this.shootFPS = 12; // shoot approx 12 shots/second at approx 60fps of the game
     this.allowPlayerMovement = false;
 
+    // current tile indexes
     this.xI = 12;
     this.yI = 11;
 
@@ -36,7 +37,6 @@ class Player extends GameObject {
     this.targetYScreen = null;
     this.targetXScreenFinalPos = null;
     this.targetYScreenFinalPos = null;
-
     this.getTargetTileCoordinates = getTargetTileCoordinates;
 
     this.angle = null;
@@ -63,8 +63,8 @@ class Player extends GameObject {
 
   steer = () => {
     if (Array.isArray(this.path) === true && this.path.length > 0) {
-      let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
 
+      let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
       // if there's only one end point of the path left, use the actual coordinates of the clicked map area, instead of general tile position coordinate
       if (this.path.length === 1) {
         this.targetXScreen = this.targetXScreenFinalPos;
@@ -74,60 +74,86 @@ class Player extends GameObject {
         this.targetYScreen = tileCoords.tileY + MapData.tileDiagonalHeight/2;
       }
 
-console.log('this.targetXScreen', this.targetXScreen, 'this.targetYScreen', this.targetYScreen);
+    /*  let xDist = Math.abs(this.targetXScreen) - Math.abs(this.x);
+      let yDist = Math.abs(this.targetYScreen) - Math.abs(this.y);
+
+      this.yTolerance = 1;
+      this.xTolerance = 1;
+      if (isFinite(xDist) && isFinite(yDist) && xDist > 0 && yDist > 0) {
+        if (xDist < yDist) {
+          this.yTolerance *= (yDist/xDist/100);
+          this.xTolerance = 1;
+        }
+        if (xDist > yDist) {
+          this.xTolerance *= (xDist/yDist/100);
+          this.yTolerance = 1;
+        }
+        console.log('xDist', xDist, 'yDist', yDist )
+      }*/
+
+
 
       if (this.targetXScreen !== null && this.targetYScreen !== null) {
         let dist = 0;
 
 // TODO need to calculate vector and ..
-        if (this.targetXScreen < this.targetYScreen) {
+        let lerp = function(a,b,x){ return(a+x*(b-a)); };
+        var dx=this.targetXScreen-this.x;
+        var dy=this.targetYScreen-this.y;
+        var t=((this.targetXScreen-this.x)*dx+(this.targetYScreen-this.y)*dy)/(dx*dx+dy*dy);
+        var lineX=lerp(this.x, this.targetXScreen, t);
+        var lineY=lerp(this.y, this.targetYScreen, t);
+console.log('lineX', this.x, 'lineY', this.y);
+    this.moveToX(lineX);
+    this.moveToY(lineY);
 
-        }
-
-        if (this.targetXScreen < this.x + this.width/2) {
-          dist = (this.x - this.targetXScreen < 10 ? this.x - this.targetXScreen : 10);
+/*
+        if (this.targetXScreen < this.x) {
+          dist = (this.x - this.targetXScreen < 5 ? this.x - this.targetXScreen : 5);
           this.moveLeft(dist);
         } else {
-          dist = (this.targetXScreen - this.x < 10 ? this.targetXScreen - this.x : 10);
-          this.moveRight(dist);
+          dist = (this.targetXScreen - this.x < 5 ? this.targetXScreen - this.x : 5);
+          this.moveRight(dist * this.xTolerance);
         }
 
-        if (this.targetYScreen < this.y + this.height/2) {
-          dist = (this.y - this.targetYScreen < 10 ? this.y - this.targetYScreen : 10);
+        if (this.targetYScreen < this.y) {
+          dist = (this.y - this.targetYScreen < 5 ? this.y - this.targetYScreen : 5);
           this.moveUp(dist);
         } else {
-          dist = (this.targetYScreen - this.y < 10 ? this.targetYScreen - this.y : 10);
+          dist = (this.targetYScreen - this.y < 5 ? this.targetYScreen - this.y : 5);
           this.moveDown(dist);
-        }
+        }*/
       }
 
       if (this.targetXScreen === this.x && this.targetYScreen === this.y) {
-      //  this.angle = null;
-      console.log('TARGET CHANGE');
-    // TODO angle
-      let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
-      this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
-        this.xI = this.path[0][0];
-        this.yI = this.path[0][1];
-        this.path.shift();
+        //  this.angle = null;
+      //  console.log('TARGET CHANGE');
+      // TODO angle
+
+        let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
+        this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
+
+        if (Array.isArray(this.path) === true && this.path.length > 0) {
+          this.xI = this.path[0][0];
+          this.yI = this.path[0][1];
+          this.path.shift();
+        }
       } else {
 
-      }
 
+
+      }
     }
-    console.log('this.angle', this.angle);
 
     return true;
   }
 
   handleMouseDown = (e) => {
-
-    // global screen coordinates and angle on the map
+    // global screen coordinates on the map
     this.targetXScreen = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
     this.targetYScreen = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
     this.targetXScreenFinalPos = this.targetXScreen;
     this.targetYScreenFinalPos = this.targetYScreen;
-
 
     // The actual x,y coordinates (i.e. order numbers) of the map tile (not screen coordinates)
     let selectedXScreen = e.pageX;
@@ -137,17 +163,8 @@ console.log('this.targetXScreen', this.targetXScreen, 'this.targetYScreen', this
     let selectedXTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth - selectedYScreen / MapData.tileDiagonalHeight);
     let selectedYTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth + selectedYScreen / MapData.tileDiagonalHeight);
 
-    //console.log('selectedXTileI', selectedXTileI);
-  //  console.log('selectedYTileI', selectedYTileI);
-
     let grid = new PF.Grid(this.matrixOfMap);
     this.path = this.finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
-
-    if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
-
-      //console.log('path', this.path.toString());
-    }
-
   }
 
   handleMouseUp = (e) => {
@@ -180,7 +197,7 @@ console.log('this.targetXScreen', this.targetXScreen, 'this.targetYScreen', this
 
   draw = () => {
     // move pixels and shoot new ammo per this current frame
-    if (this.destroyed === false) {
+    if (this.destroyed === false && isNaN(this.x) === false && isNaN(this.y) === false) {
       this.steer();
     }
     // draw old and newly shot ammo

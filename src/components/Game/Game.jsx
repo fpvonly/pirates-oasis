@@ -229,15 +229,15 @@ class Game extends React.Component {
   }
 
   initMapTiles = () => {
-    for (let x = 0; x < MapData.cols; x++) {
+    for (let xI = 0; xI < MapData.cols; xI++) {
       this.generatedTileObjects.push([]);
-      for (let y = 0; y < MapData.rows; y++) {
-        let layers = MapData.mapLayers[x][y];
-        let offX = x * MapData.tileDiagonalWidth / 2 + y * MapData.tileDiagonalWidth / 2;
-        let offY = y * MapData.tileDiagonalHeight / 2 - x * MapData.tileDiagonalHeight / 2;
+      for (let yI = 0; yI < MapData.rows; yI++) {
+        let layers = MapData.mapLayers[xI][yI];
+        let offX = xI * MapData.tileDiagonalWidth / 2 + yI * MapData.tileDiagonalWidth / 2;
+        let offY = yI * MapData.tileDiagonalHeight / 2 - xI * MapData.tileDiagonalHeight / 2;
         let tile = new Tile(
-          x,
-          y,
+          xI,
+          yI,
           offX,
           offY,
           MapData,
@@ -247,16 +247,12 @@ class Game extends React.Component {
           this.getOriginX,
           this.getOriginY
         );
-        this.generatedTileObjects[x].push(tile);
+        this.generatedTileObjects[xI].push(tile);
       }
     }
 
     this.allowedTilesOnLandMap = this.createMovableMapBase('land');
     this.allowedTilesOnWaterMap = this.createMovableMapBase('water');
-
-  //  console.log('this.allowedTilesOnLandMap', this.allowedTilesOnLandMap);
-  //  console.log('this.allowedTilesOnWaterMap', this.allowedTilesOnWaterMap);
-
   }
 
   createMovableMapBase = (on = 'land') => {
@@ -303,7 +299,7 @@ class Game extends React.Component {
   }
 
   initPlayerObjects = () => {
-    this.playerObjects.push(new Player(this.context, this.canvas, 40, 40, 24*75, 0, this.getOriginX, this.getOriginY, this.allowedTilesOnLandMap, this.getTargetTileCoordinates));
+    this.playerObjects.push(new Player(this.context, this.canvas, 40, 40, 24*75, 1, this.getOriginX, this.getOriginY, this.allowedTilesOnLandMap, this.getTargetTileCoordinates));
   }
 
   animate = (time) => {
