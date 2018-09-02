@@ -39,6 +39,7 @@ class Player extends GameObject {
 
     this.getTargetTileCoordinates = getTargetTileCoordinates;
 
+    this.angle = null;
     this.path = [];
     this.matrixOfMap = matrixOfMap;
     this.finder = new PF.AStarFinder({allowDiagonal: true});
@@ -62,7 +63,6 @@ class Player extends GameObject {
 
   steer = () => {
     if (Array.isArray(this.path) === true && this.path.length > 0) {
-
       let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
 
       // if there's only one end point of the path left, use the actual coordinates of the clicked map area, instead of general tile position coordinate
@@ -74,10 +74,17 @@ class Player extends GameObject {
         this.targetYScreen = tileCoords.tileY + MapData.tileDiagonalHeight/2;
       }
 
+console.log('this.targetXScreen', this.targetXScreen, 'this.targetYScreen', this.targetYScreen);
+
       if (this.targetXScreen !== null && this.targetYScreen !== null) {
         let dist = 0;
 
-        if (this.targetXScreen < this.x) {
+// TODO need to calculate vector and ..
+        if (this.targetXScreen < this.targetYScreen) {
+
+        }
+
+        if (this.targetXScreen < this.x + this.width/2) {
           dist = (this.x - this.targetXScreen < 10 ? this.x - this.targetXScreen : 10);
           this.moveLeft(dist);
         } else {
@@ -85,7 +92,7 @@ class Player extends GameObject {
           this.moveRight(dist);
         }
 
-        if (this.targetYScreen < this.y) {
+        if (this.targetYScreen < this.y + this.height/2) {
           dist = (this.y - this.targetYScreen < 10 ? this.y - this.targetYScreen : 10);
           this.moveUp(dist);
         } else {
@@ -95,15 +102,20 @@ class Player extends GameObject {
       }
 
       if (this.targetXScreen === this.x && this.targetYScreen === this.y) {
+      //  this.angle = null;
+      console.log('TARGET CHANGE');
+    // TODO angle
+      let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
+      this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
         this.xI = this.path[0][0];
         this.yI = this.path[0][1];
         this.path.shift();
+      } else {
+
       }
-      console.log('this.xI', this.xI);
-      console.log('this.yI', this.yI);
-      console.log('this.path', this.path);
-      console.log('this.targetXScreen', this.targetXScreen);
+
     }
+    console.log('this.angle', this.angle);
 
     return true;
   }
@@ -115,8 +127,7 @@ class Player extends GameObject {
     this.targetYScreen = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
     this.targetXScreenFinalPos = this.targetXScreen;
     this.targetYScreenFinalPos = this.targetYScreen;
-    let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
-    this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
+
 
     // The actual x,y coordinates (i.e. order numbers) of the map tile (not screen coordinates)
     let selectedXScreen = e.pageX;
@@ -126,22 +137,15 @@ class Player extends GameObject {
     let selectedXTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth - selectedYScreen / MapData.tileDiagonalHeight);
     let selectedYTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth + selectedYScreen / MapData.tileDiagonalHeight);
 
-
-    //console.log('this.xI', this.xI);
-    //console.log('this.yI', this.yI);
-
-    console.log('selectedXTileI', selectedXTileI);
-    console.log('selectedYTileI', selectedYTileI);
+    //console.log('selectedXTileI', selectedXTileI);
+  //  console.log('selectedYTileI', selectedYTileI);
 
     let grid = new PF.Grid(this.matrixOfMap);
     this.path = this.finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
 
     if (process.env.NODE_ENV && process.env.NODE_ENV === 'development') {
-      //console.log('SELECTED coord', selectedXTileI, ', ', selectedYTileI);
-      console.log('this.matrixOfMap', this.matrixOfMap);
-      console.log('path', this.path.toString());
-      //console.log('targetX', this.targetXScreen, 'centerx', this.x + this.width/2);
-      //console.log('angle', this.angle);
+
+      //console.log('path', this.path.toString());
     }
 
   }
