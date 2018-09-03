@@ -11,7 +11,7 @@ class Player extends GameObject {
 
   constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, matrixOfMap, getTargetTileCoordinates) {
 
-    super(context, canvas, width, height, x, y);
+    super(context, canvas, width, height, x - width/2, y - height/2, 5);
 
     this.getOriginX = getOriginX;
     this.getOriginY = getOriginY;
@@ -65,6 +65,7 @@ class Player extends GameObject {
     if (Array.isArray(this.path) === true && this.path.length > 0) {
 
       let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
+
       // if there's only one end point of the path left, use the actual coordinates of the clicked map area, instead of general tile position coordinate
       if (this.path.length === 1) {
         this.targetXScreen = this.targetXScreenFinalPos;
@@ -74,74 +75,37 @@ class Player extends GameObject {
         this.targetYScreen = tileCoords.tileY + MapData.tileDiagonalHeight/2;
       }
 
-    /*  let xDist = Math.abs(this.targetXScreen) - Math.abs(this.x);
-      let yDist = Math.abs(this.targetYScreen) - Math.abs(this.y);
-
-      this.yTolerance = 1;
-      this.xTolerance = 1;
-      if (isFinite(xDist) && isFinite(yDist) && xDist > 0 && yDist > 0) {
-        if (xDist < yDist) {
-          this.yTolerance *= (yDist/xDist/100);
-          this.xTolerance = 1;
-        }
-        if (xDist > yDist) {
-          this.xTolerance *= (xDist/yDist/100);
-          this.yTolerance = 1;
-        }
-        console.log('xDist', xDist, 'yDist', yDist )
-      }*/
-
-
-
       if (this.targetXScreen !== null && this.targetYScreen !== null) {
-        let dist = 0;
-
-// TODO need to calculate vector and ..
-        let lerp = function(a,b,x){ return(a+x*(b-a)); };
-        var dx=this.targetXScreen-this.x;
-        var dy=this.targetYScreen-this.y;
-        var t=((this.targetXScreen-this.x)*dx+(this.targetYScreen-this.y)*dy)/(dx*dx+dy*dy);
-        var lineX=lerp(this.x, this.targetXScreen, t);
-        var lineY=lerp(this.y, this.targetYScreen, t);
-console.log('lineX', this.x, 'lineY', this.y);
-    this.moveToX(lineX);
-    this.moveToY(lineY);
-
-/*
-        if (this.targetXScreen < this.x) {
-          dist = (this.x - this.targetXScreen < 5 ? this.x - this.targetXScreen : 5);
-          this.moveLeft(dist);
-        } else {
-          dist = (this.targetXScreen - this.x < 5 ? this.targetXScreen - this.x : 5);
-          this.moveRight(dist * this.xTolerance);
-        }
-
-        if (this.targetYScreen < this.y) {
-          dist = (this.y - this.targetYScreen < 5 ? this.y - this.targetYScreen : 5);
-          this.moveUp(dist);
-        } else {
-          dist = (this.targetYScreen - this.y < 5 ? this.targetYScreen - this.y : 5);
-          this.moveDown(dist);
-        }*/
-      }
-
-      if (this.targetXScreen === this.x && this.targetYScreen === this.y) {
-        //  this.angle = null;
-      //  console.log('TARGET CHANGE');
-      // TODO angle
 
         let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
         this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
 
-        if (Array.isArray(this.path) === true && this.path.length > 0) {
-          this.xI = this.path[0][0];
-          this.yI = this.path[0][1];
-          this.path.shift();
+        let tx = this.targetXScreen - this.x - this.width/2;
+        let ty = this.targetYScreen - this.y - this.height/2;
+        let dist = Math.sqrt(tx * tx + ty * ty);
+
+        if (dist >= this.speed) {
+          let velX = (tx / dist) * this.speed;
+          let velY = (ty / dist) * this.speed;
+
+          if (velX < 0) {
+            this.moveLeft(Math.abs(velX));
+          } else {
+            this.moveRight(Math.abs(velX));
+          }
+
+          if (velY < 0) {
+            this.moveUp(Math.abs(velY));
+          } else {
+            this.moveDown(Math.abs(velY));
+          }
+        } else {
+          if (Array.isArray(this.path) === true && this.path.length > 0) {
+            this.xI = this.path[0][0];
+            this.yI = this.path[0][1];
+            this.path.shift();
+          }
         }
-      } else {
-
-
-
       }
     }
 
@@ -165,6 +129,11 @@ console.log('lineX', this.x, 'lineY', this.y);
 
     let grid = new PF.Grid(this.matrixOfMap);
     this.path = this.finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
+    // remove the first index because it's the current tile the player in on already
+    // is only one tile is on the path ie. the current position tile, allow it be for more accurate placement of player cannon on the same tile
+    if (this.path.length > 1) {
+      this.path.shift();
+    }
   }
 
   handleMouseUp = (e) => {
@@ -207,7 +176,7 @@ console.log('lineX', this.x, 'lineY', this.y);
       }
     }*/
     // draw ship bg
-    this.context.drawImage(this.getPlayerCannonSprite(), this.x - this.width/2, this.y - this.height/2, this.width, this.height);
+    this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
     // if ship was destroyed, play three complete explosion animations
     /*if (this.destroyed === true && this.explosions.length > 0) {
       this.explosions[0].moveToX(this.x + (this.explosions.length === 2 ? 30 : (this.explosions.length * 15)));
