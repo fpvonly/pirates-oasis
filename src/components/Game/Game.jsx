@@ -262,6 +262,11 @@ class Game extends React.Component {
       let layers = MapData.mapLayers[diagonalXToTopRight];
       movableMap[diagonalXToTopRight] = MapData.map[diagonalXToTopRight].map((tileId, diagonalYToBottomRight) => {
         let allowed = true;
+        // exceptions for allowed tiles, even thought those have obstacle layers
+      /*  if (diagonalXToTopRight == 11 && diagonalYToBottomRight == 11) {
+
+          allowed = true
+        } else {*/
         if (allowedTiles.indexOf(tileId) !== -1) {
           let tileLayers = layers[diagonalYToBottomRight];
           if (Array.isArray(tileLayers) === true) {
@@ -274,6 +279,7 @@ class Game extends React.Component {
         } else {
           allowed = false;
         }
+        //}
 
         if (allowed === true) {
           return 0;
