@@ -305,7 +305,18 @@ class Game extends React.Component {
   }
 
   initPlayerObjects = () => {
-    this.playerObjects.push(new Player(this.context, this.canvas, 40, 40, 24*75, 1, this.getOriginX, this.getOriginY, this.allowedTilesOnLandMap, this.getTargetTileCoordinates));
+    this.playerObjects.push(new Player(
+      this.context,
+      this.canvas,
+      40,
+      40,
+      24*75,
+      1,
+      this.getOriginX,
+      this.getOriginY,
+      this.allowedTilesOnLandMap,
+      this.getTargetTileCoordinates,
+      this.getFPS));
   }
 
   animate = (time) => {
@@ -321,6 +332,10 @@ class Game extends React.Component {
     if (DEBUG === true) {
       this.debugFPSREF.updateFPS(this.fps);
     }
+  }
+
+  getFPS = () => {
+    return this.fps;
   }
 
   drawFrame = () => {

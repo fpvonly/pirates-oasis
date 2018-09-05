@@ -6,17 +6,18 @@ import Sprites from './Sprite';
 //import Bullet from './Bullet';
 //import Explosion from './Explosion';
 import * as C from '../Constants';
-import {TimelineMax} from '../lib/greensock-js/src/esm/all';
+import {TweenLite, TimelineMax} from '../lib/greensock-js/src/esm/all';
 
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTargetTileCoordinates) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTargetTileCoordinates, getFPS) {
 
     super(context, canvas, width, height, x - width/2, y - height/2, 5);
 
     this.getOriginX = getOriginX;
     this.getOriginY = getOriginY;
+    this.getFPS = getFPS;
 
     this.bg = Sprites.getPlayerCannon();
 
@@ -46,14 +47,16 @@ class Player extends GameObject {
     this.matrixOfMap = allowedLandMap;
     this.finder = new PF.AStarFinder({allowDiagonal: true});
 
-    this.shoot = false;
+    this.fire = false;
     this.p0 = { x: 0, y: 0 };
     this.p1 = { x: 0, y: 0 };
     this.p2 = { x: 0, y: 0 };
     this.p3 = { x: 0 , y: 0 };
-    this.target = { x: 0, y: 0 };
     this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
+    this.target = { x: 0, y: 0 };
     this.tl = null;
+    TweenLite.ticker.fps(30);
+
 
     window.addEventListener('mousedown', this.handleMouseDown, false);
     window.addEventListener('mouseup', this.handleMouseUp, false);
@@ -69,6 +72,31 @@ class Player extends GameObject {
       let bullet = new Bullet(this.context, this.canvas, (bulletX + this.width/2 - 5), bulletY);
       this.bullets.push(bullet);
     }*/
+
+    this.p0 = {
+      x: this.x,
+      y: this.y
+    };
+    this.p1 = {
+      x: this.targetXScreenFinalPos - (this.targetXScreenFinalPos - this.x) * 0.66,
+      y: this.y - Math.abs(this.x - this.targetXScreenFinalPos)/2
+    };
+    this.p2 = {
+      x: this.targetXScreenFinalPos - (this.targetXScreenFinalPos - this.x) * 0.33,
+      y: this.y - Math.abs(this.x - this.targetXScreenFinalPos)/2
+    };
+    this.p3 = {
+      x: this.targetXScreenFinalPos,
+      y: this.targetYScreenFinalPos
+    };
+
+    this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
+
+    let progress = this.tl.progress() || 0;
+    this.tl.progress(0)
+      .clear()
+      .to(this.target, 1, { bezier: this.bezier, ease: "linear", onComplete: () => { this.fire = false;}})
+      .progress(progress);
   }
 
   steer = () => {
@@ -122,31 +150,6 @@ class Player extends GameObject {
     return true;
   }
 
-  updateShooting = () => {
-    let kappa = 0.551915024494;
-    let dx = this.p3.x - this.p0.x;
-    let dy = this.p3.y - this.p0.y;
-
-    if (this.p3.y > this.p0.y) {
-      this.p1.x = this.p0.x;
-      this.p1.y = this.p0.y + (dy * kappa);
-      this.p2.x = this.p3.x - (dx * kappa);
-      this.p2.y = this.p3.y;
-
-    } else {
-      this.p1.x = this.p0.x + (dx * kappa);
-      this.p1.y = this.p0.y;
-      this.p2.x = this.p3.x;
-      this.p2.y = this.p3.y - (dy * kappa);
-    }
-
-    let progress = this.tl.progress() || 0;
-    this.tl.progress(0)
-      .clear()
-      .to(this.target, 2, { bezier: this.bezier, ease: "linear", onComplete: () => { this.shoot = false;}})
-      .progress(progress);
-  }
-
   handleMouseDown = (e) => {
     // global screen coordinates on the map
     this.targetXScreen = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
@@ -166,15 +169,9 @@ class Player extends GameObject {
     if (selectedXTileI >= 0 && selectedXTileI < MapData.cols && selectedYTileI >= 0 && selectedYTileI < MapData.rows) {
       //  if clicked tile was water -> shoot cannon
       if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXTileI][selectedYTileI]) !== -1) {
-        this.shoot = true;
+        this.tl = null;
+        this.fire = true;
         this.target = {x: this.targetXScreenFinalPos, y: this.targetYScreenFinalPos};
-
-        this.p0 = { x: this.x, y: this.y };
-        this.p1 = { x: this.x, y: this.y };
-        this.p2 = { x: this.x, y: this.y };
-        this.p3 = { x: this.targetXScreenFinalPos, y: this.targetYScreenFinalPos };
-
-        this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
         this.tl = new TimelineMax();
       }
 
@@ -198,14 +195,18 @@ class Player extends GameObject {
     if (this.destroyed === false && isNaN(this.x) === false && isNaN(this.y) === false) {
       this.steer();
     }
+    // draw ship bg
+    this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
+
     // draw old and newly shot ammo
   /*for (let bullet of this.bullets) {
       if (bullet.active === true) {
         bullet.draw();
       }
     }*/
-    if (this.shoot === true) {
-      this.updateShooting();
+    if (this.fire === true) {
+  //TODO own class for ammo
+      this.shoot();
       this.drawCircle(this.target.x, this.target.y, 10, "#000000");
 
       this.context.beginPath();
@@ -218,9 +219,6 @@ class Player extends GameObject {
         this.tl = null;
       }
     }
-
-    // draw ship bg
-    this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
 
     return true;
   }
