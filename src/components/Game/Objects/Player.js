@@ -6,10 +6,12 @@ import Sprites from './Sprite';
 //import Bullet from './Bullet';
 //import Explosion from './Explosion';
 import * as C from '../Constants';
+import {TimelineMax} from '../lib/greensock-js/src/esm/all';
+
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, matrixOfMap, getTargetTileCoordinates) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTargetTileCoordinates) {
 
     super(context, canvas, width, height, x - width/2, y - height/2, 5);
 
@@ -41,12 +43,20 @@ class Player extends GameObject {
 
     this.angle = null;
     this.path = [];
-    this.matrixOfMap = matrixOfMap;
+    this.matrixOfMap = allowedLandMap;
     this.finder = new PF.AStarFinder({allowDiagonal: true});
+
+    this.shoot = false;
+    this.p0 = { x: 0, y: 0 };
+    this.p1 = { x: 0, y: 0 };
+    this.p2 = { x: 0, y: 0 };
+    this.p3 = { x: 0 , y: 0 };
+    this.target = { x: 0, y: 0 };
+    this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
+    this.tl = null;
 
     window.addEventListener('mousedown', this.handleMouseDown, false);
     window.addEventListener('mouseup', this.handleMouseUp, false);
-
   }
 
   shoot = () => {
@@ -112,6 +122,31 @@ class Player extends GameObject {
     return true;
   }
 
+  updateShooting = () => {
+    let kappa = 0.551915024494;
+    let dx = this.p3.x - this.p0.x;
+    let dy = this.p3.y - this.p0.y;
+
+    if (this.p3.y > this.p0.y) {
+      this.p1.x = this.p0.x;
+      this.p1.y = this.p0.y + (dy * kappa);
+      this.p2.x = this.p3.x - (dx * kappa);
+      this.p2.y = this.p3.y;
+
+    } else {
+      this.p1.x = this.p0.x + (dx * kappa);
+      this.p1.y = this.p0.y;
+      this.p2.x = this.p3.x;
+      this.p2.y = this.p3.y - (dy * kappa);
+    }
+
+    let progress = this.tl.progress() || 0;
+    this.tl.progress(0)
+      .clear()
+      .to(this.target, 2, { bezier: this.bezier, ease: "linear", onComplete: () => { this.shoot = false;}})
+      .progress(progress);
+  }
+
   handleMouseDown = (e) => {
     // global screen coordinates on the map
     this.targetXScreen = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
@@ -127,17 +162,83 @@ class Player extends GameObject {
     let selectedXTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth - selectedYScreen / MapData.tileDiagonalHeight);
     let selectedYTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth + selectedYScreen / MapData.tileDiagonalHeight);
 
-    let grid = new PF.Grid(this.matrixOfMap);
-    this.path = this.finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
-    // remove the first index because it's the current tile the player in on already
-    // is only one tile is on the path ie. the current position tile, allow it be for more accurate placement of player cannon on the same tile
-    if (this.path.length > 1) {
-      this.path.shift();
+    // if clicked area is within the actual maptiles
+    if (selectedXTileI >= 0 && selectedXTileI < MapData.cols && selectedYTileI >= 0 && selectedYTileI < MapData.rows) {
+      //  if clicked tile was water -> shoot cannon
+      if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXTileI][selectedYTileI]) !== -1) {
+        this.shoot = true;
+        this.target = {x: this.targetXScreenFinalPos, y: this.targetYScreenFinalPos};
+
+        this.p0 = { x: this.x, y: this.y };
+        this.p1 = { x: this.x, y: this.y };
+        this.p2 = { x: this.x, y: this.y };
+        this.p3 = { x: this.targetXScreenFinalPos, y: this.targetYScreenFinalPos };
+
+        this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
+        this.tl = new TimelineMax();
+      }
+
+      // find out the route path to clicked location
+      let grid = new PF.Grid(this.matrixOfMap);
+      this.path = this.finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
+      // remove the first index because it's the current tile the player in on already
+      // is only one tile is on the path ie. the current position tile, allow it be for more accurate placement of player cannon on the same tile
+      if (this.path.length > 1) {
+        this.path.shift();
+      }
     }
   }
 
   handleMouseUp = (e) => {
 
+  }
+
+  draw = () => {
+    // move pixels and shoot new ammo per this current frame
+    if (this.destroyed === false && isNaN(this.x) === false && isNaN(this.y) === false) {
+      this.steer();
+    }
+    // draw old and newly shot ammo
+  /*for (let bullet of this.bullets) {
+      if (bullet.active === true) {
+        bullet.draw();
+      }
+    }*/
+    if (this.shoot === true) {
+      this.updateShooting();
+      this.drawCircle(this.target.x, this.target.y, 10, "#000000");
+
+      this.context.beginPath();
+      this.context.moveTo(this.p1.x, this.p1.y);
+      this.context.bezierCurveTo(this.p1.x, this.p1.y, this.p2.x, this.p2.y, this.p3.x, this.p3.y);
+      this.context.strokeStyle = "#000000";
+      this.context.stroke();
+    } else {
+      if (this.tl instanceof TimelineMax) {
+        this.tl = null;
+      }
+    }
+
+    // draw ship bg
+    this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
+
+    return true;
+  }
+
+  drawCircle = (x, y, r, fill) => {
+    this.context.beginPath();
+    this.context.arc(x, y, r, 0, Math.PI * 2);
+    this.context.fillStyle = fill;
+    this.context.fill();
+  }
+
+  getActiveBullets = () => {
+    for (let i = this.bullets.length - 1; i >= 0; i--) {
+      if (this.bullets[i].active === false) {
+        this.bullets.splice(i, 1);
+      }
+    }
+    return this.bullets;
   }
 
   getPlayerCannonSprite = () => {
@@ -162,45 +263,6 @@ class Player extends GameObject {
     }
 
     return angleSprite;
-  }
-
-  draw = () => {
-    // move pixels and shoot new ammo per this current frame
-    if (this.destroyed === false && isNaN(this.x) === false && isNaN(this.y) === false) {
-      this.steer();
-    }
-    // draw old and newly shot ammo
-  /*for (let bullet of this.bullets) {
-      if (bullet.active === true) {
-        bullet.draw();
-      }
-    }*/
-    // draw ship bg
-    this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
-    // if ship was destroyed, play three complete explosion animations
-    /*if (this.destroyed === true && this.explosions.length > 0) {
-      this.explosions[0].moveToX(this.x + (this.explosions.length === 2 ? 30 : (this.explosions.length * 15)));
-      this.explosions[0].moveToY(this.y + this.height/2 - (this.explosions.length === 2 ? -50 : (this.explosions.length * 15)));
-      this.explosions[0].draw();
-      this.explosions[0].playSound();
-      if (this.explosions[0].isExplosionAnimationComplete() === true) {
-        this.explosions.shift();
-      }
-    }*/
-    return true;
-  }
-
-  getActiveBullets = () => {
-    for (let i = this.bullets.length - 1; i >= 0; i--) {
-      if (this.bullets[i].active === false) {
-        this.bullets.splice(i, 1);
-      }
-    }
-    return this.bullets;
-  }
-
-  isExplosionAnimationComplete = () => {
-    //return (this.explosions.length > 0 ? false : true);
   }
 
 }
