@@ -55,7 +55,8 @@ const MapData = {
     {src: 'assets/images/bottle_SW.png', width: 10, height: 21}, // 46
     {src: 'assets/images/lily.png', width: 75, height: 35}, // 47
     {src: 'assets/images/boat_large_NW.png', width: 62, height: 45}, // 48
-    {src: 'assets/images/shovel_NE.png', width: 50, height: 25} // 49
+    {src: 'assets/images/shovel_NE.png', width: 50, height: 25}, // 49
+    {src: 'assets/images/goldforge/skull_mountain_small_1.png', width: 187, height: 200} // 50
   ],
   map: [ // x, map's left diagonal side
   // 0  1  2  3  4  5  6  7  8  9 10  11 12 13 14 15 16 17 18 19
@@ -275,10 +276,10 @@ const MapData = {
       null,
       null,
       null,
-      [{tileId: 44, offsetX: 0, offsetY: 50}],
-      [{tileId: 44, offsetX: 0, offsetY: 50}],
       null,
       null,
+      null,
+      [{tileId: 27, offsetX: 40, offsetY: 50}, {tileId: 28, offsetX: 70, offsetY: 55}],
       [{tileId: 27, offsetX: 20, offsetY: 50}, {tileId: 28, offsetX: 40, offsetY: 60}],
       null,
       null,
@@ -301,8 +302,8 @@ const MapData = {
       null,
       null,
       null,
-      [{tileId: 44, offsetX: 0, offsetY: 50}],
-      null,
+      [{tileId: 28, offsetX: 60, offsetY: 65}, {tileId: 27, offsetX: 15, offsetY: 60}, {tileId: 30, offsetX: 55, offsetY: 45}],
+      [{tileId: 28, offsetX: 70, offsetY: 55}, {tileId: 27, offsetX: 40, offsetY: 50}],
       null,
       null,
       null,
@@ -328,8 +329,8 @@ const MapData = {
       null,
       null,
       [{tileId: 28, offsetX: 30, offsetY: 65}, {tileId: 27, offsetX: 0, offsetY: 60}],
+      [{tileId: 50, offsetX: 0, offsetY: 100}],
       null,
-      [{tileId: 28, offsetX: 70, offsetY: 55}, {tileId: 27, offsetX: 40, offsetY: 50}],
       null,
       [{tileId: 48, offsetX: 35, offsetY: 0}],
       null,
@@ -353,8 +354,8 @@ const MapData = {
       null,
       null,
       null,
-      null,
-      null,
+      [{tileId: 28, offsetX: 60, offsetY: 65}, {tileId: 27, offsetX: 15, offsetY: 60}, {tileId: 30, offsetX: 55, offsetY: 45}],
+      [{tileId: 28, offsetX: 60, offsetY: 65}, {tileId: 27, offsetX: 15, offsetY: 60}, {tileId: 30, offsetX: 55, offsetY: 45}],
       null,
       null,
       null,
@@ -379,7 +380,7 @@ const MapData = {
       null,
       null,
       null,
-      null,
+      [{tileId: 28, offsetX: 60, offsetY: 65}, {tileId: 27, offsetX: 15, offsetY: 60}, {tileId: 30, offsetX: 55, offsetY: 45}],
       [{tileId: 27, offsetX: 60, offsetY: 80}, {tileId: 28, offsetX: 20, offsetY: 55}],
       [{tileId: 27, offsetX: 60, offsetY: 80}, {tileId: 28, offsetX: 20, offsetY: 55}],
       null,
