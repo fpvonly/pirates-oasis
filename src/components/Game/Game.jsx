@@ -7,6 +7,7 @@ import DebugFPS from './DebugFPS.jsx';
 import Sprites from './Objects/Sprite';
 import {MapData} from './Objects/Map/Map_L1.js'
 import {Tile} from './Objects/Map/Tile.js';
+import Parrot from './Objects/Parrot.js';
 import Player from './Objects/Player.js';
 import * as C from './Constants';
 
@@ -214,6 +215,14 @@ class Game extends React.Component {
 
     this.initMapTiles();
     this.initPlayerObjects();
+    this.parrot = new Parrot(
+      this.context,
+      this.canvas,
+      60,
+      49,
+      (12*150)/2,
+      (12*75)/2,
+      this.getTargetTileCoordinates);
   }
 
   gameOver = () => {
@@ -370,6 +379,8 @@ class Game extends React.Component {
 
       }
     }
+
+    this.parrot.draw();
 
     return true;
   }

@@ -6,8 +6,8 @@ class GameObject {
 
     this.x = (x === null ? canvas.width/2 - width/2 : x);
     this.y = (y === null ? canvas.height - height : y);
-    this.xOriginal = this.x;
-    this.yOriginal = this.y;
+    this.xOriginal = x;
+    this.yOriginal = y;
     this.width = width;
     this.height = height;
     this.speed = speed;

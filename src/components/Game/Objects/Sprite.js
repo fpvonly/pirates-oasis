@@ -6,6 +6,7 @@ class Sprite {
   static explosionSpriteAnimFrames = [];
   static playerCannon = [];
   static tiles = [];
+  static parrotFlying = new Image();
 
   static initializeStaticClass() {
     // explosion animation frames
@@ -39,6 +40,7 @@ class Sprite {
       cannon.src = src;
       Sprite.playerCannon.push(cannon);
     }
+    Sprite.parrotFlying.src = 'assets/images/kisspng/parrot-flying-small.png'
   }
 
   static getLoadingStatusInfo = () => {
@@ -77,6 +79,10 @@ class Sprite {
 
   static getPlayerCannon = () => {
     return Sprite.playerCannon;
+  }
+
+  static getParrotFlying = () => {
+    return Sprite.parrotFlying;
   }
 
 }
