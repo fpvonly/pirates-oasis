@@ -72,7 +72,7 @@ class Tile {
         layerTile = Sprites.getTile(layer.tileId);
         this.context.drawImage(
           layerTile,
-          (layerTile.width < 150 ? this.offX + layer.offsetX : this.offX),
+          this.offX + layer.offsetX,
           this.offY - layer.offsetY,
           layerTile.width,
           layerTile.height
@@ -100,7 +100,7 @@ class Tile {
         layerTile = Sprites.getTile(layer.tileId);
         this.context.drawImage(
           layerTile,
-          (layerTile.width < 150 ? this.offX + layer.offsetX : this.offX),
+          this.offX + layer.offsetX,
           this.offY - layer.offsetY,
           layerTile.width,
           layerTile.height
