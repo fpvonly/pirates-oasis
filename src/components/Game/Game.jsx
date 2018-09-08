@@ -220,8 +220,8 @@ class Game extends React.Component {
       this.canvas,
       60,
       49,
-      (12*150)/2,
-      (12*75)/2,
+      0,
+      12,
       this.getTargetTileCoordinates);
   }
 

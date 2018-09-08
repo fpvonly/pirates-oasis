@@ -5,24 +5,29 @@ import GameObject from './GameObject';
 
 class Parrot extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getTargetTileCoordinates) {
-    super(context, canvas, width, height, x - width/2, y - height/2, 10);
-    this.getTargetTileCoordinates = getTargetTileCoordinates;
+  constructor(context, canvas, width, height, xI, yI, getTileCoordinates) {
+    let sourceTileCoords = getTileCoordinates(xI, yI);
+    super(context, canvas, width, height, sourceTileCoords.tileX - width/2, sourceTileCoords.tileY - height/2, 10);
+
+    this.getTileCoordinates = getTileCoordinates;
     this.targetXScreen = null;
     this.targetYScreen = null;
     this.bg = Sprites.getParrotFlying();
+    this.timeout = null;
+    this.targetTileCoords = getTileCoordinates(23, yI + 5);
+    this.upOrDown = 1;
+    this.active = true;
   }
 
   draw = () => {
-    // TODO remove hard coding
-    let tileCoords = this.getTargetTileCoordinates(23,17);
-    this.targetXScreen = tileCoords.tileX + MapData.tileDiagonalWidth*2;
-    this.targetYScreen = tileCoords.tileY + MapData.tileDiagonalHeight/2;
-    let tx = this.targetXScreen - this.x - this.width/2;
+    this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth*2;
+    this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
+    let tx = this.targetXScreen - this.x - this.width/2 - (this.upOrDown === -1 ? 400 : 0);
     let ty = this.targetYScreen - this.y - this.height/2;
     let dist = Math.sqrt(tx * tx + ty * ty);
 
-    if (dist >= this.speed) {
+    if (dist >= this.speed && this.active === true) {
+      this.timeout === null
       let velX = (tx / dist) * this.speed;
       let velY = (ty / dist) * this.speed;
 
@@ -37,11 +42,36 @@ class Parrot extends GameObject {
       } else {
         this.moveDown(Math.abs(velY));
       }
-    } else {
-      this.resetXY(); // reset to original
-    }
 
-    this.context.drawImage(this.bg, this.x, this.y, this.width, this.height);
+      this.context.drawImage(this.bg, this.x, this.y, this.width, this.height);
+    } else {
+      this.active = (this.active === true) ? false : true;
+      if (this.active === false && this.timeout === null) {
+        this.timeout = setTimeout(() => {
+
+          this.upOrDown = -1 * this.upOrDown;
+
+          if (this.upOrDown === -1) {
+            let sx = Math.floor(Math.random()*15);
+            let sourceTileCoords = this.getTileCoordinates(sx, 23);
+            this.targetTileCoords = this.getTileCoordinates((sx >= 5 ? sx - 5 : 5), 0);
+            this.moveToX(sourceTileCoords.tileX);
+            this.moveToY(sourceTileCoords.tileY);
+            this.bg = Sprites.getparrotFlyingLeft();
+          } else {
+            let sy = Math.floor(Math.random()*15);
+            let sourceTileCoords = this.getTileCoordinates(0, sy);
+            this.targetTileCoords = this.getTileCoordinates(23, (sy <= 23 ? sy - 5 : 23));
+            this.moveToX(sourceTileCoords.tileX);
+            this.moveToY(sourceTileCoords.tileY);
+            this.bg = Sprites.getParrotFlying();
+          }
+
+          this.active = true;
+
+        }, 2000);
+      }
+    }
   }
 
 }
