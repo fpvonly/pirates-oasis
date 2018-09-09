@@ -376,11 +376,11 @@ class Game extends React.Component {
     for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
       for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
         let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
-
       }
     }
 
     this.parrot.draw();
+    this.playerObjects[0].drawCannonBalls();
 
     return true;
   }

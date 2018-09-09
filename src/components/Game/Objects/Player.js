@@ -170,6 +170,10 @@ class Player extends GameObject {
     // draw ship bg
     this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
 
+    return true;
+  }
+
+  drawCannonBalls = () => {
     // draw old and newly shot ammo
     this.cannonBalls = this.getActiveCannonBalls();
     for (let cannonBall of this.cannonBalls) {
