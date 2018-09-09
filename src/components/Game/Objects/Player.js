@@ -3,10 +3,10 @@ import PF from 'pathfinding';
 import {MapData} from './Map/Map_L1.js';
 import GameObject from './GameObject';
 import Sprites from './Sprite';
-//import Bullet from './Bullet';
+import CannonBall from './CannonBall';
 //import Explosion from './Explosion';
 import * as C from '../Constants';
-import {TweenLite, TimelineMax} from '../lib/greensock-js/src/esm/all';
+
 
 
 class Player extends GameObject {
@@ -29,7 +29,7 @@ class Player extends GameObject {
     ];*/
     this.bullets = [];
     this.then = Date.now(); // previous shoot time frame, for throttling the shooting
-    this.shootFPS = 12; // shoot approx 12 shots/second at approx 60fps of the game
+    this.shootFPS = 0.3; // shoot frequency approx 0.3 shots/second at approx 30fps of the game
     this.allowPlayerMovement = false;
 
     // current tile indexes
@@ -48,55 +48,10 @@ class Player extends GameObject {
     this.finder = new PF.AStarFinder({allowDiagonal: true});
 
     this.fire = false;
-    this.p0 = { x: 0, y: 0 };
-    this.p1 = { x: 0, y: 0 };
-    this.p2 = { x: 0, y: 0 };
-    this.p3 = { x: 0 , y: 0 };
-    this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
-    this.target = { x: 0, y: 0 };
-    this.tl = null;
-    TweenLite.ticker.fps(30);
-
+    this.cannonBalls = [];
 
     window.addEventListener('mousedown', this.handleMouseDown, false);
     window.addEventListener('mouseup', this.handleMouseUp, false);
-  }
-
-  shoot = () => {
-    /*this.now = Date.now();
-    this.delta = this.now - this.then;
-    if (this.delta > 1000/this.shootFPS) {
-      this.then = this.now - (this.delta % 1000/this.shootFPS);
-      let bulletX = this.x;
-      let bulletY = this.y;
-      let bullet = new Bullet(this.context, this.canvas, (bulletX + this.width/2 - 5), bulletY);
-      this.bullets.push(bullet);
-    }*/
-
-    this.p0 = {
-      x: this.x,
-      y: this.y
-    };
-    this.p1 = {
-      x: this.targetXScreenFinalPos - (this.targetXScreenFinalPos - this.x) * 0.66,
-      y: this.y - Math.abs(this.x - this.targetXScreenFinalPos)/2
-    };
-    this.p2 = {
-      x: this.targetXScreenFinalPos - (this.targetXScreenFinalPos - this.x) * 0.33,
-      y: this.y - Math.abs(this.x - this.targetXScreenFinalPos)/2
-    };
-    this.p3 = {
-      x: this.targetXScreenFinalPos,
-      y: this.targetYScreenFinalPos
-    };
-
-    this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
-
-    let progress = this.tl.progress() || 0;
-    this.tl.progress(0)
-      .clear()
-      .to(this.target, 1, { bezier: this.bezier, ease: "linear", onComplete: () => { this.fire = false;}})
-      .progress(progress);
   }
 
   steer = () => {
@@ -150,6 +105,25 @@ class Player extends GameObject {
     return true;
   }
 
+  shoot = () => {
+    this.now = Date.now();
+    this.delta = this.now - this.then;
+    if (this.delta > 1000/this.shootFPS) {
+      this.then = this.now - (this.delta % 1000/this.shootFPS);
+      this.cannonBalls.push(
+        new CannonBall(
+          this.context,
+          this.canvas,
+          {x: this.targetXScreenFinalPos, y: this.targetYScreenFinalPos},
+          this.x,
+          this.y,
+          10,
+          10,
+          this.getTargetTileCoordinates)
+        );
+    }
+  }
+
   handleMouseDown = (e) => {
     // global screen coordinates on the map
     this.targetXScreen = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
@@ -169,10 +143,8 @@ class Player extends GameObject {
     if (selectedXTileI >= 0 && selectedXTileI < MapData.cols && selectedYTileI >= 0 && selectedYTileI < MapData.rows) {
       //  if clicked tile was water -> shoot cannon
       if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXTileI][selectedYTileI]) !== -1) {
-        this.tl = null;
         this.fire = true;
-        this.target = {x: this.targetXScreenFinalPos, y: this.targetYScreenFinalPos};
-        this.tl = new TimelineMax();
+        this.shoot();
       }
 
       // find out the route path to clicked location
@@ -199,44 +171,21 @@ class Player extends GameObject {
     this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
 
     // draw old and newly shot ammo
-  /*for (let bullet of this.bullets) {
-      if (bullet.active === true) {
-        bullet.draw();
-      }
-    }*/
-    if (this.fire === true) {
-  //TODO own class for ammo
-      this.shoot();
-      this.drawCircle(this.target.x, this.target.y, 10, "#000000");
-
-      this.context.beginPath();
-      this.context.moveTo(this.p1.x, this.p1.y);
-      this.context.bezierCurveTo(this.p1.x, this.p1.y, this.p2.x, this.p2.y, this.p3.x, this.p3.y);
-      this.context.strokeStyle = "#000000";
-      this.context.stroke();
-    } else {
-      if (this.tl instanceof TimelineMax) {
-        this.tl = null;
-      }
+    this.cannonBalls = this.getActiveCannonBalls();
+    for (let cannonBall of this.cannonBalls) {
+      cannonBall.draw();
     }
 
     return true;
   }
 
-  drawCircle = (x, y, r, fill) => {
-    this.context.beginPath();
-    this.context.arc(x, y, r, 0, Math.PI * 2);
-    this.context.fillStyle = fill;
-    this.context.fill();
-  }
-
-  getActiveBullets = () => {
-    for (let i = this.bullets.length - 1; i >= 0; i--) {
-      if (this.bullets[i].active === false) {
-        this.bullets.splice(i, 1);
+  getActiveCannonBalls = () => {
+    for (let i = this.cannonBalls.length - 1; i >= 0; i--) {
+      if (this.cannonBalls[i].active === false) {
+        this.cannonBalls.splice(i, 1);
       }
     }
-    return this.bullets;
+    return this.cannonBalls;
   }
 
   getPlayerCannonSprite = () => {
@@ -259,7 +208,6 @@ class Player extends GameObject {
     } else if (this.angle > -67.5 && this.angle <= -42.5) {
       angleSprite = this.bg[7];
     }
-
     return angleSprite;
   }
 
