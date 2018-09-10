@@ -12,7 +12,6 @@ class CannonBall extends GameObject {
 
     this.getTileCoordinates = getTileCoordinates;
     //this.bg = Sprites.getParrotFlying();
-    //this.targetTileCoords = getTileCoordinates(23, yI + 5);
 
     this.target = {x: target.x, y: target.y};
     this.p0 = {
