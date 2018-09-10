@@ -41,6 +41,7 @@ class Player extends GameObject {
     this.targetXScreenFinalPos = null;
     this.targetYScreenFinalPos = null;
     this.getTargetTileCoordinates = getTargetTileCoordinates;
+    this.shootingStartPoint = {x: this.x, y: this.y};
 
     this.angle = null;
     this.path = [];
@@ -70,8 +71,7 @@ class Player extends GameObject {
 
       if (this.targetXScreen !== null && this.targetYScreen !== null) {
 
-        let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
-        this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
+        this.calculateDirectionAngle();
 
         let tx = this.targetXScreen - this.x - this.width/2;
         let ty = this.targetYScreen - this.y - this.height/2;
@@ -110,13 +110,15 @@ class Player extends GameObject {
     this.delta = this.now - this.then;
     if (this.delta > 1000/this.shootFPS) {
       this.then = this.now - (this.delta % 1000/this.shootFPS);
+
+      let startPoint = this.calculateShootingStartPoint();
       this.cannonBalls.push(
         new CannonBall(
           this.context,
           this.canvas,
           {x: this.targetXScreenFinalPos, y: this.targetYScreenFinalPos},
-          this.x,
-          this.y,
+          startPoint.x,
+          startPoint.y,
           10,
           10,
           this.getTargetTileCoordinates)
@@ -143,6 +145,7 @@ class Player extends GameObject {
     if (selectedXTileI >= 0 && selectedXTileI < MapData.cols && selectedYTileI >= 0 && selectedYTileI < MapData.rows) {
       //  if clicked tile was water -> shoot cannon
       if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXTileI][selectedYTileI]) !== -1) {
+        this.calculateDirectionAngle();
         this.fire = true;
         this.shoot();
       }
@@ -213,6 +216,33 @@ class Player extends GameObject {
       angleSprite = this.bg[7];
     }
     return angleSprite;
+  }
+
+  calculateDirectionAngle = () => {
+    let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
+    this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
+  }
+
+  calculateShootingStartPoint = () => {
+    if (this.angle >= -42.5 && this.angle <= 42.5) {
+      this.shootingStartPoint = {x: this.x + this.width/2, y: this.y};
+    } else if (this.angle > 42.5 && this.angle <= 67.5) {
+      this.shootingStartPoint = {x: this.x + this.width, y: this.y};
+    } else if (this.angle > 67.5 && this.angle <= 112.5) {
+      this.shootingStartPoint = {x: this.x + this.width, y: this.y + this.height/2};
+    } else if (this.angle > 112.5 && this.angle <= 157.5) {
+      this.shootingStartPoint = {x: this.x + this.width, y: this.y + this.height};
+    } else if ((this.angle > 157.5 && this.angle <= 180) || (this.angle > -180 && this.angle <= -157.5)) {
+      this.shootingStartPoint = {x: this.x + this.width/2, y: this.y + this.height};
+    } else if (this.angle > -157.5 && this.angle <= -112.5) {
+      this.shootingStartPoint = {x: this.x, y: this.y + this.height};
+    } else if (this.angle > -112.5 && this.angle <= -67.5) {
+      this.shootingStartPoint = {x: this.x, y: this.y + this.height/2};
+    } else if (this.angle > -67.5 && this.angle <= -42.5) {
+      this.shootingStartPoint = {x: this.x, y: this.y};
+    }
+
+    return this.shootingStartPoint;
   }
 
 }

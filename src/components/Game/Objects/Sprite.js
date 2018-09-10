@@ -8,6 +8,7 @@ class Sprite {
   static tiles = [];
   static parrotFlying = new Image();
   static parrotFlyingLeft = new Image();
+  static cannonBall = new Image();
 
   static initializeStaticClass() {
     // explosion animation frames
@@ -41,6 +42,7 @@ class Sprite {
       cannon.src = src;
       Sprite.playerCannon.push(cannon);
     }
+    Sprite.cannonBall.src = 'assets/images/player/cannon/cannonball.png';
     Sprite.parrotFlying.src = 'assets/images/kisspng/parrot-flying-small.png';
     Sprite.parrotFlyingLeft.src = 'assets/images/kisspng/parrot-flying-small-left.png';
   }
@@ -81,6 +83,10 @@ class Sprite {
 
   static getPlayerCannon = () => {
     return Sprite.playerCannon;
+  }
+
+  static getCannonBall = () => {
+    return Sprite.cannonBall;
   }
 
   static getParrotFlying = () => {

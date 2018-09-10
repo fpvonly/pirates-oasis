@@ -11,9 +11,9 @@ class CannonBall extends GameObject {
     super(context, canvas, width, height, x, y, 10);
 
     this.getTileCoordinates = getTileCoordinates;
-    //this.bg = Sprites.getParrotFlying();
+    this.bg = Sprites.getCannonBall();
 
-    this.target = {x: target.x, y: target.y};
+    this.target = {x: target.x - width/2, y: target.y - height/2};
     this.p0 = {
       x: this.x,
       y: this.y
@@ -45,7 +45,7 @@ class CannonBall extends GameObject {
         .to(this.target, 1, { bezier: this.bezier, ease: "linear", onComplete: () => { this.active = false;}})
         .progress(progress);
 
-      this.drawCircle(this.target.x, this.target.y, 10, "#000000");
+      this.context.drawImage(this.bg, this.target.x, this.target.y, this.width, this.height);
 
       this.context.beginPath();
       this.context.moveTo(this.p1.x, this.p1.y);
@@ -53,13 +53,6 @@ class CannonBall extends GameObject {
       this.context.strokeStyle = "#000000";
       this.context.stroke();
     }
-  }
-
-  drawCircle = (x, y, r, fill) => {
-    this.context.beginPath();
-    this.context.arc(x, y, r, 0, Math.PI * 2);
-    this.context.fillStyle = fill;
-    this.context.fill();
   }
 
 }
