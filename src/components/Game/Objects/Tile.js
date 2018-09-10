@@ -1,4 +1,4 @@
-import Sprites from '../Sprite';
+import Sprites from './Sprite';
 
 class Tile {
 

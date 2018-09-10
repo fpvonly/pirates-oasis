@@ -1,3 +1,9 @@
+/*
+  NOTE: The tile xI, yI index-origo (0, 0) is also the pixel origo of the canvas (0px, 0px)
+  but the canvas origo is programmatically changed (setTransform) to being off the screen (at the start of the game) to allow map scrolling.
+  The canvas origo is constantly changed during the user scrolling the map, but that changed origo position
+  is always referenced using (0px, 0px) as the Canvas takes care of the context changes.
+*/
 const MapData = {
   cols: 24,
   rows: 24,
@@ -61,11 +67,10 @@ const MapData = {
     {src: 'assets/images/kisspng/maya_stone.png', width: 52, height: 100}, // 52
     {src: 'assets/images/kisspng/temple.png', width: 149, height: 200} // 53
   ],
-  map: [ // x, map's left diagonal side
-  // 0  1  2  3  4  5  6  7  8  9 10  11 12 13 14 15 16 17 18 19
+  map: [ // x, map's left diagonal side to top right
+    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], // y, map's left diagonal side down towards bottom right
     [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
     [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], // y, map towards right side
     [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
     [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
     [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 16, 15, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -88,11 +93,11 @@ const MapData = {
     [4, 11, 3, 8, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
     [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4] // 23
   ],
-  mapLayers: [ // x, cols
-    [ // y, rows
-      null,
-      null,
-      null,
+  mapLayers: [ // x, columns (0-23)
+    [ // y, rows on the x column (0-23)
+      null, // row 0 on x=0
+      null, // row 1
+      null, // row 2 etc
       null,
       null,
       null,
