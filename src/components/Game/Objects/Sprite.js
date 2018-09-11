@@ -11,12 +11,13 @@ class Sprite {
   static cannonBall = new Image();
 
   static initializeStaticClass() {
+
     // explosion animation frames
-    /*for (let i = 1; i <= 13; i++) {
+    for (let i = 1; i <= 9; i++) {
       let explosionBg = new Image();
-      explosionBg.src = 'assets/images/explosions/' + i + '.png';
+      explosionBg.src = 'assets/images/player/cannon/explosion/' + i + '.png';
       Sprite.explosionSpriteAnimFrames.push(explosionBg);
-    }*/
+    }
 
     for (let tile of MapData.tiles) {
       let tileBg = new Image();
@@ -95,6 +96,10 @@ class Sprite {
 
   static getparrotFlyingLeft = () => {
     return Sprite.parrotFlyingLeft;
+  }
+
+  static getExplosionSpriteAnimFrames = () => {
+    return Sprite.explosionSpriteAnimFrames.slice(); // needs to return a copy of the array!
   }
 
 }

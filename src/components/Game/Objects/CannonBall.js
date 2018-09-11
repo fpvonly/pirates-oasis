@@ -1,17 +1,21 @@
 import * as C from '../Constants';
 import {MapData} from './Map/Map_L1.js';
 import Sprites from './Sprite';
+import Sounds from './Sound';
 import GameObject from './GameObject';
+import Explosion from './Explosion';
 
 import {TweenLite, TimelineMax} from '../lib/greensock-js/src/esm/all';
 
 class CannonBall extends GameObject {
 
   constructor(context, canvas, target, x, y, width = 0, height = 0, getTileCoordinates) {
-    super(context, canvas, width, height, x, y, 10);
+    super(context, canvas, width, height, x - width/2, y - height/2, 10);
 
     this.getTileCoordinates = getTileCoordinates;
     this.bg = Sprites.getCannonBall();
+    this.cannonBlastPlayed = false;
+    this.explosion = new Explosion(this.context, this.canvas, x, y, 40, 40);
 
     this.target = {x: target.x - width/2, y: target.y - height/2};
     this.p0 = {
@@ -39,6 +43,9 @@ class CannonBall extends GameObject {
 
   draw = () => {
     if (this.active === true) {
+      this.explosion.draw();
+      this.playCannonBlastSound();
+
       let progress = this.tl.progress() || 0;
       this.tl.progress(0)
         .clear()
@@ -52,6 +59,13 @@ class CannonBall extends GameObject {
       this.context.bezierCurveTo(this.p1.x, this.p1.y, this.p2.x, this.p2.y, this.p3.x, this.p3.y);
       this.context.strokeStyle = "#000000";
       this.context.stroke();
+    }
+  }
+
+  playCannonBlastSound = () => {
+    if (this.cannonBlastPlayed !== true) {
+      Sounds.playCannonBlastSound();
+      this.cannonBlastPlayed = true;
     }
   }
 

@@ -21,7 +21,6 @@ class Player extends GameObject {
 
     this.bg = Sprites.getPlayerCannon();
 
-    //this.shipBg = Sprites.getPlayerShipSprite();
   /*  this.explosions = [
       new Explosion(this.context, this.canvas),
       new Explosion(this.context, this.canvas),
