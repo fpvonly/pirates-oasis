@@ -23,7 +23,7 @@ class Player extends GameObject {
 
     this.bullets = [];
     this.then = Date.now(); // previous shoot time frame, for throttling the shooting
-    this.shootFPS = 0.3; // shoot frequency approx 0.3 shots/second at approx 30fps of the game
+    this.shootFPS = 0.5; // shoot frequency approx 0.5 shots/second at approx 30fps of the game
     this.allowPlayerMovement = false;
 
     // current tile indexes
@@ -43,7 +43,7 @@ class Player extends GameObject {
     this.matrixOfMap = allowedLandMap;
     this.finder = new PF.AStarFinder({allowDiagonal: true});
 
-    this.fire = false;
+    this.justFired = false;
     this.cannonBalls = [];
 
     window.addEventListener('mousedown', this.handleMouseDown, false);
@@ -105,7 +105,7 @@ class Player extends GameObject {
     this.delta = this.now - this.then;
     if (this.delta > 1000/this.shootFPS) {
       this.then = this.now - (this.delta % 1000/this.shootFPS);
-
+      this.justFired = true;
       let startPoint = this.calculateShootingStartPoint();
       this.cannonBalls.push(
         new CannonBall(
@@ -120,6 +120,7 @@ class Player extends GameObject {
         );
       this.explosion = new Explosion(this.context, this.canvas, startPoint.x, startPoint.y, 40, 40);
     }
+    return false;
   }
 
   handleMouseDown = (e) => {
@@ -140,10 +141,9 @@ class Player extends GameObject {
     // if clicked area is within the actual maptiles
     if (selectedXTileI >= 0 && selectedXTileI < MapData.cols && selectedYTileI >= 0 && selectedYTileI < MapData.rows) {
       //  if clicked tile was water -> shoot cannon
-      if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXTileI][selectedYTileI]) !== -1) {
+      if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXTileI][selectedYTileI]) !== -1 && this.justFired === false) {
         this.calculateDirectionAngle();
-        this.fire = true;
-        this.shoot();
+        this.justFired = this.shoot();
       }
 
       // find out the route path to clicked location

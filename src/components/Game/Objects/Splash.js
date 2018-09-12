@@ -6,7 +6,7 @@ class Splash extends GameObject {
 
   constructor(context, canvas, x, y, width, height) {
     // context, canvas, width, height, x, y
-    super(context, canvas, width, height, x - width/2, y - height/2);
+    super(context, canvas, width, height, x - width/2, y - height + 10); // + 10 pixels fine tuning
 
     this.then = Date.now(); // previous explosion time frame, for throttling the animation
     this.splashFPS = 15;

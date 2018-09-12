@@ -13,7 +13,7 @@ class Sound {
 
   static initializeStaticClass() {
 
-    for (let i = 0; i < 3; i++) { // some extra sound objects to create buffer for quick events that require sounds at 60fps
+    for (let i = 0; i < 4; i++) { // some extra sound objects to create buffer for quick events that require sounds at 60fps
       let blast = new Audio("assets/sounds/mortar-cannon-explosion.mp3");
       blast.oncanplaythrough = () => {
         Sound.cannonLoaded.push(true);
@@ -26,7 +26,7 @@ class Sound {
       Sound.cannonSounds.push(blast);
     }
 
-    for (let i = 0; i < 3; i++) { // some extra sound objects to create buffer for quick events
+    for (let i = 0; i < 4; i++) { // some extra sound objects to create buffer for quick events
       let splash = new Audio("assets/sounds/water-splash.mp3");
       splash.oncanplaythrough = () => {
         Sound.splashLoaded.push(true);
@@ -41,7 +41,7 @@ class Sound {
 
 // TODO for enemy ships
     // explosion sounds
-    for (let i = 0; i < 30; i++) { // some extra sound objects to create buffer for quick events that require sounds at 60fps
+  /*  for (let i = 0; i < 30; i++) { // some extra sound objects to create buffer for quick events that require sounds at 60fps
       let blast = new Audio("assets/sounds/cc0_explosion_large_gas_001.mp3");
       blast.oncanplaythrough = () => {
         Sound.blastsLoaded.push(true);
@@ -60,7 +60,7 @@ class Sound {
       Sound.musicLoaded = true;
     };
     Sound.music.loop = true;
-    Sound.music.volume = 0.3;
+    Sound.music.volume = 0.3;*/
 
   }
 
