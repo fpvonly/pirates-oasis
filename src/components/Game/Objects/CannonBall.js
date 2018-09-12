@@ -1,9 +1,8 @@
 import * as C from '../Constants';
 import {MapData} from './Map/Map_L1.js';
 import Sprites from './Sprite';
-import Sounds from './Sound';
+import Splash from './Splash';
 import GameObject from './GameObject';
-import Explosion from './Explosion';
 
 import {TweenLite, TimelineMax} from '../lib/greensock-js/src/esm/all';
 
@@ -14,8 +13,9 @@ class CannonBall extends GameObject {
 
     this.getTileCoordinates = getTileCoordinates;
     this.bg = Sprites.getCannonBall();
-    this.cannonBlastPlayed = false;
-    this.explosion = new Explosion(this.context, this.canvas, x, y, 40, 40);
+    this.splash = new Splash(context, canvas, target.x, target.y, 40, 40);
+    this.playSplash = false;
+
 
     this.target = {x: target.x - width/2, y: target.y - height/2};
     this.p0 = {
@@ -35,6 +35,8 @@ class CannonBall extends GameObject {
       y: this.target.y
     };
     this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
+    let targetDist = this.calculateBallDistance(this.target.x, this.target.y);
+    this.animationSeconds = targetDist/250; // 250pxs per second
 
     TweenLite.ticker.fps(30);
     this.tl = new TimelineMax();
@@ -43,30 +45,40 @@ class CannonBall extends GameObject {
 
   draw = () => {
     if (this.active === true) {
-      this.explosion.draw();
-      this.playCannonBlastSound();
 
       let progress = this.tl.progress() || 0;
       this.tl.progress(0)
         .clear()
-        .to(this.target, 1, { bezier: this.bezier, ease: "linear", onComplete: () => { this.active = false;}})
+        .to(this.target, this.animationSeconds, { bezier: this.bezier, ease: "linear", onComplete: () => { this.playSplash = true; }})
         .progress(progress);
 
-      this.context.drawImage(this.bg, this.target.x, this.target.y, this.width, this.height);
+      if (progress > 0 && this.playSplash === false) {
+        this.context.drawImage(this.bg, this.target.x, this.target.y, this.width, this.height);
+      }
 
-      this.context.beginPath();
+      if (this.playSplash === true) {
+        this.splash.draw();
+        if (this.splash.isSplashAnimationComplete() === true) {
+          this.active = false;
+        }
+      }
+
+
+      /*this.context.beginPath();
       this.context.moveTo(this.p1.x, this.p1.y);
       this.context.bezierCurveTo(this.p1.x, this.p1.y, this.p2.x, this.p2.y, this.p3.x, this.p3.y);
       this.context.strokeStyle = "#000000";
-      this.context.stroke();
+      this.context.stroke();*/
     }
+    return true;
   }
 
-  playCannonBlastSound = () => {
-    if (this.cannonBlastPlayed !== true) {
-      Sounds.playCannonBlastSound();
-      this.cannonBlastPlayed = true;
-    }
+  calculateBallDistance = (tx, ty) => {
+    tx = tx - this.x - this.width/2;
+    ty = ty - this.y - this.height/2;
+    let dist = Math.sqrt(tx * tx + ty * ty);
+
+    return dist;
   }
 
 }

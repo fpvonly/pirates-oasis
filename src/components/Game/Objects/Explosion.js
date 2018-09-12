@@ -10,13 +10,14 @@ class Explosion extends GameObject {
 
     this.then = Date.now(); // previous explosion time frame, for throttling the animation
     this.explosionFPS = 30;
-    this.blastPlayed = false;
+    this.cannonBlastPlayed = false;
     this.explosionFrames = [];
     this.resetFrames();
   }
 
   draw = () => {
     if (this.isExplosionAnimationComplete() === false) {
+      this.playCannonBlastSound();
       this.context.drawImage(this.explosionFrames[0], this.x, this.y, this.width, this.height);
       this.now = Date.now();
       this.delta = this.now - this.then;
@@ -25,15 +26,7 @@ class Explosion extends GameObject {
         this.explosionFrames.shift();
       }
     }
-    this.playSound();
     return true;
-  }
-
-  playSound = () => {
-    if (this.blastPlayed === false) {
-      //Sounds.playExplosionSound();
-      this.blastPlayed = true;
-    }
   }
 
   isExplosionAnimationComplete = () => {
@@ -46,7 +39,14 @@ class Explosion extends GameObject {
 
   resetFrames = () => {
     this.explosionFrames = Sprites.getExplosionSpriteAnimFrames();
-    this.blastPlayed = false;
+    this.cannonBlastPlayed = false;
+  }
+
+  playCannonBlastSound = () => {
+    if (this.cannonBlastPlayed !== true) {
+      Sounds.playCannonBlastSound();
+      this.cannonBlastPlayed = true;
+    }
   }
 
 }

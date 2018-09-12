@@ -2,9 +2,11 @@ class Sound {
 
   static cannonSounds = [];
   static explosionSounds = [];
+  static splashSounds = [];
   static music = [];
 
   static cannonLoaded = [];
+  static splashLoaded = [];
   static musicLoaded = false;
   static blastsLoaded = [];
   static gunBlastsLoaded = [];
@@ -16,7 +18,7 @@ class Sound {
       blast.oncanplaythrough = () => {
         Sound.cannonLoaded.push(true);
       };
-      blast.volume = 1;
+      blast.volume = 0.3;
       blast.preload = 'auto';
       blast.addEventListener("ended", function() {
         blast.currentTime = 0;
@@ -24,6 +26,20 @@ class Sound {
       Sound.cannonSounds.push(blast);
     }
 
+    for (let i = 0; i < 3; i++) { // some extra sound objects to create buffer for quick events
+      let splash = new Audio("assets/sounds/water-splash.mp3");
+      splash.oncanplaythrough = () => {
+        Sound.splashLoaded.push(true);
+      };
+      splash.volume = 0.3;
+      splash.preload = 'auto';
+      splash.addEventListener("ended", function() {
+        splash.currentTime = 0;
+      });
+      Sound.splashSounds.push(splash);
+    }
+
+// TODO for enemy ships
     // explosion sounds
     for (let i = 0; i < 30; i++) { // some extra sound objects to create buffer for quick events that require sounds at 60fps
       let blast = new Audio("assets/sounds/cc0_explosion_large_gas_001.mp3");
@@ -59,6 +75,19 @@ class Sound {
   static playCannonBlastSound = () => {
     let playSound = null;
     for (let sound of Sound.cannonSounds) {
+      if (sound.currentTime === 0) {
+        playSound = sound;
+        break;
+      }
+    }
+    if (playSound !== null) {
+      playSound.play();
+    }
+  }
+
+  static playSplashSound = () => {
+    let playSound = null;
+    for (let sound of Sound.splashSounds) {
       if (sound.currentTime === 0) {
         playSound = sound;
         break;

@@ -4,6 +4,7 @@ import {MapData} from './Map/Map_L1.js'
 class Sprite {
 
   static explosionSpriteAnimFrames = [];
+  static splashSpriteAnimFrames = [];
   static playerCannon = [];
   static tiles = [];
   static parrotFlying = new Image();
@@ -17,6 +18,13 @@ class Sprite {
       let explosionBg = new Image();
       explosionBg.src = 'assets/images/player/cannon/explosion/' + i + '.png';
       Sprite.explosionSpriteAnimFrames.push(explosionBg);
+    }
+
+    // splash animation frames
+    for (let i = 1; i <= 7; i++) {
+      let splashBg = new Image();
+      splashBg.src = 'assets/images/player/cannon/splash/' + i + '.png';
+      Sprite.splashSpriteAnimFrames.push(splashBg);
     }
 
     for (let tile of MapData.tiles) {
@@ -100,6 +108,10 @@ class Sprite {
 
   static getExplosionSpriteAnimFrames = () => {
     return Sprite.explosionSpriteAnimFrames.slice(); // needs to return a copy of the array!
+  }
+
+  static getSplashSpriteAnimFrames = () => {
+    return Sprite.splashSpriteAnimFrames.slice(); // needs to return a copy of the array!
   }
 
 }

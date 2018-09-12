@@ -4,7 +4,7 @@ import {MapData} from './Map/Map_L1.js';
 import GameObject from './GameObject';
 import Sprites from './Sprite';
 import CannonBall from './CannonBall';
-//import Explosion from './Explosion';
+import Explosion from './Explosion';
 import * as C from '../Constants';
 
 
@@ -21,11 +21,6 @@ class Player extends GameObject {
 
     this.bg = Sprites.getPlayerCannon();
 
-  /*  this.explosions = [
-      new Explosion(this.context, this.canvas),
-      new Explosion(this.context, this.canvas),
-      new Explosion(this.context, this.canvas),
-    ];*/
     this.bullets = [];
     this.then = Date.now(); // previous shoot time frame, for throttling the shooting
     this.shootFPS = 0.3; // shoot frequency approx 0.3 shots/second at approx 30fps of the game
@@ -41,6 +36,7 @@ class Player extends GameObject {
     this.targetYScreenFinalPos = null;
     this.getTargetTileCoordinates = getTargetTileCoordinates;
     this.shootingStartPoint = {x: this.x, y: this.y};
+    this.explosion = null;
 
     this.angle = null;
     this.path = [];
@@ -122,6 +118,7 @@ class Player extends GameObject {
           10,
           this.getTargetTileCoordinates)
         );
+      this.explosion = new Explosion(this.context, this.canvas, startPoint.x, startPoint.y, 40, 40);
     }
   }
 
@@ -169,8 +166,13 @@ class Player extends GameObject {
     if (this.destroyed === false && isNaN(this.x) === false && isNaN(this.y) === false) {
       this.steer();
     }
+
     // draw ship bg
     this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
+
+    if (this.explosion !== null) {
+      this.explosion.draw(); // explosion must be drawn here, outside of CannonBall object, because of drawing order (z-layers)
+    }
 
     return true;
   }
@@ -179,7 +181,7 @@ class Player extends GameObject {
     // draw old and newly shot ammo
     this.cannonBalls = this.getActiveCannonBalls();
     for (let cannonBall of this.cannonBalls) {
-      cannonBall.draw();
+      let done = cannonBall.draw();
     }
 
     return true;
