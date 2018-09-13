@@ -182,9 +182,8 @@ class Game extends React.Component {
   }
 
   getTargetTileCoordinates = (x, y) => {
-    let xCoord = this.generatedTileObjects[x][y].offX;
-    let yCoord = this.generatedTileObjects[x][y].offY;
-//console.log('xCoord', xCoord, 'yCoord', yCoord);
+    let xCoord = this.generatedTileObjects[x][y].x;
+    let yCoord = this.generatedTileObjects[x][y].y;
     return {tileX: xCoord, tileY: yCoord}
   }
 

@@ -8,7 +8,7 @@ import {TweenLite, TimelineMax} from '../lib/greensock-js/src/esm/all';
 
 class CannonBall extends GameObject {
 
-  constructor(context, canvas, target, x, y, width = 0, height = 0, getTileCoordinates) {
+  constructor(context, canvas, target, x, y, width = 0, height = 0, angle, getTileCoordinates) {
     super(context, canvas, width, height, x - width/2, y - height/2, 10);
 
     this.getTileCoordinates = getTileCoordinates;
@@ -34,10 +34,12 @@ class CannonBall extends GameObject {
       x: this.target.x,
       y: this.target.y
     };
+    this.cannonAngle = angle;
     this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
     this.targetDist = this.calculateBallDistance(this.target.x, this.target.y);
     this.animationSeconds = this.targetDist/250; // 250pxs per second
-    this.animationType = (Math.abs(this.target.x - this.x) > 200) ? 'bezier' : 'line';
+    this.animationType = this.getAnimationTypeByAngle(this.cannonAngle);
+
 
     TweenLite.ticker.fps(30);
     this.tl = new TimelineMax();
@@ -100,6 +102,29 @@ class CannonBall extends GameObject {
     let dist = Math.sqrt(tx * tx + ty * ty);
 
     return dist;
+  }
+
+  getAnimationTypeByAngle = () => {
+    let type = 'line';
+    if (this.cannonAngle >= -42.5 && this.cannonAngle <= 42.5) {
+      type = 'line';
+    } else if (this.cannonAngle > 42.5 && this.cannonAngle <= 67.5) {
+      type = 'bezier';
+    } else if (this.cannonAngle > 67.5 && this.cannonAngle <= 112.5) {
+      type = 'bezier';
+    } else if (this.cannonAngle > 112.5 && this.cannonAngle <= 157.5) {
+      type = 'bezier';
+    } else if ((this.cannonAngle > 157.5 && this.cannonAngle <= 180) || (this.cannonAngle > -180 && this.cannonAngle <= -157.5)) {
+      type = 'line';
+    } else if (this.cannonAngle > -157.5 && this.cannonAngle <= -112.5) {
+      type = 'bezier';
+    } else if (this.cannonAngle > -112.5 && this.cannonAngle <= -67.5) {
+      type = 'bezier';
+    } else if (this.cannonAngle > -67.5 && this.cannonAngle <= -42.5) {
+      type = 'bezier';
+    }
+
+    return type;
   }
 
 }

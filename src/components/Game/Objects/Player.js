@@ -20,10 +20,13 @@ class Player extends GameObject {
     this.getFPS = getFPS;
 
     this.bg = Sprites.getPlayerCannon();
+    this.lineWidth = 1;
 
     this.bullets = [];
     this.then = Date.now(); // previous shoot time frame, for throttling the shooting
+    this.thenOutline = Date.now(); // for outline animation
     this.shootFPS = 0.5; // shoot frequency approx 0.5 shots/second at approx 30fps of the game
+    this.outlineFPS = 0.5;
     this.allowPlayerMovement = false;
 
     // current tile indexes
@@ -54,7 +57,6 @@ class Player extends GameObject {
     if (Array.isArray(this.path) === true && this.path.length > 0) {
 
       let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
-
       // if there's only one end point of the path left, use the actual coordinates of the clicked map area, instead of general tile position coordinate
       if (this.path.length === 1) {
         this.targetXScreen = this.targetXScreenFinalPos;
@@ -116,6 +118,7 @@ class Player extends GameObject {
           startPoint.y,
           10,
           10,
+          this.angle,
           this.getTargetTileCoordinates)
         );
       this.explosion = new Explosion(this.context, this.canvas, startPoint.x, startPoint.y, 40, 40);
@@ -170,11 +173,39 @@ class Player extends GameObject {
     // draw ship bg
     this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
 
+    // draw outline
+    let color = '#fff';
+    let h = 50;
+    let w = 100;
+    let x = this.x - w/2 + this.width/2;
+    let y = this.y - h/2 + this.height/2;
+    this.nowOutline = Date.now();
+    this.deltaOutline = this.nowOutline - this.thenOutline;
+    if (this.deltaOutline > 1000/this.outlineFPS) {
+      this.thenOutline = this.nowOutline - (this.nowOutline % 1000/this.outlineFPS);
+      this.lineWidth = (this.lineWidth < 2 ? this.lineWidth + 1 : 1);
+    }
+    this.drawOutline(x , y + h / 2, x + w / 2, y, color, this.lineWidth);
+    this.drawOutline(x + w / 2, y, x + w, y + h / 2, color, this.lineWidth);
+    this.drawOutline(x + w, y + h / 2, x + w / 2, y + h, color, this.lineWidth);
+    this.drawOutline(x + w / 2, y + h, x, y + h / 2, color, this.lineWidth);
+
+    // draw cannon shooting explosion
     if (this.explosion !== null) {
       this.explosion.draw(); // explosion must be drawn here, outside of CannonBall object, because of drawing order (z-layers)
     }
 
     return true;
+  }
+
+  drawOutline = (x1, y1, x2, y2, color, lineWidth = 1) => {
+    this.context.strokeStyle = color;
+    this.context.beginPath();
+    this.context.lineWidth = lineWidth;
+    this.context.moveTo(x1, y1);
+    this.context.lineTo(x2, y2);
+    this.context.stroke();
+    this.context.closePath();
   }
 
   drawCannonBalls = () => {

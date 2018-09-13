@@ -2,14 +2,14 @@ import Sprites from './Sprite';
 
 class Tile {
 
-  constructor(xI, yI, offX, offY, MapData, layers, canvas, context, getOriginX, getOriginY) {
+  constructor(xI, yI, x, y, MapData, layers, canvas, context, getOriginX, getOriginY) {
 
     this.canvas = canvas;
     this.context = context;
     this.xI = xI;
     this.yI = yI;
-    this.offX = offX;
-    this.offY = offY;
+    this.x = x;
+    this.y = y;
 
     this.MapData = MapData;
     this.baseTileSprite = Sprites.getTile(MapData.map[xI][yI]);
@@ -36,18 +36,18 @@ class Tile {
     }
 
     this.shouldBeDrawn = false; // do not draw all tiles that are off canvas visible area
-    if (this.getOriginX() + this.offX >= -150 &&
-      this.getOriginX() + this.offX <= this.canvas.width &&
-      this.getOriginY() + this.offY >= -150 &&
-      this.getOriginY() + this.offY <= this.canvas.height) {
+    if (this.getOriginX() + this.x >= -150 &&
+      this.getOriginX() + this.x <= this.canvas.width &&
+      this.getOriginY() + this.y >= -150 &&
+      this.getOriginY() + this.y <= this.canvas.height) {
         this.shouldBeDrawn = true;
     }
-  /*  context.moveTo(offX, offY + tileDiagonalHeight / 2);
-    context.lineTo(offX + tileDiagonalWidth / 2, offY, offX + tileDiagonalWidth, offY + tileDiagonalHeight / 2);
-    context.lineTo(offX + tileDiagonalWidth, offY + tileDiagonalHeight / 2, offX + tileDiagonalWidth / 2, offY + tileDiagonalHeight);
-    context.lineTo(offX + tileDiagonalWidth / 2, offY + tileDiagonalHeight, offX, offY + tileDiagonalHeight / 2);
-    context.closePath();
-    context.fill();*/
+    /*this.context.moveTo(this.x, this.y + this.MapData.tileDiagonalHeight / 2);
+    this.context.lineTo(this.x + this.MapData.tileDiagonalWidth / 2, this.y, this.x + this.MapData.tileDiagonalWidth, this.y + this.MapData.tileDiagonalHeight / 2);
+    this.context.lineTo(this.x + this.MapData.tileDiagonalWidth, this.y +this. MapData.tileDiagonalHeight / 2, this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight);
+    this.context.lineTo(this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight, this.x, this.y + this.MapData.tileDiagonalHeight / 2);
+    this.context.closePath();
+    this.context.fill();*/
 
     if (this.shouldBeDrawn === true) {
       if (this.animate === true) {
@@ -57,11 +57,9 @@ class Tile {
           this.speed = this.speed * -1;
         }
         this.currentAnimationIncVal = this.currentAnimationIncVal + this.speed;
-        this.context.drawImage(this.baseTileSprite, this.offX, this.offY, this.baseTileSprite.width, this.baseTileSprite.height - this.currentAnimationIncVal);
+        this.context.drawImage(this.baseTileSprite, this.x, this.y, this.baseTileSprite.width, this.baseTileSprite.height - this.currentAnimationIncVal);
       } else {
-        this.context.drawImage(this.baseTileSprite, this.offX, this.offY, this.baseTileSprite.width, this.baseTileSprite.height);
-
-  //      this.context.drawImage(this.baseTileSprite, this.offX, this.offY);
+        this.context.drawImage(this.baseTileSprite, this.x, this.y, this.baseTileSprite.width, this.baseTileSprite.height);
       }
     }
 
@@ -72,8 +70,8 @@ class Tile {
         layerTile = Sprites.getTile(layer.tileId);
         this.context.drawImage(
           layerTile,
-          this.offX + layer.offsetX,
-          this.offY - layer.offsetY,
+          this.x + layer.offsetX,
+          this.y - layer.offsetY,
           layerTile.width,
           layerTile.height
         );
@@ -81,13 +79,12 @@ class Tile {
     }
 
     /*let color = '#fff';
-    this.drawOutline(this.offX, this.offY + this.MapData.tileDiagonalHeight / 2, this.offX + this.MapData.tileDiagonalWidth / 2, this.offY, color);
-    this.drawOutline(this.offX + this.MapData.tileDiagonalWidth / 2, this.offY, this.offX + this.MapData.tileDiagonalWidth, this.offY + this.MapData.tileDiagonalHeight / 2, color);
-    this.drawOutline(this.offX + this.MapData.tileDiagonalWidth, this.offY + this.MapData.tileDiagonalHeight / 2, this.offX + this.MapData.tileDiagonalWidth / 2, this.offY + this.MapData.tileDiagonalHeight, color);
-    this.drawOutline(this.offX + this.MapData.tileDiagonalWidth / 2, this.offY + this.MapData.tileDiagonalHeight, this.offX, this.offY + this.MapData.tileDiagonalHeight / 2, color);
-    */
-    //context.fillStyle = 'white';
-    this.context.fillText(this.xI + ", " + this.yI, this.offX + this.MapData.tileDiagonalWidth/2 - 9, this.offY + this.MapData.tileDiagonalHeight/2 + 3);
+    this.drawOutline(this.x, this.y + this.MapData.tileDiagonalHeight / 2, this.x + this.MapData.tileDiagonalWidth / 2, this.y, color);
+    this.drawOutline(this.x + this.MapData.tileDiagonalWidth / 2, this.y, this.x + this.MapData.tileDiagonalWidth, this.y + this.MapData.tileDiagonalHeight / 2, color);
+    this.drawOutline(this.x + this.MapData.tileDiagonalWidth, this.y + this.MapData.tileDiagonalHeight / 2, this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight, color);
+    this.drawOutline(this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight, this.x, this.y + this.MapData.tileDiagonalHeight / 2, color);
+*/
+    this.context.fillText(this.xI + ", " + this.yI, this.x + this.MapData.tileDiagonalWidth/2 - 9, this.y + this.MapData.tileDiagonalHeight/2 + 3);
 
     return true;
   }
@@ -100,8 +97,8 @@ class Tile {
         layerTile = Sprites.getTile(layer.tileId);
         this.context.drawImage(
           layerTile,
-          this.offX + layer.offsetX,
-          this.offY - layer.offsetY,
+          this.x + layer.offsetX,
+          this.y - layer.offsetY,
           layerTile.width,
           layerTile.height
         );
@@ -115,10 +112,11 @@ class Tile {
   drawOutline = (x1, y1, x2, y2, color) => {
     this.context.strokeStyle = color;
     this.context.beginPath();
-    this.context.lineWidth = 1;
+    this.context.lineWidth = 2;
     this.context.moveTo(x1, y1);
     this.context.lineTo(x2, y2);
     this.context.stroke();
+    this.context.closePath();
   }
 
 }
