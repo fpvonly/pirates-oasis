@@ -16,7 +16,7 @@ class CannonBall extends GameObject {
     this.splash = new Splash(context, canvas, target.x, target.y, 40, 40);
     this.playSplash = false;
 
-
+    this.source = {x: this.x - width/2, y: this.y - height/2};
     this.target = {x: target.x - width/2, y: target.y - height/2};
     this.p0 = {
       x: this.x,
@@ -35,8 +35,9 @@ class CannonBall extends GameObject {
       y: this.target.y
     };
     this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
-    let targetDist = this.calculateBallDistance(this.target.x, this.target.y);
-    this.animationSeconds = targetDist/250; // 250pxs per second
+    this.targetDist = this.calculateBallDistance(this.target.x, this.target.y);
+    this.animationSeconds = this.targetDist/250; // 250pxs per second
+    this.animationType = (Math.abs(this.target.x - this.x) > 200) ? 'bezier' : 'line';
 
     TweenLite.ticker.fps(30);
     this.tl = new TimelineMax();
@@ -47,13 +48,33 @@ class CannonBall extends GameObject {
     if (this.active === true) {
 
       let progress = this.tl.progress() || 0;
-      this.tl.progress(0)
-        .clear()
-        .to(this.target, this.animationSeconds, { bezier: this.bezier, ease: "linear", onComplete: () => { this.playSplash = true; }})
-        .progress(progress);
+
+      if (this.animationType === 'bezier') {
+        this.tl.progress(0)
+          .clear()
+          .to(this.source, this.animationSeconds, { bezier: this.bezier, ease: "linear", onComplete: () => { this.playSplash = true; }})
+          .progress(progress);
+      } else {
+        this.tl.progress(0)
+          .clear()
+          .to( this.source, this.animationSeconds, {x: this.target.x, y : this.target.y, ease: "linear", onComplete: () => { this.playSplash = true; }})
+          .progress(progress);
+      }
+
 
       if (progress > 0 && this.playSplash === false) {
-        this.context.drawImage(this.bg, this.target.x, this.target.y, this.width, this.height);
+        let w = this.width;
+        let h = this.height;
+        if (this.targetDist > 200) {
+          let w0 = this.width * (1 + progress);
+          let w1 = this.width * 1.5 * (0.5/progress);
+          let h0 = this.height * (1 + progress);
+          let h1 = this.height * 1.5 * (0.5/progress);
+          w = (progress <= 0.50) ? w0 : (w1 < this.width ? this.width : w1);
+          h = (progress <= 0.50) ? h0 : (h1 < this.height ? this.height : h1);
+        }
+
+        this.context.drawImage(this.bg, this.source.x, this.source.y, w, h);
       }
 
       if (this.playSplash === true) {
