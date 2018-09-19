@@ -6,10 +6,12 @@ class Sprite {
   static explosionSpriteAnimFrames = [];
   static splashSpriteAnimFrames = [];
   static playerCannon = [];
+  static cannonBall = new Image();
   static tiles = [];
   static parrotFlying = new Image();
   static parrotFlyingLeft = new Image();
-  static cannonBall = new Image();
+  static enemyShip = [];
+
 
   static initializeStaticClass() {
 
@@ -51,9 +53,31 @@ class Sprite {
       cannon.src = src;
       Sprite.playerCannon.push(cannon);
     }
+    // cannon ball
     Sprite.cannonBall.src = 'assets/images/player/cannon/cannonball.png';
+
+    // parrot
     Sprite.parrotFlying.src = 'assets/images/kisspng/parrot-flying-small.png';
     Sprite.parrotFlyingLeft.src = 'assets/images/kisspng/parrot-flying-small-left.png';
+
+    // enemy ship sprites
+    let enemySpriteSources = [
+      {'src': 'assets/images/enemy/ship/ship_dark_N.png', 'width': 91, 'height': 209},
+      {'src': 'assets/images/enemy/ship/ship_dark_NE.png', 'width': 213, 'height': 200},
+      {'src': 'assets/images/enemy/ship/ship_dark_E.png', 'width': 257, 'height': 182},
+      {'src': 'assets/images/enemy/ship/ship_dark_SE.png', 'width': 215, 'height': 243},
+      {'src': 'assets/images/enemy/ship/ship_dark_S.png', 'width': 91, 'height': 291},
+      {'src': 'assets/images/enemy/ship/ship_dark_SW.png', 'width': 213, 'height': 243},
+      {'src': 'assets/images/enemy/ship/ship_dark_W.png', 'width': 257, 'height': 182},
+      {'src': 'assets/images/enemy/ship/ship_dark_NW.png', 'width': 215, 'height': 200}
+    ];
+    for (let sprite of enemySpriteSources) {
+      let enemyShip = new Image();
+      enemyShip.src = sprite.src;
+      enemyShip.width = sprite.width;
+      enemyShip.height = sprite.height;
+      Sprite.enemyShip.push(enemyShip);
+    }
   }
 
   static getLoadingStatusInfo = () => {
@@ -112,6 +136,10 @@ class Sprite {
 
   static getSplashSpriteAnimFrames = () => {
     return Sprite.splashSpriteAnimFrames.slice(); // needs to return a copy of the array!
+  }
+
+  static getEnemyShip = () => {
+    return Sprite.enemyShip;
   }
 
 }

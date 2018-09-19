@@ -8,6 +8,7 @@ import Sprites from './Objects/Sprite';
 import {MapData} from './Objects/Map/Map_L1.js'
 import {Tile} from './Objects/Tile.js';
 import Parrot from './Objects/Parrot.js';
+import EnemyShip from './Objects/EnemyShip.js';
 import Player from './Objects/Player.js';
 import * as C from './Constants';
 
@@ -181,7 +182,7 @@ class Game extends React.Component {
     return this.originY;
   }
 
-  getTargetTileCoordinates = (x, y) => {
+  getTileCoordinates = (x, y) => {
     let xCoord = this.generatedTileObjects[x][y].x;
     let yCoord = this.generatedTileObjects[x][y].y;
     return {tileX: xCoord, tileY: yCoord}
@@ -221,7 +222,17 @@ class Game extends React.Component {
       49,
       0,
       12,
-      this.getTargetTileCoordinates);
+      this.getTileCoordinates);
+    this.enemies.push(
+      new EnemyShip(
+        this.context,
+        this.canvas,
+        60,
+        49,
+        0,
+        12,
+        this.getTileCoordinates)
+    );
   }
 
   gameOver = () => {
@@ -323,7 +334,7 @@ class Game extends React.Component {
       this.getOriginX,
       this.getOriginY,
       this.allowedTilesOnLandMap,
-      this.getTargetTileCoordinates,
+      this.getTileCoordinates,
       this.getFPS));
   }
 
@@ -379,7 +390,10 @@ class Game extends React.Component {
     }
 
     this.parrot.draw();
+// TODO: multiple enemies
+    this.enemies[0].draw();
     this.playerObjects[0].drawCannonBalls();
+
 
     return true;
   }
