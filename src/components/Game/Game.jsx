@@ -229,8 +229,9 @@ class Game extends React.Component {
         this.canvas,
         60,
         49,
-        0,
-        12,
+        17,
+        23,
+        this.allowedTilesOnWaterMap,
         this.getTileCoordinates)
     );
   }
@@ -383,15 +384,23 @@ class Game extends React.Component {
 
     this.playerObjects[0].draw(); // only one player object in this game version
 
+// TODO: multiple enemies
+    if (this.enemies[0].xI >= 18) {
+      this.enemies[0].draw();
+    }
+
     for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
       for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
         let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
       }
     }
 
-    this.parrot.draw();
 // TODO: multiple enemies
-    this.enemies[0].draw();
+    if (this.enemies[0].xI < 18) {
+      this.enemies[0].draw();
+    }
+
+    this.parrot.draw();
     this.playerObjects[0].drawCannonBalls();
 
 

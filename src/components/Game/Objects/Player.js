@@ -1,5 +1,4 @@
 import PF from 'pathfinding';
-
 import {MapData} from './Map/Map_L1.js';
 import GameObject from './GameObject';
 import Sprites from './Sprite';
