@@ -54,9 +54,6 @@ class Game extends React.Component {
     this.previousFrameTime = 0;
     this.framesThisSecond = 0;
     this.lastFpsUpdate = 0;
-
-    this.mouseOnCanvas = false;
-
   }
 
   static defaultProps = {
@@ -96,9 +93,6 @@ class Game extends React.Component {
   componentDidMount () {
     this.canvas.addEventListener('mousemove', this.handleMouseMove, false);
     this.canvas.addEventListener('mouseleave', function(e) {
-    //  this.canvas.removeEventListener('mousemove', this.handleMouseMove, false);
-    //  this.canvas.addEventListener('mouseenter', this.handleMouseMove, false);
-      this.mouseOnCanvas = false;
       this.mousePointY = null;
       this.mousePointX = null;
     }.bind(this), false);
@@ -144,34 +138,25 @@ class Game extends React.Component {
     }
   }
 
-  resizeCanvas = (e) => {
-    //this.canvas.width = window.innerWidth;
-    //  this.canvas.height = window.innerHeight;
-    //  this.resetGame();
-    //  this.props.setGameState(C.STOP);
-  }
-
   handleMouseMove = (e) => {
     // which tile????? ->
-    this.mouseOnCanvas = true;
-    let selectedX = e.pageX;
-    let selectedY = e.pageY;
-    selectedX = selectedX - this.originX - MapData.tileDiagonalWidth/2 -this.canvasOffsetLeft;
-    selectedY = selectedY - this.originY - MapData.tileDiagonalHeight/2 - this.canvasOffsetTop;
-    let tileX = Math.round(selectedX / MapData.tileDiagonalWidth - selectedY / MapData.tileDiagonalHeight);
-    let tileY = Math.round(selectedX / MapData.tileDiagonalWidth + selectedY / MapData.tileDiagonalHeight);
-    this.selectedXTile = tileX;
-    this.selectedYTile = tileY;
+    let selectedTileID = this.getTileCoordId(e.pageX, e.pageY);
+
     // for scroll ->
-    if (this.mouseOnCanvas && this.selectedXTile >= 0 && this.selectedXTile <= 23 && this.selectedYTile >= 0 && this.selectedYTile <= 23) {
+    if (selectedTileID.selectedXTile >= 0 && selectedTileID.selectedXTile <= 23 && selectedTileID.selectedYTile >= 0 && selectedTileID.selectedYTile <= 23) {
       this.mousePointY = e.pageY;
       this.mousePointX = e.pageX;
     } else {
       this.mousePointY = null;
       this.mousePointX = null;
     }
+  }
 
-    //console.log('this.selectedXTile', this.selectedXTile, 'this.selectedYTile', this.selectedYTile);
+  resizeCanvas = (e) => {
+    //this.canvas.width = window.innerWidth;
+    //  this.canvas.height = window.innerHeight;
+    //  this.resetGame();
+    //  this.props.setGameState(C.STOP);
   }
 
   getOriginX = () => {
@@ -182,10 +167,31 @@ class Game extends React.Component {
     return this.originY;
   }
 
+  getTileCoordId = (x = null, y = null) => {
+    if (x === null || y === null) {
+      return {selectedXTile: null, selectedYTile: null};
+    }
+    
+    x = x - this.originX - MapData.tileDiagonalWidth/2 -this.canvasOffsetLeft;
+    y = y - this.originY - MapData.tileDiagonalHeight/2 - this.canvasOffsetTop;
+    let tileX = Math.round(x / MapData.tileDiagonalWidth - y / MapData.tileDiagonalHeight);
+    let tileY = Math.round(x / MapData.tileDiagonalWidth + y / MapData.tileDiagonalHeight);
+
+    if (tileX >= 0 && tileX <= 23 && tileY >= 0 && tileY <= 23) {
+      this.selectedYTile = tileY;
+      this.selectedXTile = tileX;
+    } else {
+      this.selectedYTile = null;
+      this.selectedXTile = null;
+    }
+
+    return {selectedXTile: this.selectedXTile, selectedYTile: this.selectedYTile};
+  }
+
   getTileCoordinates = (x, y) => {
     let xCoord = this.generatedTileObjects[x][y].x;
     let yCoord = this.generatedTileObjects[x][y].y;
-    return {tileX: xCoord, tileY: yCoord}
+    return {tileX: xCoord, tileY: yCoord};
   }
 
   endGame = (e) => {
@@ -208,10 +214,10 @@ class Game extends React.Component {
     this.canvasOffsetLeft = this.canvas.getBoundingClientRect().left;
     this.originX = this.canvas.width / 2 - MapData.cols * MapData.tileDiagonalWidth / 2; // tile coord is 0,0 (left tip of the map)
     this.originY = this.canvas.height / 2;
-    this.minXSpan = this.originX - MapData.tileDiagonalWidth * MapData.cols/2;
-    this.maxXSpan = this.originX + MapData.tileDiagonalWidth * MapData.cols/2;
-    this.minYSpan = this.originY - MapData.tileDiagonalHeight * MapData.rows/2;
-    this.maxYSpan = this.originY + MapData.tileDiagonalHeight * MapData.rows/2;
+    this.minXSpan = this.originX - MapData.tileDiagonalWidth * MapData.cols/2 + 200;
+    this.maxXSpan = this.originX + MapData.tileDiagonalWidth * MapData.cols/2 - 200;
+    this.minYSpan = this.originY - MapData.tileDiagonalHeight * MapData.rows/2 + 200;
+    this.maxYSpan = this.originY + MapData.tileDiagonalHeight * MapData.rows/2 - 200;
 
     this.initMapTiles();
     this.initPlayerObjects();
@@ -362,16 +368,20 @@ class Game extends React.Component {
     this.context.setTransform(1, 0, 0, 1, 0, 0);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
+    let tileId = this.getTileCoordId(this.mousePointX, this.mousePointY);
+
     // scroll ->
-    if (this.mousePointY !== null && this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
-      this.originY += 25;
-    } else if (this.mousePointY !== null && this.mousePointY > window.innerHeight*0.8 && this.originY >= this.minYSpan) {
-      this.originY -= 25;
-    }
-    if (this.mousePointX !== null && this.mousePointX < this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
-      this.originX += 25;
-    } else if (this.mousePointX !== null && this.mousePointX > this.canvas.width*0.8 && this.originX >= this.minXSpan) {
-      this.originX -= 25;
+    if (tileId.selectedXTile !== null && tileId.selectedYTile !== null) {
+      if (this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
+        this.originY += 25;
+      } else if (this.mousePointY > window.innerHeight*0.8 && this.originY >= this.minYSpan) {
+        this.originY -= 25;
+      }
+      if (this.mousePointX < this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
+        this.originX += 25;
+      } else if (this.mousePointX > this.canvas.width*0.8 && this.originX >= this.minXSpan) {
+        this.originX -= 25;
+      }
     }
 
     this.context.setTransform(1, 0, 0, 1, this.originX, this.originY); // move origo
