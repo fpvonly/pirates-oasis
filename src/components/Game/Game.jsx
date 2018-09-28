@@ -171,7 +171,7 @@ class Game extends React.Component {
     if (x === null || y === null) {
       return {selectedXTile: null, selectedYTile: null};
     }
-    
+
     x = x - this.originX - MapData.tileDiagonalWidth/2 -this.canvasOffsetLeft;
     y = y - this.originY - MapData.tileDiagonalHeight/2 - this.canvasOffsetTop;
     let tileX = Math.round(x / MapData.tileDiagonalWidth - y / MapData.tileDiagonalHeight);
@@ -229,13 +229,14 @@ class Game extends React.Component {
       0,
       12,
       this.getTileCoordinates);
+  // TODO to dynamic randomz
     this.enemies.push(
       new EnemyShip(
         this.context,
         this.canvas,
         60,
         49,
-        17,
+        15,
         23,
         this.allowedTilesOnWaterMap,
         this.getTileCoordinates)
@@ -288,11 +289,13 @@ class Game extends React.Component {
       let layers = MapData.mapLayers[diagonalXToTopRight];
       movableMap[diagonalXToTopRight] = MapData.map[diagonalXToTopRight].map((tileId, diagonalYToBottomRight) => {
         let allowed = true;
-        // exceptions for allowed tiles, even thought those have obstacle layers
-      /*  if (diagonalXToTopRight == 11 && diagonalYToBottomRight == 11) {
 
-          allowed = true
-        } else {*/
+        for (let disallowed of MapData.forcedDisallowedTilesOnWater) {
+          if (disallowed[0] == diagonalXToTopRight && disallowed[1] == diagonalYToBottomRight) {
+              return 1;
+          }
+        }
+
         if (allowedTiles.indexOf(tileId) !== -1) {
           let tileLayers = layers[diagonalYToBottomRight];
           if (Array.isArray(tileLayers) === true) {
@@ -305,7 +308,6 @@ class Game extends React.Component {
         } else {
           allowed = false;
         }
-        //}
 
         if (allowed === true) {
           return 0;

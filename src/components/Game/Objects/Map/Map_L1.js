@@ -9,7 +9,32 @@ const MapData = {
   rows: 24,
   tileDiagonalWidth: 150,
   tileDiagonalHeight: 75,
-  allowedTilesOnWater: [4],
+  allowedTilesOnWater: [4], // tile type id 4 in Mapdata.tiles
+  forcedDisallowedTilesOnWater: [
+    [16, 20],
+    [16, 21],
+    [16, 22],
+    [17, 19],
+    [17, 20],
+    [17, 21],
+    [17, 22],
+    [18, 19],
+    [18, 20],
+    [18, 21],
+    [18, 22],
+    [19, 19],
+    [19, 20],
+    [19, 21],
+    [19, 22],
+    [20, 19],
+    [20, 20],
+    [20, 21],
+    [20, 22],
+    [21, 19],
+    [21, 20],
+    [21, 21],
+    [21, 22],
+  ], // hard coded exclusions on allowed tiles [Xi, Yi] (for creating the allowed matrix map for water area)
   allowedTilesOnLand: [0, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 43],
   tiles: [
     {src: 'assets/images/base.png', width: 150, height: 75}, // 0

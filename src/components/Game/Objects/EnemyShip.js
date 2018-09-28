@@ -18,7 +18,7 @@ class EnemyShip extends GameObject {
     this.yI = yI;
 
     this.matrixOfMapForWater = matrixOfMapForWater;
-    this.finder = new PF.AStarFinder({allowDiagonal: true});
+    this.finder = new PF.AStarFinder({allowDiagonal: false});
     let grid = new PF.Grid(this.matrixOfMapForWater);
 // TODO randomize
     this.path = this.finder.findPath(xI, yI, 18, 14, grid);
