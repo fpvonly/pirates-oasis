@@ -5,7 +5,7 @@ import PF from 'pathfinding';
 
 import DebugFPS from './DebugFPS.jsx';
 import Sprites from './Objects/Sprite';
-import {MapData} from './Objects/Map/Map_L1.js'
+import {MapData} from './Objects/Map/Map_L1.js' // for now we have only L1
 import {Tile} from './Objects/Tile.js';
 import Parrot from './Objects/Parrot.js';
 import EnemyShip from './Objects/EnemyShip.js';
@@ -42,8 +42,8 @@ class Game extends React.Component {
     this.originY = 0;
     this.tileImages = []; // loaded sprite images for map, empty for this example
     this.generatedTileObjects = [];
-    this.allowedTilesOnLandMap = [];
-    this.allowedTilesOnWaterMap = [];
+    this.allowedTilesOnLandMapYX = [];
+    this.allowedTilesOnWaterMapYX = [];
 
     this.selectedXTile = null;
     this.selectedYTile = null;
@@ -87,7 +87,6 @@ class Game extends React.Component {
     })();
     window.addEventListener('resize', this.resizeCanvas, false);
     window.addEventListener('keyup', this.endGame, false);
-    document.addEventListener("visibilitychange", this.handleDocumentVisibilityChange, false); // reset game if user changes tab
   }
 
   componentDidMount () {
@@ -129,13 +128,6 @@ class Game extends React.Component {
 
   getDebugFPSRef = (c) => {
     this.debugFPSREF = c;
-  }
-
-  handleDocumentVisibilityChange = () => {
-    if (document.hidden === true) {
-      this.resetGame();
-      this.props.setGameState(C.STOP);
-    }
   }
 
   handleMouseMove = (e) => {
@@ -229,18 +221,7 @@ class Game extends React.Component {
       0,
       12,
       this.getTileCoordinates);
-  // TODO to dynamic randomz
-    this.enemies.push(
-      new EnemyShip(
-        this.context,
-        this.canvas,
-        60,
-        49,
-        15,
-        23,
-        this.allowedTilesOnWaterMap,
-        this.getTileCoordinates)
-    );
+    this.initEnemies();
   }
 
   gameOver = () => {
@@ -278,8 +259,64 @@ class Game extends React.Component {
       }
     }
 
-    this.allowedTilesOnLandMap = this.createMovableMapBase('land');
-    this.allowedTilesOnWaterMap = this.createMovableMapBase('water');
+    let allowedTilesOnLand = this.createMovableMapBase('land');
+    let allowedTilesOnWater = this.createMovableMapBase('water');
+
+    this.allowedTilesOnLandMapYX = allowedTilesOnLand.yx;
+    this.allowedTilesOnWaterMapYX = allowedTilesOnWater.yx;
+    this.allowedTilesOnLandMapXY = allowedTilesOnLand.xy;
+    this.allowedTilesOnWaterMapXY = allowedTilesOnWater.xy;
+  }
+
+  initPlayerObjects = () => {
+    this.playerObjects.push(new Player(
+      this.context,
+      this.canvas,
+      40,
+      40,
+      24*75,
+      1,
+      this.getOriginX,
+      this.getOriginY,
+      this.allowedTilesOnLandMapYX,
+      this.getTileCoordinates,
+      this.getFPS));
+  }
+
+  initEnemies = () => {
+    this.enemies = [];
+    let xI = 0;
+    let yI = 0;
+
+    for (let i = 0; i < 2; i++) {
+      let mapSide = this.getRndMapSide();
+// TODO THIS MUST BE DYNAMIC LOGIC
+      if (mapSide === 'top') {
+        xI = this.getRndInteger(0, 18);
+        yI = 0;
+      } else if (mapSide === 'bottom') {
+        xI = this.getRndInteger(0, 16);
+        yI = 23;
+      } else if (mapSide === 'left') {
+        xI = 0;
+        yI = this.getRndInteger(0, 23);
+      } else if (mapSide === 'right') {
+        xI = 23;
+        yI = this.getRndInteger(5, 23);
+      }
+
+      this.enemies.push(
+        new EnemyShip(
+          this.context,
+          this.canvas,
+          60,
+          49,
+          xI,
+          yI,
+          this.allowedTilesOnWaterMapYX,
+          this.getTileCoordinates)
+      );
+    }
   }
 
   createMovableMapBase = (on = 'land') => {
@@ -290,9 +327,11 @@ class Game extends React.Component {
       movableMap[diagonalXToTopRight] = MapData.map[diagonalXToTopRight].map((tileId, diagonalYToBottomRight) => {
         let allowed = true;
 
-        for (let disallowed of MapData.forcedDisallowedTilesOnWater) {
-          if (disallowed[0] == diagonalXToTopRight && disallowed[1] == diagonalYToBottomRight) {
-              return 1;
+        if (on === 'water') {
+          for (let disallowed of MapData.forcedDisallowedTilesOnWater) {
+            if (disallowed[0] == diagonalXToTopRight && disallowed[1] == diagonalYToBottomRight) {
+                return 1;
+            }
           }
         }
 
@@ -329,22 +368,7 @@ class Game extends React.Component {
       }
     }
 
-    return movableMapInYXCoordinates;
-  }
-
-  initPlayerObjects = () => {
-    this.playerObjects.push(new Player(
-      this.context,
-      this.canvas,
-      40,
-      40,
-      24*75,
-      1,
-      this.getOriginX,
-      this.getOriginY,
-      this.allowedTilesOnLandMap,
-      this.getTileCoordinates,
-      this.getFPS));
+    return {yx: movableMapInYXCoordinates, xy: movableMap};
   }
 
   animate = (time) => {
@@ -423,6 +447,32 @@ class Game extends React.Component {
     if (this.context) {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
+  }
+
+  getRndMapSide = () => {
+    let rnd = this.getRndInteger(1, 4);
+    let mapSide = 'top';
+
+    switch (rnd) {
+      case 1:
+        mapSide = 'top';
+        break;
+      case 2:
+        mapSide = 'right';
+        break;
+      case 3:
+        mapSide = 'bottom';
+        break;
+      case 4:
+        mapSide = 'left';
+        break;
+    }
+
+    return mapSide;
+  }
+
+  getRndInteger = (min, max) => {
+    return Math.floor(Math.random() * (max - min) ) + min;
   }
 
   render() {
