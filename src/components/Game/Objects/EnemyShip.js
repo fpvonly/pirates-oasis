@@ -11,44 +11,41 @@ class EnemyShip extends GameObject {
     super(context, canvas, width, height, sourceTileCoords.tileX - width/2, sourceTileCoords.tileY - height/2, 5);
 
     this.getTileCoordinates = getTileCoordinates;
-    this.targetXScreen = null;
-    this.targetYScreen = null;
     this.bg = Sprites.getEnemyShip();
     this.xI = xI;
     this.yI = yI;
 
     this.matrixOfMapForWater = matrixOfMapForWater;
-    this.finder = new PF.AStarFinder({allowDiagonal: false});
+    this.finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: false});
     let grid = new PF.Grid(this.matrixOfMapForWater);
 // TODO randomize
     this.path = this.finder.findPath(xI, yI, 18, 14, grid);
+    this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
+    this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
+    this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
+    this.angle = this.calculateDirectionAngle();
+    this.newAngleSpriteIndex = 0;
 
     this.active = true;
     this.timeout = null;
   }
 
   draw = () => {
-
     if (this.destroyed === false) {
-      this.steer();
+      let shipSprite = this.getEnemyShipSprite();
+      let done = this.steer();
+      this.context.drawImage(shipSprite, this.x, this.y, this.width, this.height);
     }
-
-    let shipSprite = this.getEnemyShipSprite();
-    this.updateDimensions(shipSprite);
-    this.context.drawImage(shipSprite, this.x, this.y, this.width, this.height);
   }
 
   steer = () => {
     if (Array.isArray(this.path) === true && this.path.length > 0) {
 
-      let tileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
-      this.targetXScreen = tileCoords.tileX + MapData.tileDiagonalWidth/2;
-      this.targetYScreen = tileCoords.tileY + MapData.tileDiagonalHeight/2;
+      this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
+      this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
+      this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
 
       if (this.targetXScreen !== null && this.targetYScreen !== null) {
-
-        this.calculateDirectionAngle();
-
         let tx = this.targetXScreen - this.x - this.width/2;
         let ty = this.targetYScreen - this.y - this.height/2;
         let dist = Math.sqrt(tx * tx + ty * ty);
@@ -73,6 +70,12 @@ class EnemyShip extends GameObject {
             this.xI = this.path[0][0];
             this.yI = this.path[0][1];
             this.path.shift();
+            if (this.path.length > 0) {
+              this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
+              this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
+              this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
+              let done = this.calculateDirectionAngle();
+            }
           }
         }
       }
@@ -81,38 +84,54 @@ class EnemyShip extends GameObject {
     return true;
   }
 
-  updateDimensions = (shipSprite) => {
-    this.width = shipSprite.width;
-    this.height = shipSprite.height;
-    return this;
-  }
-
   getEnemyShipSprite = () => {
-    let angleSprite = this.bg[0];
+    let newAngleSprite = this.bg[0];
+    let newAngleSpriteIndex = 0;
 
     if (this.angle >= -42.5 && this.angle <= 42.5) {
-      angleSprite = this.bg[0];
+      newAngleSprite = this.bg[0];
+      newAngleSpriteIndex = 0;
     } else if (this.angle > 42.5 && this.angle <= 67.5) {
-      angleSprite = this.bg[1];
+      newAngleSprite = this.bg[1];
+      newAngleSpriteIndex = 1;
     } else if (this.angle > 67.5 && this.angle <= 112.5) {
-      angleSprite = this.bg[2];
+      newAngleSprite = this.bg[2];
+      newAngleSpriteIndex = 2;
     } else if (this.angle > 112.5 && this.angle <= 157.5) {
-      angleSprite = this.bg[3];
+      newAngleSprite = this.bg[3];
+      newAngleSpriteIndex = 3;
     } else if ((this.angle > 157.5 && this.angle <= 180) || (this.angle > -180 && this.angle <= -157.5)) {
-      angleSprite = this.bg[4];
+      newAngleSprite = this.bg[4];
+      newAngleSpriteIndex = 4;
     } else if (this.angle > -157.5 && this.angle <= -112.5) {
-      angleSprite = this.bg[5];
+      newAngleSprite = this.bg[5];
+      newAngleSpriteIndex = 5;
     } else if (this.angle > -112.5 && this.angle <= -67.5) {
-      angleSprite = this.bg[6];
+      newAngleSprite = this.bg[6];
+      newAngleSpriteIndex = 6;
     } else if (this.angle > -67.5 && this.angle <= -42.5) {
-      angleSprite = this.bg[7];
+      newAngleSprite = this.bg[7];
+      newAngleSpriteIndex = 7;
     }
-    return angleSprite;
+
+    if (this.newAngleSpriteIndex !== newAngleSpriteIndex) {
+      this.newAngleSpriteIndex = newAngleSpriteIndex;
+      this.width = newAngleSprite.width;
+      this.height = newAngleSprite.height;
+      //  this.x = this.x - newAngleSprite.width/2;
+      //  this.y = this.y - newAngleSprite.height/2;
+
+      //console.log('this.angle', this.angle);
+    }
+
+    return newAngleSprite;
   }
 
   calculateDirectionAngle = () => {
     let wrapperCenter = [this.x + this.width/2, this.y + this.height/2];
     this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
+
+    return this.angle;
   }
 
 }

@@ -62,14 +62,14 @@ class Sprite {
 
     // enemy ship sprites
     let enemySpriteSources = [
-      {'src': 'assets/images/enemy/ship/ship_dark_N.png', 'width': 91, 'height': 209},
-      {'src': 'assets/images/enemy/ship/ship_dark_NE.png', 'width': 213, 'height': 200},
-      {'src': 'assets/images/enemy/ship/ship_dark_E.png', 'width': 257, 'height': 182},
-      {'src': 'assets/images/enemy/ship/ship_dark_SE.png', 'width': 215, 'height': 243},
-      {'src': 'assets/images/enemy/ship/ship_dark_S.png', 'width': 91, 'height': 291},
-      {'src': 'assets/images/enemy/ship/ship_dark_SW.png', 'width': 213, 'height': 243},
-      {'src': 'assets/images/enemy/ship/ship_dark_W.png', 'width': 257, 'height': 182},
-      {'src': 'assets/images/enemy/ship/ship_dark_NW.png', 'width': 215, 'height': 200}
+      {'src': 'assets/images/enemy/ship/ship_dark_N.png', 'width': 64, 'height': 146},
+      {'src': 'assets/images/enemy/ship/ship_dark_NE.png', 'width': 149, 'height': 140},
+      {'src': 'assets/images/enemy/ship/ship_dark_E.png', 'width': 180, 'height': 127},
+      {'src': 'assets/images/enemy/ship/ship_dark_SE.png', 'width': 151, 'height': 170},
+      {'src': 'assets/images/enemy/ship/ship_dark_S.png', 'width': 64, 'height': 204},
+      {'src': 'assets/images/enemy/ship/ship_dark_SW.png', 'width': 149, 'height': 170},
+      {'src': 'assets/images/enemy/ship/ship_dark_W.png', 'width': 180, 'height': 127},
+      {'src': 'assets/images/enemy/ship/ship_dark_NW.png', 'width': 151, 'height': 140}
     ];
     for (let sprite of enemySpriteSources) {
       let enemyShip = new Image();
