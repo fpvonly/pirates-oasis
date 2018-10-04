@@ -314,6 +314,7 @@ class Game extends React.Component {
           xI,
           yI,
           this.allowedTilesOnWaterMapYX,
+          this.allowedTilesOnWaterMapXY,
           this.getTileCoordinates)
       );
     }
@@ -322,6 +323,7 @@ class Game extends React.Component {
   createMovableMapBase = (on = 'land') => {
     let movableMap = [];
     let allowedTiles = (on === 'land' ? MapData.allowedTilesOnLand : MapData.allowedTilesOnWater);
+
     for (let diagonalXToTopRight in MapData.map) {
       let layers = MapData.mapLayers[diagonalXToTopRight];
       movableMap[diagonalXToTopRight] = MapData.map[diagonalXToTopRight].map((tileId, diagonalYToBottomRight) => {
@@ -349,7 +351,7 @@ class Game extends React.Component {
         }
 
         if (allowed === true) {
-          return 0;
+          return 0; // reverse logic notation is for pathfinding.js
         } else {
           return 1;
         }

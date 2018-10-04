@@ -6,7 +6,7 @@ import * as C from '../Constants';
 
 class EnemyShip extends GameObject {
 
-  constructor(context, canvas, width, height, xI, yI, matrixOfMapForWater, getTileCoordinates) {
+  constructor(context, canvas, width, height, xI, yI, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates) {
     let sourceTileCoords = getTileCoordinates(xI, yI);
     super(context, canvas, width, height, sourceTileCoords.tileX - width/2, sourceTileCoords.tileY - height/2, 5);
 
@@ -18,8 +18,26 @@ class EnemyShip extends GameObject {
     this.matrixOfMapForWater = matrixOfMapForWater;
     this.finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: false});
     let grid = new PF.Grid(this.matrixOfMapForWater);
-// TODO randomize
-    this.path = this.finder.findPath(xI, yI, 18, 14, grid);
+// TODO randomize more
+    let possibleTargets = []; // yI
+    let target = 0;
+
+    if (yI === 0) {
+      for (let x = 0; x < matrixOfMapForWaterXY.length; x++) {
+        for (let y = 0; y < matrixOfMapForWaterXY[x].length; y++) {
+          if (matrixOfMapForWaterXY[x][y] === 1) {
+            possibleTargets.push([x, (y -1)]);
+          }
+        }
+      }
+      if (possibleTargets.length > 0) {
+          target = possibleTargets[0]; // TODO
+      }
+    } else {
+      target = [xI, yI]; // failsafe for now
+    }
+console.log('target', target);
+    this.path = this.finder.findPath(xI, yI, target[0], target[1], grid);
     this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
     this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
     this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
