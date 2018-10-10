@@ -37,7 +37,7 @@ const MapData = {
   ], // hard coded exclusions on allowed tiles [Xi, Yi] (for creating the allowed matrix map for water area)
   allowedTilesOnLand: [0, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 43],
   enemyWinTargetPositions: [
-    [5, 12], [12, 15], [17, 6]
+    [5, 12], [11, 14], [12, 15], [12, 16], [16, 5], [16, 6], [16, 7]
   ],
   tiles: [
     {src: 'assets/images/base.png', width: 150, height: 75}, // 0

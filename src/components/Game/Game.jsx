@@ -288,9 +288,9 @@ class Game extends React.Component {
     let xI = 0;
     let yI = 0;
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 1; i++) { // TODO
       let mapSide = this.getRndMapSide();
-// TODO THIS MUST BE DYNAMIC LOGIC
+
       if (mapSide === 'top') {
         xI = this.getRndInteger(0, 18);
         yI = 0;
@@ -330,9 +330,14 @@ class Game extends React.Component {
         let allowed = true;
 
         if (on === 'water') {
+          for (let enemyWinTargetsAllowed of MapData.enemyWinTargetPositions) {
+            if (enemyWinTargetsAllowed[0] == diagonalXToTopRight && enemyWinTargetsAllowed[1] == diagonalYToBottomRight) {
+              return 0; // allowed tower tile for enemy win
+            }
+          }
           for (let disallowed of MapData.forcedDisallowedTilesOnWater) {
             if (disallowed[0] == diagonalXToTopRight && disallowed[1] == diagonalYToBottomRight) {
-                return 1;
+              return 1; // disallowed tile
             }
           }
         }
@@ -486,8 +491,8 @@ class Game extends React.Component {
       <canvas
         ref={this.getCanvasRef}
         id='canvas'
-        width={canvasWidth}
-        height={canvasHeight}>
+        width={(canvasWidth > 1920 ? 1920 : canvasWidth)}
+        height={(canvasHeight > 1080 ? 1080 : canvasHeight)}>
           Your browser doesn't support HTML5 canvas API. Please update your browser.
       </canvas>
       {(DEBUG === true ? <DebugFPS ref={this.getDebugFPSRef} /> : null)}

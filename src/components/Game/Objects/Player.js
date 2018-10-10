@@ -48,7 +48,7 @@ class Player extends GameObject {
     this.justFired = false;
     this.cannonBalls = [];
 
-    window.addEventListener('mousedown', this.handleMouseDown, false);
+    this.canvas.addEventListener('mousedown', this.handleMouseDown, false);
     window.addEventListener('mouseup', this.handleMouseUp, false);
   }
 

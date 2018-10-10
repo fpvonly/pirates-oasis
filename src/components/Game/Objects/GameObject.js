@@ -116,6 +116,10 @@ class GameObject {
     return hit;
   }
 
+  getRndInteger = (min, max) => {
+    return Math.floor(Math.random() * (max - min) ) + min;
+  }
+
 }
 
 export default GameObject;

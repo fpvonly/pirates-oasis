@@ -16,28 +16,13 @@ class EnemyShip extends GameObject {
     this.yI = yI;
 
     this.matrixOfMapForWater = matrixOfMapForWater;
-    this.finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: false});
+    this.finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true});
     let grid = new PF.Grid(this.matrixOfMapForWater);
-// TODO randomize more
-    let possibleTargets = []; // yI
-    let target = 0;
+    let target = MapData.enemyWinTargetPositions[this.getRndInteger(0, 2)];
 
-    if (yI === 0) {
-      for (let x = 0; x < matrixOfMapForWaterXY.length; x++) {
-        for (let y = 0; y < matrixOfMapForWaterXY[x].length; y++) {
-          if (matrixOfMapForWaterXY[x][y] === 1) {
-            possibleTargets.push([x, (y -1)]);
-          }
-        }
-      }
-      if (possibleTargets.length > 0) {
-          target = possibleTargets[0]; // TODO
-      }
-    } else {
-      target = [xI, yI]; // failsafe for now
-    }
-console.log('target', target);
+console.log('target',target);
     this.path = this.finder.findPath(xI, yI, target[0], target[1], grid);
+    console.log('path', this.path);
     this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
     this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
     this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
