@@ -6,23 +6,22 @@ import * as C from '../Constants';
 
 class EnemyShip extends GameObject {
 
-  constructor(context, canvas, width, height, xI, yI, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates) {
+  constructor(context, canvas, width, height, xI, yI, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates, gameOver) {
     let sourceTileCoords = getTileCoordinates(xI, yI);
     super(context, canvas, width, height, sourceTileCoords.tileX - width/2, sourceTileCoords.tileY - height/2, 5);
 
     this.getTileCoordinates = getTileCoordinates;
+    this.gameOver = gameOver;
     this.bg = Sprites.getEnemyShip();
     this.xI = xI;
     this.yI = yI;
 
     this.matrixOfMapForWater = matrixOfMapForWater;
-    this.finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true});
+    this.finder = new PF.AStarFinder({allowDiagonal: false, dontCrossCorners: true});
     let grid = new PF.Grid(this.matrixOfMapForWater);
     let target = MapData.enemyWinTargetPositions[this.getRndInteger(0, 2)];
 
-console.log('target',target);
     this.path = this.finder.findPath(xI, yI, target[0], target[1], grid);
-    console.log('path', this.path);
     this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
     this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
     this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
@@ -78,6 +77,10 @@ console.log('target',target);
               this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
               this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
               let done = this.calculateDirectionAngle();
+            } else {
+              this.gameOver();
+
+              //TODO
             }
           }
         }

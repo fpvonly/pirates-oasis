@@ -63,7 +63,6 @@ class CannonBall extends GameObject {
           .progress(progress);
       }
 
-
       if (progress > 0 && this.playSplash === false) {
         let w = this.width;
         let h = this.height;

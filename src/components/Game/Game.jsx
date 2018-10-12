@@ -28,7 +28,7 @@ class Game extends React.Component {
 
     this.GAME_OVER = false;
     this.animation = null; // the requested animation frame
-    this.scrollSpeed = 1;
+    this.scrollSpeed = 50;
     this.scrollY = 0;
     this.scrollX = 0;
     this.playerObjects = []; // all player controlled units
@@ -225,15 +225,18 @@ class Game extends React.Component {
   }
 
   gameOver = () => {
+    if (this.GAME_OVER === false) {
+      window.addEventListener('mousedown', this.endGame, false);
+    }
+    this.GAME_OVER = true;
+    this.context.setTransform(1, 0, 0, 1, 0, 0);
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     let fontSize = (this.canvas.width/2 >= 960 ? 100 : ((this.canvas.width/2)/960) * 100);
     this.context.fillStyle = '#FFFFFF';
     this.context.textAlign = "center";
     this.context.fillText("Press esc or click on the screen to return to main menu", this.canvas.width/2, (this.canvas.height) - 70);
     this.canvas.style = 'cursor: pointer;' ;
-    if (this.GAME_OVER === false) {
-      window.addEventListener('mousedown', this.endGame, false);
-    }
-    this.GAME_OVER = true;
+
   }
 
   initMapTiles = () => {
@@ -315,7 +318,8 @@ class Game extends React.Component {
           yI,
           this.allowedTilesOnWaterMapYX,
           this.allowedTilesOnWaterMapXY,
-          this.getTileCoordinates)
+          this.getTileCoordinates,
+          this.gameOver)
       );
     }
   }
@@ -398,54 +402,62 @@ class Game extends React.Component {
   }
 
   drawFrame = () => {
-    this.context.setTransform(1, 0, 0, 1, 0, 0);
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-    let tileId = this.getTileCoordId(this.mousePointX, this.mousePointY);
-
-    // scroll ->
-    if (tileId.selectedXTile !== null && tileId.selectedYTile !== null) {
-      if (this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
-        this.originY += 25;
-      } else if (this.mousePointY > window.innerHeight*0.8 && this.originY >= this.minYSpan) {
-        this.originY -= 25;
+    if (this.GAME_OVER === false) {
+      this.context.setTransform(1, 0, 0, 1, 0, 0);
+      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      // Map scroll ->
+      let tileId = this.getTileCoordId(this.mousePointX, this.mousePointY);
+      if (tileId.selectedXTile !== null && tileId.selectedYTile !== null) {
+        if (this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
+          this.originY += this.scrollSpeed;
+        } else if (this.mousePointY > window.innerHeight*0.8 && this.originY >= this.minYSpan) {
+          this.originY -= this.scrollSpeed;
+        }
+        if (this.mousePointX < this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
+          this.originX += this.scrollSpeed;
+        } else if (this.mousePointX > this.canvas.width*0.8 && this.originX >= this.minXSpan) {
+          this.originX -= this.scrollSpeed;
+        }
       }
-      if (this.mousePointX < this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
-        this.originX += 25;
-      } else if (this.mousePointX > this.canvas.width*0.8 && this.originX >= this.minXSpan) {
-        this.originX -= 25;
+      this.context.setTransform(1, 0, 0, 1, this.originX, this.originY); // move origo
+
+      // Draw base tile graphics
+      for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
+        for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
+          let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedXTile === x && this.selectedYTile === y ? true : false));
+        }
       }
-    }
 
-    this.context.setTransform(1, 0, 0, 1, this.originX, this.originY); // move origo
+      // Draw only one player object in this game version
+      this.playerObjects[0].draw();
 
-    for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
-      for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-        let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedXTile === x && this.selectedYTile === y ? true : false));
+      // Draw enemies
+      for (let enemy of this.enemies) {
+        if (enemy.xI >= MapData.drawTileLayersBehindEnemyThreshold) {
+          enemy.draw();
+        }
       }
-    }
 
-    this.playerObjects[0].draw(); // only one player object in this game version
-
-// TODO: multiple enemies
-    if (this.enemies[0].xI >= 18) {
-      this.enemies[0].draw();
-    }
-
-    for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
-      for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-        let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
+      // Draw tile layer graphics
+      for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
+        for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
+          let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
+        }
       }
+
+      // Draw enemies
+      for (let enemy of this.enemies) {
+        if (enemy.xI < MapData.drawTileLayersBehindEnemyThreshold) {
+          enemy.draw();
+        }
+      }
+
+      // Draw cannon balls
+      this.playerObjects[0].drawCannonBalls();
+
+      // Draw flying parrot on top of everything
+      this.parrot.draw();
     }
-
-// TODO: multiple enemies
-    if (this.enemies[0].xI < 18) {
-      this.enemies[0].draw();
-    }
-
-    this.parrot.draw();
-    this.playerObjects[0].drawCannonBalls();
-
 
     return true;
   }

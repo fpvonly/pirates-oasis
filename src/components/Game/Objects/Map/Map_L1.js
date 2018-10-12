@@ -9,8 +9,35 @@ const MapData = {
   rows: 24,
   tileDiagonalWidth: 150,
   tileDiagonalHeight: 75,
+  drawTileLayersBehindEnemyThreshold: 18, // the xI threshold col to draw map tiles behind enemy sprite
   allowedTilesOnWater: [4], // tile type id 4 in Mapdata.tiles
   forcedDisallowedTilesOnWater: [
+    [5, 6],
+    [5, 8],
+    [5, 9],
+    [7, 5],
+    [8, 5],
+    [9, 5],
+    [10, 5],
+    [11, 5],
+    [12, 5],
+    [13, 5],
+    [14, 5],
+    [15, 5],
+    [16, 5],
+    [17, 5],
+    [14, 17],
+    [15, 17],
+    [16, 17],
+    [18, 7],
+    [18, 8],
+    [18, 9],
+    [18, 10],
+    [18, 11],
+    [18, 12],
+    [18, 13],
+    [18, 14],
+    [18, 15],
     [16, 20],
     [16, 21],
     [16, 22],
@@ -37,7 +64,7 @@ const MapData = {
   ], // hard coded exclusions on allowed tiles [Xi, Yi] (for creating the allowed matrix map for water area)
   allowedTilesOnLand: [0, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 43],
   enemyWinTargetPositions: [
-    [5, 12], [12, 15], [16, 7], [11, 14], [12, 16], [16, 5], [16, 6]  // first 3 indexes are the tower tagets and rest are for allowing pathfinding to those
+    [5, 12], [12, 16], [16, 7], [11, 14], [12, 16], [16, 5], [16, 6]  // first 3 indexes are the tower tagets and rest are for allowing pathfinding to those
   ],
   tiles: [
     {src: 'assets/images/base.png', width: 150, height: 75}, // 0
