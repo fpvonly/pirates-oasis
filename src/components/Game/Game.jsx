@@ -86,7 +86,7 @@ class Game extends React.Component {
         clearTimeout
     })();
     window.addEventListener('resize', this.resizeCanvas, false);
-    window.addEventListener('keyup', this.endGame, false);
+    window.addEventListener('keyup', this.gameOver, false);
   }
 
   componentDidMount () {
@@ -229,17 +229,10 @@ class Game extends React.Component {
       window.addEventListener('mousedown', this.endGame, false);
     }
     this.GAME_OVER = true;
-    this.context.setTransform(1, 0, 0, 1, 0, 0);
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    let fontSize = (this.canvas.width/2 >= 960 ? 100 : ((this.canvas.width/2)/960) * 100);
-    this.context.fillStyle = '#FFFFFF';
-    this.context.textAlign = "center";
-    this.context.fillText("Press esc or click on the screen to return to main menu", this.canvas.width/2, (this.canvas.height) - 70);
-    this.canvas.style = 'cursor: pointer;' ;
-
   }
 
   initMapTiles = () => {
+    this.generatedTileObjects = [];
     for (let xI = 0; xI < MapData.cols; xI++) {
       this.generatedTileObjects.push([]);
       for (let yI = 0; yI < MapData.rows; yI++) {
@@ -272,6 +265,7 @@ class Game extends React.Component {
   }
 
   initPlayerObjects = () => {
+    this.playerObjects = [];
     this.playerObjects.push(new Player(
       this.context,
       this.canvas,
@@ -457,9 +451,33 @@ class Game extends React.Component {
 
       // Draw flying parrot on top of everything
       this.parrot.draw();
+    } else {
+      this.drawEndScreen();
     }
 
     return true;
+  }
+
+  drawEndScreen = () => {
+    this.context.setTransform(1, 0, 0, 1, 0, 0);
+    cancelAnimRequestFrame(this.animation);
+
+    let fontSize = (this.canvas.width/2 >= 960 ? 140 : ((this.canvas.width/2)/960) * 140);
+    let textRatio = this.canvas.width/2 >= 960 ? 1 : ((this.canvas.width/2)/960);
+
+    this.context.font = fontSize + 'px TreasureMap,Arial';
+    this.context.shadowOffsetX = -8 * textRatio;
+    this.context.shadowColor = "#002e4f";
+    this.context.fillStyle = '#ffffff';
+    this.context.textAlign = "center";
+    this.context.fillText("GAME OVER!", this.canvas.width/2, ((this.canvas.height/2) * 0.15) + 70);
+    this.context.fillText("Your points: " + this.points, this.canvas.width/2, this.canvas.height/2);
+
+    this.context.font = '25px TreasureMap,Arial';
+    this.context.shadowOffsetX = -4 * textRatio;
+    this.context.fillText("Press esc or click on the screen to return to main menu", this.canvas.width/2, (this.canvas.height) - 70);
+
+    this.canvas.style = 'cursor: pointer;' ;
   }
 
   clearCanvas = () => {
