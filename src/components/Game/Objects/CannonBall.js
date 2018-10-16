@@ -40,7 +40,6 @@ class CannonBall extends GameObject {
     this.animationSeconds = this.targetDist/250; // 250pxs per second
     this.animationType = this.getAnimationTypeByAngle(this.cannonAngle);
 
-
     TweenLite.ticker.fps(30);
     this.tl = new TimelineMax();
     this.active = true;
@@ -48,19 +47,39 @@ class CannonBall extends GameObject {
 
   draw = () => {
     if (this.active === true) {
-
       let progress = this.tl.progress() || 0;
 
       if (this.animationType === 'bezier') {
         this.tl.progress(0)
           .clear()
-          .to(this.source, this.animationSeconds, { bezier: this.bezier, ease: "linear", onComplete: () => { this.playSplash = true; }})
-          .progress(progress);
+          .to(this.source,
+            this.animationSeconds,
+            {
+              bezier: this.bezier,
+              ease: "linear",
+              onComplete: () => {
+                this.x = this.target.x;
+                this.y = this.target.y;
+                this.playSplash = true;
+              }
+            }
+          ).progress(progress);
       } else {
         this.tl.progress(0)
           .clear()
-          .to( this.source, this.animationSeconds, {x: this.target.x, y : this.target.y, ease: "linear", onComplete: () => { this.playSplash = true; }})
-          .progress(progress);
+          .to(this.source,
+            this.animationSeconds,
+            {
+              x: this.target.x,
+              y : this.target.y,
+              ease: "linear",
+              onComplete: () => {
+                this.x = this.target.x;
+                this.y = this.target.y;
+                this.playSplash = true;
+              }
+            }
+          ).progress(progress);
       }
 
       if (progress > 0 && this.playSplash === false) {
@@ -84,13 +103,6 @@ class CannonBall extends GameObject {
           this.active = false;
         }
       }
-
-
-      /*this.context.beginPath();
-      this.context.moveTo(this.p1.x, this.p1.y);
-      this.context.bezierCurveTo(this.p1.x, this.p1.y, this.p2.x, this.p2.y, this.p3.x, this.p3.y);
-      this.context.strokeStyle = "#000000";
-      this.context.stroke();*/
     }
     return true;
   }

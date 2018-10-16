@@ -10,7 +10,7 @@ import * as C from '../Constants';
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTargetTileCoordinates, getFPS) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTileCoordinates, getFPS) {
 
     super(context, canvas, width, height, x - width/2, y - height/2, 5);
 
@@ -36,7 +36,7 @@ class Player extends GameObject {
     this.targetYScreen = null;
     this.targetXScreenFinalPos = null;
     this.targetYScreenFinalPos = null;
-    this.getTargetTileCoordinates = getTargetTileCoordinates;
+    this.getTileCoordinates = getTileCoordinates;
     this.shootingStartPoint = {x: this.x, y: this.y};
     this.explosion = null;
 
@@ -55,7 +55,7 @@ class Player extends GameObject {
   steer = () => {
     if (Array.isArray(this.path) === true && this.path.length > 0) {
 
-      let tileCoords = this.getTargetTileCoordinates(this.path[0][0], this.path[0][1]);
+      let tileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
       // if there's only one end point of the path left, use the actual coordinates of the clicked map area, instead of general tile position coordinate
       if (this.path.length === 1) {
         this.targetXScreen = this.targetXScreenFinalPos;
@@ -118,7 +118,7 @@ class Player extends GameObject {
           10,
           10,
           this.angle,
-          this.getTargetTileCoordinates)
+          this.getTileCoordinates)
         );
       this.explosion = new Explosion(this.context, this.canvas, startPoint.x, startPoint.y, 40, 40);
     }

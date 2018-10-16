@@ -113,6 +113,7 @@ class GameObject {
       source.y + source.height > target.y) {
       hit = true;
     }
+
     return hit;
   }
 

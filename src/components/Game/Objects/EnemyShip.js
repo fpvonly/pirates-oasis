@@ -6,27 +6,15 @@ import * as C from '../Constants';
 
 class EnemyShip extends GameObject {
 
-  constructor(context, canvas, width, height, xI, yI, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates, gameOver) {
-    let sourceTileCoords = getTileCoordinates(xI, yI);
-    super(context, canvas, width, height, sourceTileCoords.tileX - width/2, sourceTileCoords.tileY - height/2, 5);
+  constructor(context, canvas, width, height, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates, gameOver) {
+
+    super(context, canvas, width, height, 0, 0, 5);
 
     this.getTileCoordinates = getTileCoordinates;
     this.gameOver = gameOver;
     this.bg = Sprites.getEnemyShip();
-    this.xI = xI;
-    this.yI = yI;
-
     this.matrixOfMapForWater = matrixOfMapForWater;
-    this.finder = new PF.AStarFinder({allowDiagonal: false, dontCrossCorners: true});
-    let grid = new PF.Grid(this.matrixOfMapForWater);
-    let target = MapData.enemyWinTargetPositions[this.getRndInteger(0, 2)];
-
-    this.path = this.finder.findPath(xI, yI, target[0], target[1], grid);
-    this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
-    this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
-    this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
-    this.angle = this.calculateDirectionAngle();
-    this.newAngleSpriteIndex = 0;
+    this.reset();
 
     this.active = true;
     this.timeout = null;
@@ -37,6 +25,8 @@ class EnemyShip extends GameObject {
       let shipSprite = this.getEnemyShipSprite();
       let done = this.steer();
       this.context.drawImage(shipSprite, this.x, this.y, this.width, this.height);
+    } else {
+      this.reset();
     }
   }
 
@@ -61,7 +51,6 @@ class EnemyShip extends GameObject {
           } else {
             this.moveRight(Math.abs(velX));
           }
-
           if (velY < 0) {
             this.moveUp(Math.abs(velY));
           } else {
@@ -78,9 +67,7 @@ class EnemyShip extends GameObject {
               this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
               let done = this.calculateDirectionAngle();
             } else {
-              this.gameOver();
-
-              //TODO
+              this.gameOver(); // enemy reached the taret tower destination
             }
           }
         }
@@ -138,6 +125,64 @@ class EnemyShip extends GameObject {
     this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
 
     return this.angle;
+  }
+
+  reset = () => {
+    let mapSide = this.getRndMapSide();
+
+    if (mapSide === 'top') {
+      this.xI = this.getRndInteger(0, 18);
+      this.yI = 0;
+    } else if (mapSide === 'bottom') {
+      this.xI = this.getRndInteger(0, 16);
+      this.yI = 23;
+    } else if (mapSide === 'left') {
+      this.xI = 0;
+      this.yI = this.getRndInteger(0, 23);
+    } else if (mapSide === 'right') {
+      this.xI = 23;
+      this.yI = this.getRndInteger(5, 23);
+    }
+
+    let sourceTileCoords =this. getTileCoordinates(this.xI, this.yI);
+    this.x = sourceTileCoords.tileX - this.width/2;
+    this.y = sourceTileCoords.tileY - this.height/2;
+
+    this.finder = new PF.AStarFinder({allowDiagonal: false, dontCrossCorners: true});
+    let grid = new PF.Grid(this.matrixOfMapForWater);
+    let target = MapData.enemyWinTargetPositions[this.getRndInteger(0, 2)];
+    this.path = this.finder.findPath(this.xI, this.yI, target[0], target[1], grid);
+    this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
+    this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
+    this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
+    this.angle = this.calculateDirectionAngle();
+    this.newAngleSpriteIndex = 0;
+
+    this.timeout = setTimeout(() => {
+      this.destroyed = false;
+    }, 1000);
+  }
+
+  getRndMapSide = () => {
+    let rnd = this.getRndInteger(1, 4);
+    let mapSide = 'top';
+
+    switch (rnd) {
+      case 1:
+        mapSide = 'top';
+        break;
+      case 2:
+        mapSide = 'right';
+        break;
+      case 3:
+        mapSide = 'bottom';
+        break;
+      case 4:
+        mapSide = 'left';
+        break;
+    }
+
+    return mapSide;
   }
 
 }

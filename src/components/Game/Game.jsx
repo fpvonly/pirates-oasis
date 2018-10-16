@@ -33,6 +33,7 @@ class Game extends React.Component {
     this.scrollX = 0;
     this.playerObjects = []; // all player controlled units
     this.enemies = [];
+    this.points = 0;
 
     this.minXSpan = 0;
     this.maxXSpan = 0;
@@ -222,6 +223,7 @@ class Game extends React.Component {
       12,
       this.getTileCoordinates);
     this.initEnemies();
+    this.points = 0;
   }
 
   gameOver = () => {
@@ -282,34 +284,13 @@ class Game extends React.Component {
 
   initEnemies = () => {
     this.enemies = [];
-    let xI = 0;
-    let yI = 0;
-
     for (let i = 0; i < 1; i++) { // TODO
-      let mapSide = this.getRndMapSide();
-
-      if (mapSide === 'top') {
-        xI = this.getRndInteger(0, 18);
-        yI = 0;
-      } else if (mapSide === 'bottom') {
-        xI = this.getRndInteger(0, 16);
-        yI = 23;
-      } else if (mapSide === 'left') {
-        xI = 0;
-        yI = this.getRndInteger(0, 23);
-      } else if (mapSide === 'right') {
-        xI = 23;
-        yI = this.getRndInteger(5, 23);
-      }
-
       this.enemies.push(
         new EnemyShip(
           this.context,
           this.canvas,
           60,
           49,
-          xI,
-          yI,
           this.allowedTilesOnWaterMapYX,
           this.allowedTilesOnWaterMapXY,
           this.getTileCoordinates,
@@ -451,6 +432,23 @@ class Game extends React.Component {
 
       // Draw flying parrot on top of everything
       this.parrot.draw();
+
+      // Enemy hits
+      for (let enemy of this.enemies) {
+        if(enemy.destroyed === false && enemy.active === true) {
+          // did player's cannon balls hit the enemy?
+          let cannonBalls = this.playerObjects[0].getActiveCannonBalls();
+          for (let cannonBall of cannonBalls) {
+
+            if(cannonBall.active === true && cannonBall.didCollideWith(enemy) === true) {
+              enemy.destroy();
+              cannonBall.active = false; // bullet is used now
+              this.points++;
+              break;
+            }
+          }
+        }
+        }
     } else {
       this.drawEndScreen();
     }
@@ -484,32 +482,6 @@ class Game extends React.Component {
     if (this.context) {
       this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
-  }
-
-  getRndMapSide = () => {
-    let rnd = this.getRndInteger(1, 4);
-    let mapSide = 'top';
-
-    switch (rnd) {
-      case 1:
-        mapSide = 'top';
-        break;
-      case 2:
-        mapSide = 'right';
-        break;
-      case 3:
-        mapSide = 'bottom';
-        break;
-      case 4:
-        mapSide = 'left';
-        break;
-    }
-
-    return mapSide;
-  }
-
-  getRndInteger = (min, max) => {
-    return Math.floor(Math.random() * (max - min) ) + min;
   }
 
   render() {
