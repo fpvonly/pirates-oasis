@@ -26,6 +26,17 @@ class EnemyShip extends GameObject {
       let done = this.steer();
       this.context.drawImage(shipSprite, this.x, this.y, this.width, this.height);
     } else {
+      this.playDestructionAnim();
+    }
+  }
+
+  playDestructionAnim = () => {
+    let shipSprite = this.getEnemyShipSprite();
+    let hIncrement = this.height/30;
+    this.context.drawImage(shipSprite, 0, 0, this.width, hIncrement*(30 - this.destructionAnimFrame), this.x, this.y + (hIncrement*this.destructionAnimFrame), this.width, hIncrement*(30 - this.destructionAnimFrame));
+
+    this.destructionAnimFrame++;
+    if (this.destructionAnimFrame > 30) {
       this.reset();
     }
   }
@@ -161,6 +172,7 @@ class EnemyShip extends GameObject {
     this.timeout = setTimeout(() => {
       this.destroyed = false;
     }, 1000);
+    this.destructionAnimFrame = 1;
   }
 
   getRndMapSide = () => {
