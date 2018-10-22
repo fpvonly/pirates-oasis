@@ -5,18 +5,16 @@ class Sound {
   static splashSounds = [];
   static music = [];
 
-  static cannonLoaded = [];
-  static splashLoaded = [];
+  static waterSplashLoaded = [];
   static musicLoaded = false;
-  static blastsLoaded = [];
-  static gunBlastsLoaded = [];
+  static cannonSoundsLoaded = [];
 
   static initializeStaticClass() {
 
     for (let i = 0; i < 4; i++) { // some extra sound objects to create buffer for quick events that require sounds at 60fps
       let blast = new Audio("assets/sounds/mortar-cannon-explosion.mp3");
       blast.oncanplaythrough = () => {
-        Sound.cannonLoaded.push(true);
+        Sound.cannonSoundsLoaded.push(true);
       };
       blast.volume = 0.3;
       blast.preload = 'auto';
@@ -29,7 +27,7 @@ class Sound {
     for (let i = 0; i < 4; i++) { // some extra sound objects to create buffer for quick events
       let splash = new Audio("assets/sounds/water-splash.mp3");
       splash.oncanplaythrough = () => {
-        Sound.splashLoaded.push(true);
+        Sound.waterSplashLoaded.push(true);
       };
       splash.volume = 0.3;
       splash.preload = 'auto';
@@ -39,37 +37,23 @@ class Sound {
       Sound.splashSounds.push(splash);
     }
 
-// TODO for enemy ships
-    // explosion sounds
-  /*  for (let i = 0; i < 30; i++) { // some extra sound objects to create buffer for quick events that require sounds at 60fps
-      let blast = new Audio("assets/sounds/cc0_explosion_large_gas_001.mp3");
-      blast.oncanplaythrough = () => {
-        Sound.blastsLoaded.push(true);
-      };
-      blast.volume = 0.2;
-      blast.preload = 'auto';
-      blast.addEventListener("ended", function() {
-        blast.currentTime = 0;
-      });
-      Sound.explosionSounds.push(blast);
-    }
 
     // game music
-    Sound.music = new Audio('assets/sounds/slackbaba_drink_more_tea.mp3');
+    Sound.music = new Audio('assets/sounds/tropical-island-full-01_zJyg5U4O.mp3');
     Sound.music.oncanplay = () => {
       Sound.musicLoaded = true;
     };
     Sound.music.loop = true;
-    Sound.music.volume = 0.3;*/
+    Sound.music.volume = 0.3;
 
   }
 
   static getLoadingStatusInfo = () => {
-    return 'Sounds: ' + Math.floor(((((Sound.musicLoaded === true ? 1 : 0) + Sound.blastsLoaded.length + Sound.gunBlastsLoaded.length)/81)*100)) + '%';
+    return 'Sounds: ' + Math.floor(((((Sound.musicLoaded === true ? 1 : 0) + Sound.cannonSoundsLoaded.length + Sound.waterSplashLoaded.length)/9)*100)) + '%';
   }
 
   static soundsLoaded = () => {
-    return (Sound.musicLoaded === true && Sound.blastsLoaded.length === 30 && Sound.gunBlastsLoaded.length === 50);
+    return (Sound.musicLoaded === true && Sound.cannonSoundsLoaded.length === 4 && Sound.waterSplashLoaded.length === 4);
   }
 
   static playCannonBlastSound = () => {

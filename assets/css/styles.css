@@ -71,6 +71,48 @@ html, body {
   background-position-y: center;
 }
 
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-size: 3rem;
+  color: #000000;
+  background: url('../images/bg_island.jpg');
+  background-color: transparent;
+  background-size: cover;
+  background-position-y: center;
+}
+
+.loading-anim {
+   position: absolute;
+   width: 30vh;
+   height: 30vh;
+   animation: spin 6s linear infinite;
+   background: url('../images/kisspng/skull-pirate-coin.png');
+   background-position: center;
+   background-size: cover;
+}
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+.loader_text {
+  position: absolute;
+  margin-top: 25vh;
+  color: #ffffff;
+  text-shadow: -3px 3px #000000;
+  font-size: 5rem;
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader_text .sounds_loaded {
+  width: 100%;
+  text-align: center;
+}
+
 canvas {
   margin: auto auto;
   display: block;

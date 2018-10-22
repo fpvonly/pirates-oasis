@@ -96,9 +96,10 @@ class Game extends React.Component {
       this.mousePointY = null;
       this.mousePointX = null;
     }.bind(this), false);
-
-// TODO remove eventually
-    this.startGame();
+// TODO REMOVE
+    if(this.props.gameState === C.RUN) {
+     this.startGame();
+    }
   }
 
   componentWillUnmount() {
@@ -116,10 +117,9 @@ class Game extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    //TODO
-    /*if(this.props.gameState === C.RUN && prevProps.gameState === C.STOP) {
-      this.startGame();
-    }*/
+    if(this.props.gameState === C.RUN && prevProps.gameState === C.STOP) {
+     this.startGame();
+    }
   }
 
   getCanvasRef = (c) => {

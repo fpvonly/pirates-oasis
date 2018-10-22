@@ -78,7 +78,7 @@ class EnemyShip extends GameObject {
               this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
               let done = this.calculateDirectionAngle();
             } else {
-              this.gameOver(); // enemy reached the taret tower destination
+              this.gameOver(); // enemy reached the target tower destination
             }
           }
         }
