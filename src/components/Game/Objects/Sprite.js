@@ -84,12 +84,61 @@ class Sprite {
     let all = 0;
     let loaded = 0;
 
-    /*for (let frame of Sprite.explosionSpriteAnimFrames) {
+    for (let frame of Sprite.explosionSpriteAnimFrames) {
       all++;
       if (frame.complete === true) {
         loaded++;
       }
-    }*/
+    }
+
+    for (let frame of Sprite.splashSpriteAnimFrames) {
+      all++;
+      if (frame.complete === true) {
+        loaded++;
+      }
+    }
+
+    for (let tile of Sprite.tiles) {
+      all++;
+      if (tile.complete === true) {
+        loaded++;
+      }
+    }
+
+    for (let sprite of Sprite.playerCannon) {
+      all++;
+      if (sprite.complete === true) {
+        loaded++;
+      }
+    }
+
+    for (let sprite of Sprite.enemyShip) {
+      all++;
+      if (sprite.complete === true) {
+        loaded++;
+      }
+    }
+
+    if (Sprite.cannonBall instanceof Image) {
+      all++;
+      if (Sprite.cannonBall.complete === true) {
+        loaded++;
+      }
+    }
+
+    if (Sprite.parrotFlying instanceof Image) {
+      all++;
+      if (Sprite.parrotFlying.complete === true) {
+        loaded++;
+      }
+    }
+
+    if (Sprite.parrotFlyingLeft instanceof Image) {
+      all++;
+      if (Sprite.parrotFlyingLeft.complete === true) {
+        loaded++;
+      }
+    }
 
 
     return 'Images: ' + Math.floor((loaded/all)*100) + '%';
@@ -98,14 +147,58 @@ class Sprite {
   static spritesLoaded = () => {
     let loaded = true;
 
-    /*for (let frame of Sprite.explosionSpriteAnimFrames) {
+    for (let frame of Sprite.explosionSpriteAnimFrames) {
       if (frame.complete === false) {
+        loaded = false;
+        break;
+      }
+    }
+
+    for (let frame of Sprite.splashSpriteAnimFrames) {
+      if (frame.complete === false) {
+        loaded = false;
+        break;
+      }
+    }
+
+    for (let tile of Sprite.tiles) {
+      if (tile.complete === false) {
+        loaded = false;
+        break;
+      }
+    }
+
+    for (let sprite of Sprite.playerCannon) {
+      if (sprite.complete === false) {
+        loaded = false;
+        break;
+      }
+    }
+
+    for (let sprite of Sprite.enemyShip) {
+      if (sprite.complete === false) {
+        loaded = false;
+        break;
+      }
+    }
+
+    if (Sprite.cannonBall instanceof Image) {
+      if (Sprite.cannonBall.complete === false) {
         loaded = false;
       }
     }
-    if (Sprite.playerCannon.complete === false) {
-      loaded = false;
-    }*/
+
+    if (Sprite.parrotFlying instanceof Image) {
+      if (Sprite.parrotFlying.complete === false) {
+        loaded = false;
+      }
+    }
+
+    if (Sprite.parrotFlyingLeft instanceof Image) {
+      if (Sprite.parrotFlyingLeft.complete === false) {
+        loaded = false;
+      }
+    }
 
     return loaded;
   }

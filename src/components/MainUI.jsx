@@ -26,10 +26,10 @@ class UI extends React.Component {
 
   componentWillMount() {
     let soundAssetsLoadInfo = Sounds.getLoadingStatusInfo();
-    //let spriteAssetsLoadInfo = Sprites.getLoadingStatusInfo();
+    let spriteAssetsLoadInfo = Sprites.getLoadingStatusInfo();
     this.setState({
-      loadingSoundsStatusInfoText: soundAssetsLoadInfo
-      //loadingSpritesStatusInfoText: spriteAssetsLoadInfo
+      loadingSoundsStatusInfoText: soundAssetsLoadInfo,
+      loadingSpritesStatusInfoText: spriteAssetsLoadInfo
     });
   }
 
@@ -37,12 +37,12 @@ class UI extends React.Component {
     this.loadingInterval = setInterval(() => {
 
       let soundAssetsLoadInfo = Sounds.getLoadingStatusInfo();
-      // spriteAssetsLoadInfo = Sprites.getLoadingStatusInfo();
+      let spriteAssetsLoadInfo = Sprites.getLoadingStatusInfo();
 
-      if ((Sounds.soundsLoaded() === true /*&& Sprites.spritesLoaded() === true*/ && this.loadingIntervalCount >= 2) || this.loadingIntervalCount === 20) {
+      if ((Sounds.soundsLoaded() === true && Sprites.spritesLoaded() === true && this.loadingIntervalCount >= 2) || this.loadingIntervalCount === 20) {
         this.setState({
-          loadingSoundsStatusInfoText: soundAssetsLoadInfo
-        //  loadingSpritesStatusInfoText: spriteAssetsLoadInfo
+          loadingSoundsStatusInfoText: soundAssetsLoadInfo,
+          loadingSpritesStatusInfoText: spriteAssetsLoadInfo
         }, () => {
           this.setState({
             isHydrating: false,
@@ -52,10 +52,9 @@ class UI extends React.Component {
           clearInterval(this.loadingInterval);
         });
       } else {
-
         this.setState({
-          loadingSoundsStatusInfoText: soundAssetsLoadInfo
-        //  loadingSpritesStatusInfoText: spriteAssetsLoadInfo
+          loadingSoundsStatusInfoText: soundAssetsLoadInfo,
+          loadingSpritesStatusInfoText: spriteAssetsLoadInfo
         });
       }
       this.loadingIntervalCount++;
