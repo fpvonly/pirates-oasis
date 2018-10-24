@@ -89,7 +89,7 @@ class UI extends React.Component {
   }
 
   getmusicStateFromStorage = () => {
-    let value = false;
+    let value = true;
     if (window.localStorage) {
       value = localStorage.getItem('playMusic');
     }

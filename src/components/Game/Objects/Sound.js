@@ -44,7 +44,7 @@ class Sound {
       Sound.musicLoaded = true;
     };
     Sound.music.loop = true;
-    Sound.music.volume = 0.3;
+    Sound.music.volume = 0.2;
 
   }
 

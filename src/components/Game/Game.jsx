@@ -442,7 +442,7 @@ class Game extends React.Component {
 
             if(cannonBall.active === true && cannonBall.didCollideWith(enemy) === true) {
               enemy.destroy();
-              cannonBall.active = false; // bullet is used now
+              cannonBall.active = false; // cannon ball is used now
               this.points++;
               break;
             }

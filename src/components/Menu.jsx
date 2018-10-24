@@ -3,6 +3,7 @@ import {render} from 'react-dom';
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Toggle from 'react-toggle'
+import Sounds from './Game/Objects/Sound';
 
 import conf from '../conf.json';
 import * as C from './Game/Constants';
@@ -31,6 +32,12 @@ class Menu extends React.Component {
     controlMusic: PropTypes.func,
     musicState: PropTypes.bool
   };
+
+  componentDidMount = () => {
+    if (typeof window.localStorage === 'undefined' || localStorage.getItem('playMusic') === null) {
+      Sounds.playMusic();
+    }
+  }
 
   handleNewGameClick = (e) => {
     this.setState({extraSubMenuVisible: false}, () => {

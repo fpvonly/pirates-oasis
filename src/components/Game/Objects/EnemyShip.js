@@ -169,9 +169,7 @@ class EnemyShip extends GameObject {
     this.angle = this.calculateDirectionAngle();
     this.newAngleSpriteIndex = 0;
 
-    this.timeout = setTimeout(() => {
-      this.destroyed = false;
-    }, 1000);
+    this.destroyed = false;
     this.destructionAnimFrame = 1;
   }
 
