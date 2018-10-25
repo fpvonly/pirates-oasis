@@ -84,7 +84,10 @@ class Tile {
     this.drawOutline(this.x + this.MapData.tileDiagonalWidth, this.y + this.MapData.tileDiagonalHeight / 2, this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight, color);
     this.drawOutline(this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight, this.x, this.y + this.MapData.tileDiagonalHeight / 2, color);
 */
+    this.context.beginPath();
+    this.context.shadowOffsetX = 0;
     this.context.fillText(this.xI + ", " + this.yI, this.x + this.MapData.tileDiagonalWidth/2 - 9, this.y + this.MapData.tileDiagonalHeight/2 + 3);
+    this.context.closePath();
 
     return true;
   }
@@ -111,6 +114,7 @@ class Tile {
 
   drawOutline = (x1, y1, x2, y2, color) => {
     this.context.strokeStyle = color;
+    this.context.shadowOffsetX = 0;
     this.context.beginPath();
     this.context.lineWidth = 2;
     this.context.moveTo(x1, y1);

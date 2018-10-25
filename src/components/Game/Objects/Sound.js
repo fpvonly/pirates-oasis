@@ -1,6 +1,7 @@
 class Sound {
 
   static cannonSounds = [];
+  static crashSounds = [];
   static explosionSounds = [];
   static splashSounds = [];
   static music = [];
@@ -8,10 +9,11 @@ class Sound {
   static waterSplashLoaded = [];
   static musicLoaded = false;
   static cannonSoundsLoaded = [];
+  static crashSoundsLoaded = [];
 
   static initializeStaticClass() {
 
-    for (let i = 0; i < 4; i++) { // some extra sound objects to create buffer for quick events that require sounds at 60fps
+    for (let i = 0; i < 4; i++) {
       let blast = new Audio("assets/sounds/mortar-cannon-explosion.mp3");
       blast.oncanplaythrough = () => {
         Sound.cannonSoundsLoaded.push(true);
@@ -22,6 +24,19 @@ class Sound {
         blast.currentTime = 0;
       });
       Sound.cannonSounds.push(blast);
+    }
+
+    for (let i = 0; i < 4; i++) {
+      let blast = new Audio("assets/sounds/crash-wood_GkuoMh4d.mp3");
+      blast.oncanplaythrough = () => {
+        Sound.crashSoundsLoaded.push(true);
+      };
+      blast.volume = 0.3;
+      blast.preload = 'auto';
+      blast.addEventListener("ended", function() {
+        blast.currentTime = 0;
+      });
+      Sound.crashSounds.push(blast);
     }
 
     for (let i = 0; i < 4; i++) { // some extra sound objects to create buffer for quick events
@@ -49,16 +64,29 @@ class Sound {
   }
 
   static getLoadingStatusInfo = () => {
-    return 'Sounds: ' + Math.floor(((((Sound.musicLoaded === true ? 1 : 0) + Sound.cannonSoundsLoaded.length + Sound.waterSplashLoaded.length)/9)*100)) + '%';
+    return 'Sounds: ' + Math.floor(((((Sound.musicLoaded === true ? 1 : 0) + Sound.cannonSoundsLoaded.length + Sound.crashSounds.length + Sound.waterSplashLoaded.length)/13)*100)) + '%';
   }
 
   static soundsLoaded = () => {
-    return (Sound.musicLoaded === true && Sound.cannonSoundsLoaded.length === 4 && Sound.waterSplashLoaded.length === 4);
+    return (Sound.musicLoaded === true && Sound.crashSounds.length === 4 && Sound.cannonSoundsLoaded.length === 4 && Sound.waterSplashLoaded.length === 4);
   }
 
   static playCannonBlastSound = () => {
     let playSound = null;
     for (let sound of Sound.cannonSounds) {
+      if (sound.currentTime === 0) {
+        playSound = sound;
+        break;
+      }
+    }
+    if (playSound !== null) {
+      playSound.play();
+    }
+  }
+
+  static playCrashSound = () => {
+    let playSound = null;
+    for (let sound of Sound.crashSounds) {
       if (sound.currentTime === 0) {
         playSound = sound;
         break;

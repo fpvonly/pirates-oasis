@@ -377,32 +377,36 @@ class Game extends React.Component {
   }
 
   drawFrame = () => {
+
+    // reset
+    this.context.setTransform(1, 0, 0, 1, 0, 0);
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    // Map scroll ->
+    let tileId = this.getTileCoordId(this.mousePointX, this.mousePointY);
+    if (tileId.selectedXTile !== null && tileId.selectedYTile !== null) {
+      if (this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
+        this.originY += this.scrollSpeed;
+      } else if (this.mousePointY > window.innerHeight*0.8 && this.originY >= this.minYSpan) {
+        this.originY -= this.scrollSpeed;
+      }
+      if (this.mousePointX < this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
+        this.originX += this.scrollSpeed;
+      } else if (this.mousePointX > this.canvas.width*0.8 && this.originX >= this.minXSpan) {
+        this.originX -= this.scrollSpeed;
+      }
+    }
+    // move origo
+    this.context.setTransform(1, 0, 0, 1, this.originX, this.originY);
+
+    // Draw base tile graphics
+    for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
+      for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
+        let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedXTile === x && this.selectedYTile === y ? true : false));
+      }
+    }
+
     if (this.GAME_OVER === false) {
-      this.context.setTransform(1, 0, 0, 1, 0, 0);
-      this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      // Map scroll ->
-      let tileId = this.getTileCoordId(this.mousePointX, this.mousePointY);
-      if (tileId.selectedXTile !== null && tileId.selectedYTile !== null) {
-        if (this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
-          this.originY += this.scrollSpeed;
-        } else if (this.mousePointY > window.innerHeight*0.8 && this.originY >= this.minYSpan) {
-          this.originY -= this.scrollSpeed;
-        }
-        if (this.mousePointX < this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
-          this.originX += this.scrollSpeed;
-        } else if (this.mousePointX > this.canvas.width*0.8 && this.originX >= this.minXSpan) {
-          this.originX -= this.scrollSpeed;
-        }
-      }
-      this.context.setTransform(1, 0, 0, 1, this.originX, this.originY); // move origo
-
-      // Draw base tile graphics
-      for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
-        for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-          let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedXTile === x && this.selectedYTile === y ? true : false));
-        }
-      }
-
       // Draw only one player object in this game version
       this.playerObjects[0].draw();
 
@@ -457,24 +461,22 @@ class Game extends React.Component {
   }
 
   drawEndScreen = () => {
-    this.context.setTransform(1, 0, 0, 1, 0, 0);
-    cancelAnimRequestFrame(this.animation);
 
     let fontSize = (this.canvas.width/2 >= 960 ? 140 : ((this.canvas.width/2)/960) * 140);
     let textRatio = this.canvas.width/2 >= 960 ? 1 : ((this.canvas.width/2)/960);
 
+    this.context.beginPath();
     this.context.font = fontSize + 'px TreasureMap,Arial';
     this.context.shadowOffsetX = -8 * textRatio;
     this.context.shadowColor = "#002e4f";
     this.context.fillStyle = '#ffffff';
     this.context.textAlign = "center";
-    this.context.fillText("GAME OVER!", this.canvas.width/2, ((this.canvas.height/2) * 0.15) + 70);
-    this.context.fillText("Your points: " + this.points, this.canvas.width/2, this.canvas.height/2);
-
+    this.context.fillText("GAME OVER!", this.canvas.width/2 - this.originX, ((this.canvas.height/2) * 0.15) - this.originY + 70);
+    this.context.fillText("Your points: " + this.points, this.canvas.width/2 - this.originX, this.canvas.height/2 - this.originY);
     this.context.font = '25px TreasureMap,Arial';
     this.context.shadowOffsetX = -4 * textRatio;
-    this.context.fillText("Press esc or click on the screen to return to main menu", this.canvas.width/2, (this.canvas.height) - 70);
-
+    this.context.fillText("Press esc or click on the screen to return to main menu", this.canvas.width/2 - this.originX, (this.canvas.height - this.originY) - 70);
+    this.context.closePath();
     this.canvas.style = 'cursor: pointer;' ;
   }
 
