@@ -40,7 +40,7 @@ class EnemyShip extends GameObject {
       Sounds.playCrashSound();
     }
     this.destructionAnimFrame++;
-    if (this.destructionAnimFrame > 30) {
+    if (this.destructionAnimFrame > 30 && this.active === true) {
       this.reset();
     }
   }
@@ -144,59 +144,45 @@ class EnemyShip extends GameObject {
 
   reset = () => {
     let mapSide = this.getRndMapSide();
+    this.removeEnemyWarnings();
 
     if (mapSide === 'top') {
       this.xI = this.getRndInteger(0, 18);
       this.yI = 0;
-      if (this.xI < 6) {
-        this.canvas.classList.add('warning_shadow_bottom_left');
-      } else if (this.xI < 17) {
+      if (this.xI <= 12) {
         this.canvas.classList.add('warning_shadow_left');
       } else {
-        this.canvas.classList.add('warning_shadow_top_left');
+        this.canvas.classList.add('warning_shadow_top');
       }
     } else if (mapSide === 'bottom') {
       this.xI = this.getRndInteger(0, 16);
       this.yI = 23;
-      if (this.xI < 6) {
-        this.canvas.classList.add('warning_shadow_bottom_right');
-      } else if (this.xI < 17) {
-        this.canvas.classList.add('warning_shadow_right');
+      if (this.xI <= 12) {
+        this.canvas.classList.add('warning_shadow_bottom');
       } else {
-        this.canvas.classList.add('warning_shadow_top_right');
+        this.canvas.classList.add('warning_shadow_right');
       }
     } else if (mapSide === 'left') {
       this.xI = 0;
       this.yI = this.getRndInteger(0, 23);
-      if (this.yI < 6) {
-        this.canvas.classList.add('warning_shadow_bottom_left');
-      } else if (this.yI < 16) {
-        this.canvas.classList.add('warning_shadow_bottom');
+      if (this.yI <= 12) {
+        this.canvas.classList.add('warning_shadow_left');
       } else {
-        this.canvas.classList.add('warning_shadow_bottom_right');
+        this.canvas.classList.add('warning_shadow_bottom');
       }
     } else if (mapSide === 'right') {
       this.xI = 23;
       this.yI = this.getRndInteger(5, 23);
-      if (this.yI < 6) {
-        this.canvas.classList.add('warning_shadow_top_left');
-      } else if (this.yI < 16) {
+      if (this.yI <= 12) {
         this.canvas.classList.add('warning_shadow_top');
       } else {
-        this.canvas.classList.add('warning_shadow_top_right');
+        this.canvas.classList.add('warning_shadow_right');
       }
     }
-
     this.warningTimeout = setTimeout(() => {
-      this.canvas.classList.remove('warning_shadow_left_bottom');
-      this.canvas.classList.remove('warning_shadow_left_top');
-      this.canvas.classList.remove('warning_shadow_right_bottom');
-      this.canvas.classList.remove('warning_shadow_right_top');
-      this.canvas.classList.remove('warning_shadow_bottom_left');
-      this.canvas.classList.remove('warning_shadow_bottom_right');
-      this.canvas.classList.remove('warning_shadow_top_left');
-      this.canvas.classList.remove('warning_shadow_top_right');
+      this.removeEnemyWarnings();
     }, 3000);
+
 
     let sourceTileCoords =this. getTileCoordinates(this.xI, this.yI);
     this.x = sourceTileCoords.tileX - this.width/2;
@@ -214,6 +200,13 @@ class EnemyShip extends GameObject {
 
     this.destroyed = false;
     this.destructionAnimFrame = 1;
+  }
+
+  removeEnemyWarnings = () => {
+    this.canvas.classList.remove('warning_shadow_right');
+    this.canvas.classList.remove('warning_shadow_left');
+    this.canvas.classList.remove('warning_shadow_bottom');
+    this.canvas.classList.remove('warning_shadow_top');
   }
 
   getRndMapSide = () => {

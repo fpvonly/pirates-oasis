@@ -35,7 +35,12 @@ class Menu extends React.Component {
 
   componentDidMount = () => {
     if (typeof window.localStorage === 'undefined' || localStorage.getItem('playMusic') === null) {
-      Sounds.playMusic();
+//TODO
+      try {
+        Sounds.playMusic();
+      } catch(err) {
+        this.props.controlMusic(false);
+      }
     }
   }
 

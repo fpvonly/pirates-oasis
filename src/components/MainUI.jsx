@@ -21,7 +21,7 @@ class UI extends React.Component {
     }
 
     this.loadingInterval = null;
-    this.loadingIntervalCount = 0; // if all files can't be loaded (sounds etc)a t the moment (slow connection), allow still access to main menu and game
+    this.loadingIntervalCount = 0;
   }
 
   componentWillMount() {
@@ -71,13 +71,17 @@ class UI extends React.Component {
     this.setState({GAME_STATE: state});
   }
 
-  controlMusic = () => {
-    if (this.state.musicState === true) {
-      //Sounds.pauseMusic();
-      this.setmusicStateToStorage(false);
+  controlMusic = (value) => {
+    if (typeof value !== 'undefined') {
+      this.setmusicStateToStorage(value);
     } else {
-      //Sounds.playMusic();
-      this.setmusicStateToStorage(true);
+      if (this.state.musicState === true) {
+        //Sounds.pauseMusic();
+        this.setmusicStateToStorage(false);
+      } else {
+        //Sounds.playMusic();
+        this.setmusicStateToStorage(true);
+      }
     }
   }
 

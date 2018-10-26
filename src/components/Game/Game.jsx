@@ -406,54 +406,54 @@ class Game extends React.Component {
       }
     }
 
-    if (this.GAME_OVER === false) {
-      // Draw only one player object in this game version
-      this.playerObjects[0].draw();
 
-      // Draw enemies
-      for (let enemy of this.enemies) {
-        if (enemy.xI >= MapData.drawTileLayersBehindEnemyThreshold) {
-          enemy.draw();
-        }
+    // Draw only one player object in this game version
+    this.playerObjects[0].draw();
+
+    // Draw enemies
+    for (let enemy of this.enemies) {
+      if (enemy.xI >= MapData.drawTileLayersBehindEnemyThreshold) {
+        enemy.draw();
       }
+    }
 
-      // Draw tile layer graphics
-      for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
-        for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-          let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
-        }
+    // Draw tile layer graphics
+    for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
+      for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
+        let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
       }
+    }
 
-      // Draw enemies
-      for (let enemy of this.enemies) {
-        if (enemy.xI < MapData.drawTileLayersBehindEnemyThreshold) {
-          enemy.draw();
-        }
+    // Draw enemies
+    for (let enemy of this.enemies) {
+      if (enemy.xI < MapData.drawTileLayersBehindEnemyThreshold) {
+        enemy.draw();
       }
+    }
 
-      // Draw cannon balls
-      this.playerObjects[0].drawCannonBalls();
+    // Draw cannon balls
+    this.playerObjects[0].drawCannonBalls();
 
-      // Draw flying parrot on top of everything
-      this.parrot.draw();
+    // Draw flying parrot on top of everything
+    this.parrot.draw();
 
-      // Enemy hits
-      for (let enemy of this.enemies) {
-        if(enemy.destroyed === false && enemy.active === true) {
-          // did player's cannon balls hit the enemy?
-          let cannonBalls = this.playerObjects[0].getActiveCannonBalls();
-          for (let cannonBall of cannonBalls) {
+    // Enemy hits
+    for (let enemy of this.enemies) {
+      if(enemy.destroyed === false && enemy.active === true) {
+        // did player's cannon balls hit the enemy?
+        let cannonBalls = this.playerObjects[0].getActiveCannonBalls();
+        for (let cannonBall of cannonBalls) {
 
-            if(cannonBall.active === true && cannonBall.didCollideWith(enemy) === true) {
-              enemy.destroy();
-              cannonBall.active = false; // cannon ball is used now
-              this.points++;
-              break;
-            }
+          if(cannonBall.active === true && cannonBall.didCollideWith(enemy) === true) {
+            enemy.destroy();
+            cannonBall.active = false; // cannon ball is used now
+            this.points++;
+            break;
           }
         }
-        }
-    } else {
+      }
+    }
+    if (this.GAME_OVER === true) {
       this.drawEndScreen();
     }
 
