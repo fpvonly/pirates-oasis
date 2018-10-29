@@ -29,11 +29,11 @@ var config = {
     open: true,
     historyApiFallback: true
   },
+  devtool: 'eval-source-map',
   plugins: [
 
   ]
 };
-
 
 
 module.exports = (env, argv) => {

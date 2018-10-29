@@ -36,7 +36,7 @@ class CannonBall extends GameObject {
     };
     this.cannonAngle = angle;
     this.bezier = { values: [this.p0, this.p1, this.p2, this.p3], type: "cubic" };
-    this.targetDist = this.calculateBallDistance(this.target.x, this.target.y);
+    this.targetDist = this.calculateDistance(this.target.x, this.target.y);
     this.animationSeconds = this.targetDist/250; // 250pxs per second
     this.animationType = this.getAnimationTypeByAngle(this.cannonAngle);
 
@@ -105,14 +105,6 @@ class CannonBall extends GameObject {
       }
     }
     return true;
-  }
-
-  calculateBallDistance = (tx, ty) => {
-    tx = tx - this.x - this.width/2;
-    ty = ty - this.y - this.height/2;
-    let dist = Math.sqrt(tx * tx + ty * ty);
-
-    return dist;
   }
 
   getAnimationTypeByAngle = () => {

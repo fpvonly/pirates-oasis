@@ -133,10 +133,12 @@ class Game extends React.Component {
 
   handleMouseMove = (e) => {
     // which tile????? ->
-    let selectedTileID = this.getTileCoordId(e.pageX, e.pageY);
+    let selectedTileID = this.getTileCoordIndexes(e.pageX, e.pageY);
+    let selectedXi = selectedTileID.selectedXTile;
+    let selectedYi = selectedTileID.selectedYTile;
 
     // for scroll ->
-    if (selectedTileID.selectedXTile >= 0 && selectedTileID.selectedXTile <= 23 && selectedTileID.selectedYTile >= 0 && selectedTileID.selectedYTile <= 23) {
+    if (selectedXi !== null && selectedYi !== null && selectedXi >= 0 && selectedXi <= 23 && selectedYi >= 0 && selectedYi <= 23) {
       this.mousePointY = e.pageY;
       this.mousePointX = e.pageX;
     } else {
@@ -160,7 +162,7 @@ class Game extends React.Component {
     return this.originY;
   }
 
-  getTileCoordId = (x = null, y = null) => {
+  getTileCoordIndexes = (x = null, y = null) => {
     if (x === null || y === null) {
       return {selectedXTile: null, selectedYTile: null};
     }
@@ -279,6 +281,7 @@ class Game extends React.Component {
       this.getOriginY,
       this.allowedTilesOnLandMapYX,
       this.getTileCoordinates,
+      this.getTileCoordIndexes,
       this.getFPS));
   }
 
@@ -383,7 +386,7 @@ class Game extends React.Component {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Map scroll ->
-    let tileId = this.getTileCoordId(this.mousePointX, this.mousePointY);
+    let tileId = this.getTileCoordIndexes(this.mousePointX, this.mousePointY);
     if (tileId.selectedXTile !== null && tileId.selectedYTile !== null) {
       if (this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
         this.originY += this.scrollSpeed;
@@ -443,7 +446,6 @@ class Game extends React.Component {
         // did player's cannon balls hit the enemy?
         let cannonBalls = this.playerObjects[0].getActiveCannonBalls();
         for (let cannonBall of cannonBalls) {
-
           if(cannonBall.active === true && cannonBall.didCollideWith(enemy) === true) {
             enemy.destroy();
             cannonBall.active = false; // cannon ball is used now
@@ -461,7 +463,6 @@ class Game extends React.Component {
   }
 
   drawEndScreen = () => {
-
     let fontSize = (this.canvas.width/2 >= 960 ? 140 : ((this.canvas.width/2)/960) * 140);
     let textRatio = this.canvas.width/2 >= 960 ? 1 : ((this.canvas.width/2)/960);
 
@@ -472,7 +473,7 @@ class Game extends React.Component {
     this.context.fillStyle = '#ffffff';
     this.context.textAlign = "center";
     this.context.fillText("GAME OVER!", this.canvas.width/2 - this.originX, ((this.canvas.height/2) * 0.15) - this.originY + 70);
-    this.context.fillText("Your points: " + this.points, this.canvas.width/2 - this.originX, this.canvas.height/2 - this.originY);
+    this.context.fillText("Your score: " + this.points, this.canvas.width/2 - this.originX, this.canvas.height/2 - this.originY);
     this.context.font = '25px TreasureMap,Arial';
     this.context.shadowOffsetX = -4 * textRatio;
     this.context.fillText("Press esc or click on the screen to return to main menu", this.canvas.width/2 - this.originX, (this.canvas.height - this.originY) - 70);

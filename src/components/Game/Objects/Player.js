@@ -10,7 +10,7 @@ import * as C from '../Constants';
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTileCoordinates, getFPS) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTileCoordinates, getTileCoordIndexes, getFPS) {
 
     super(context, canvas, width, height, x - width/2, y - height/2, 5);
 
@@ -22,9 +22,7 @@ class Player extends GameObject {
     this.lineWidth = 1;
 
     this.bullets = [];
-    this.then = Date.now(); // previous shoot time frame, for throttling the shooting
     this.thenOutline = Date.now(); // for outline animation
-    this.shootFPS = 0.5; // shoot frequency approx 0.5 shots/second at approx 30fps of the game
     this.outlineFPS = 0.5;
     this.allowPlayerMovement = false;
 
@@ -37,6 +35,7 @@ class Player extends GameObject {
     this.targetXScreenFinalPos = null;
     this.targetYScreenFinalPos = null;
     this.getTileCoordinates = getTileCoordinates;
+    this.getTileCoordIndexes = getTileCoordIndexes;
     this.shootingStartPoint = {x: this.x, y: this.y};
     this.explosion = null;
 
@@ -46,10 +45,11 @@ class Player extends GameObject {
     this.finder = new PF.AStarFinder({allowDiagonal: true});
 
     this.justFired = false;
+    this.shooterTimeout = null;
     this.cannonBalls = [];
 
     this.canvas.addEventListener('mousedown', this.handleMouseDown, false);
-    window.addEventListener('mouseup', this.handleMouseUp, false);
+    this.canvas.addEventListener('mousemove', this.handleMouseMove, false);
   }
 
   steer = () => {
@@ -102,11 +102,9 @@ class Player extends GameObject {
   }
 
   shoot = () => {
-    this.now = Date.now();
-    this.delta = this.now - this.then;
-    if (this.delta > 1000/this.shootFPS) {
-      this.then = this.now - (this.delta % 1000/this.shootFPS);
-      this.justFired = true;
+    let targetDist = this.calculateDistance(this.targetXScreenFinalPos, this.targetYScreenFinalPos);
+
+    if (this.justFired === false && targetDist <= 550) {
       let startPoint = this.calculateShootingStartPoint();
       this.cannonBalls.push(
         new CannonBall(
@@ -121,8 +119,13 @@ class Player extends GameObject {
           this.getTileCoordinates)
         );
       this.explosion = new Explosion(this.context, this.canvas, startPoint.x, startPoint.y, 40, 40);
+      this.shooterTimeout = setTimeout(() => {
+        this.justFired = false;
+      }, 2000);
+      return true;
+    } else {
+      return false;
     }
-    return false;
   }
 
   handleMouseDown = (e) => {
@@ -159,8 +162,22 @@ class Player extends GameObject {
     }
   }
 
-  handleMouseUp = (e) => {
+  handleMouseMove = (e) => {
+    // which tile????? ->
+    let selectedTileID = this.getTileCoordIndexes(e.pageX, e.pageY);
+    let selectedXi = selectedTileID.selectedXTile;
+    let selectedYi = selectedTileID.selectedYTile;
 
+    if (selectedXi !== null && selectedYi !== null && selectedXi >= 0 && selectedXi <= 23 && selectedYi >= 0 && selectedYi <= 23) {
+      this.targetXScreen = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
+      this.targetYScreen = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
+      let targetDist = this.calculateDistance(this.targetXScreen, this.targetYScreen);
+      if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXi][selectedYi]) !== -1 && targetDist <= 550) {
+        this.canvas.style = 'cursor: crosshair;'
+      } else {
+        this.canvas.style = 'cursor: pointer;'
+      }
+    }
   }
 
   draw = () => {

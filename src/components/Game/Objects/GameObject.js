@@ -117,6 +117,13 @@ class GameObject {
     return hit;
   }
 
+  calculateDistance = (tx, ty) => {
+    tx = tx - this.x - this.width/2;
+    ty = ty - this.y - this.height/2;
+    let dist = Math.sqrt(tx * tx + ty * ty);
+    return dist;
+  }
+
   getRndInteger = (min, max) => {
     return Math.floor(Math.random() * (max - min) ) + min;
   }

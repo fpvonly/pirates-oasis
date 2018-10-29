@@ -17,7 +17,7 @@ class EnemyShip extends GameObject {
     this.matrixOfMapForWater = matrixOfMapForWater;
     this.reset();
 
-    this.active = true;
+    this.active = true; // true if should be hit-tested with shot cannon balls, false if should be drawn on screen nut NOT be hit-tested
     this.timeout = null;
   }
 
@@ -35,12 +35,13 @@ class EnemyShip extends GameObject {
     let shipSprite = this.getEnemyShipSprite();
     let hIncrement = this.height/30;
     this.context.drawImage(shipSprite, 0, 0, this.width, hIncrement*(30 - this.destructionAnimFrame), this.x, this.y + (hIncrement*this.destructionAnimFrame), this.width, hIncrement*(30 - this.destructionAnimFrame));
+    this.active = false;
 
     if (this.destructionAnimFrame === 1) {
       Sounds.playCrashSound();
     }
     this.destructionAnimFrame++;
-    if (this.destructionAnimFrame > 30 && this.active === true) {
+    if (this.destructionAnimFrame > 30) {
       this.reset();
     }
   }
@@ -199,6 +200,7 @@ class EnemyShip extends GameObject {
     this.newAngleSpriteIndex = 0;
 
     this.destroyed = false;
+    this.active = true;
     this.destructionAnimFrame = 1;
   }
 
