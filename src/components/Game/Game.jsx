@@ -415,9 +415,12 @@ class Game extends React.Component {
 
     // Draw enemies
     for (let enemy of this.enemies) {
-      if (enemy.xI >= MapData.drawTileLayersBehindEnemyThreshold) {
+      if (MapData.mapLayers[enemy.xI][(enemy.yI < 23 ? enemy.yI + 1 : enemy.yI)] !== null || MapData.mapLayers[(enemy.xI > 0 ? enemy.xI - 1 : enemy.xI)][enemy.yI] !== null) {
         enemy.draw();
       }
+    /*  if (enemy.xI >= MapData.drawTileLayersBehindEnemyThresholdXi && enemy.yI < MapData.drawTileLayersBehindEnemyThresholdYi) {
+
+    }*/
     }
 
     // Draw tile layer graphics
@@ -429,9 +432,12 @@ class Game extends React.Component {
 
     // Draw enemies
     for (let enemy of this.enemies) {
-      if (enemy.xI < MapData.drawTileLayersBehindEnemyThreshold) {
+      if (MapData.mapLayers[enemy.xI][(enemy.yI < 23 ? enemy.yI + 1 : enemy.yI)] === null || MapData.mapLayers[(enemy.xI > 0 ? enemy.xI - 1 : enemy.xI)][enemy.yI] === null) {
         enemy.draw();
       }
+      /*if (enemy.xI < MapData.drawTileLayersBehindEnemyThresholdXi && enemy.yI >= MapData.drawTileLayersBehindEnemyThresholdYi) {
+        enemy.draw();
+      }*/
     }
 
     // Draw cannon balls

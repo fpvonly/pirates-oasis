@@ -189,7 +189,7 @@ class EnemyShip extends GameObject {
     this.x = sourceTileCoords.tileX - this.width/2;
     this.y = sourceTileCoords.tileY - this.height/2;
 
-    this.finder = new PF.AStarFinder({allowDiagonal: false, dontCrossCorners: true});
+    this.finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true});
     let grid = new PF.Grid(this.matrixOfMapForWater);
     let target = MapData.enemyWinTargetPositions[this.getRndInteger(0, 2)];
     this.path = this.finder.findPath(this.xI, this.yI, target[0], target[1], grid);

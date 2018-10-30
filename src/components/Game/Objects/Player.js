@@ -104,7 +104,7 @@ class Player extends GameObject {
   shoot = () => {
     let targetDist = this.calculateDistance(this.targetXScreenFinalPos, this.targetYScreenFinalPos);
 
-    if (this.justFired === false && targetDist <= 550) {
+    if (this.justFired === false && targetDist <= 600) {
       let startPoint = this.calculateShootingStartPoint();
       this.cannonBalls.push(
         new CannonBall(
@@ -172,8 +172,12 @@ class Player extends GameObject {
       this.targetXScreen = Math.floor(e.pageX - this.canvas.getBoundingClientRect().left - this.getOriginX());
       this.targetYScreen = Math.floor(e.pageY - this.canvas.getBoundingClientRect().top - this.getOriginY());
       let targetDist = this.calculateDistance(this.targetXScreen, this.targetYScreen);
-      if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXi][selectedYi]) !== -1 && targetDist <= 550) {
-        this.canvas.style = 'cursor: crosshair;'
+      if (MapData.allowedTilesOnWater.indexOf(MapData.map[selectedXi][selectedYi]) !== -1) {
+        if (targetDist <= 600) {
+          this.canvas.style = 'cursor: crosshair;'
+        } else {
+          this.canvas.style = 'cursor: no-drop;'
+        }
       } else {
         this.canvas.style = 'cursor: pointer;'
       }
