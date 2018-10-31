@@ -184,7 +184,6 @@ class EnemyShip extends GameObject {
       this.removeEnemyWarnings();
     }, 3000);
 
-
     let sourceTileCoords =this. getTileCoordinates(this.xI, this.yI);
     this.x = sourceTileCoords.tileX - this.width/2;
     this.y = sourceTileCoords.tileY - this.height/2;
@@ -200,8 +199,8 @@ class EnemyShip extends GameObject {
     this.newAngleSpriteIndex = 0;
 
     this.destroyed = false;
-    this.active = true;
     this.destructionAnimFrame = 1;
+    this.active = true;
   }
 
   removeEnemyWarnings = () => {

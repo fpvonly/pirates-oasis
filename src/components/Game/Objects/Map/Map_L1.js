@@ -69,11 +69,11 @@ const MapData = {
     [21, 19],
     [21, 20],
     [21, 21],
-    [21, 22],
+    [21, 22]
   ], // hard coded exclusions on allowed tiles [Xi, Yi] (for creating the allowed matrix map for water area)
   allowedTilesOnLand: [0, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 43],
   enemyWinTargetPositions: [
-    [5, 12], [12, 16], [16, 7], [11, 14], [12, 16], [16, 5], [16, 6]  // first 3 indexes are the tower tagets and rest are for allowing pathfinding to those
+    [5, 12], [11, 14], [16, 7], [11, 14], [16, 5], [16, 6]  // first 3 indexes are the tower tagets and rest are for allowing pathfinding to those
   ],
   tiles: [
     {src: 'assets/images/base.png', width: 150, height: 75}, // 0
@@ -782,7 +782,42 @@ const MapData = {
       null,
       null
     ]
-  ]
+  ],
+  areTileLayersNextTo: (xI, yI) => { /* Map specific drawing logic for enemy ships*/
+    let layersExist = false;
+
+    if (MapData.mapLayers[xI][(yI < 23 ? yI + 1 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[xI][(yI < 22 ? yI + 2 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI < 23 ? xI + 1 : xI)][(yI < 23 ? yI + 1 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI < 23 ? xI + 1 : xI)][(yI < 22 ? yI + 2 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI < 22 ? xI + 2 : xI)][(yI < 23 ? yI + 1 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI < 22 ? xI + 2 : xI)][(yI < 22 ? yI + 2 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI > 0 ? xI - 1 : xI)][yI] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI > 1 ? xI - 2 : xI)][yI] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI > 0 ? xI - 1 : xI)][(yI < 23 ? yI + 1 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI > 0 ? xI - 1 : xI)][(yI < 22 ? yI + 2 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI > 1 ? xI - 2 : xI)][(yI < 23 ? yI + 1 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI > 1 ? xI - 2 : xI)][(yI < 22 ? yI + 2 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI > 2 ? xI - 3 : xI)][(yI < 23 ? yI + 1 : yI)] !== null) {
+      layersExist = true;
+    } else if (MapData.mapLayers[(xI > 2 ? xI - 3 : xI)][(yI < 22 ? yI + 2 : yI)] !== null) {
+      layersExist = true;
+    }
+
+    return layersExist;
+  }
 };
 
 export {MapData};

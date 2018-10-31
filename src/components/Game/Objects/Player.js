@@ -190,7 +190,6 @@ class Player extends GameObject {
       this.steer();
     }
 
-    // draw ship bg
     this.context.drawImage(this.getPlayerCannonSprite(), this.x, this.y, this.width, this.height);
 
     // draw outline
