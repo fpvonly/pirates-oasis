@@ -84,6 +84,7 @@ class EnemyShip extends GameObject {
               let done = this.calculateDirectionAngle();
             } else {
               this.gameOver(); // enemy reached the target tower destination
+              this.active = false;
             }
           }
         }
@@ -125,12 +126,10 @@ class EnemyShip extends GameObject {
 
     if (this.newAngleSpriteIndex !== newAngleSpriteIndex) {
       this.newAngleSpriteIndex = newAngleSpriteIndex;
+      this.x = (this.x + this.width/2) - newAngleSprite.width/2;
+      this.y = (this.y + this.height/2) - newAngleSprite.height/2;
       this.width = newAngleSprite.width;
       this.height = newAngleSprite.height;
-      //  this.x = this.x - newAngleSprite.width/2;
-      //  this.y = this.y - newAngleSprite.height/2;
-
-      //console.log('this.angle', this.angle);
     }
 
     return newAngleSprite;
