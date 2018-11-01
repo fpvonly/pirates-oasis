@@ -4,12 +4,12 @@
   "description": "",
   "main": "src/app.jsx",
   "dependencies": {
-    "express": "^4.16.3",
+    "express": "^4.16.4",
     "pathfinding": "^0.4.18",
     "prop-types": "^15.6.2",
-    "react": "^16.4.2",
+    "react": "^16.6.0",
     "react-addons-css-transition-group": "^15.6.2",
-    "react-dom": "^16.4.2",
+    "react-dom": "^16.6.0",
     "react-router-dom": "^4.3.1",
     "react-toggle": "^4.0.2"
   },
@@ -25,10 +25,10 @@
     "cross-env": "^5.2.0",
     "forever": "^0.15.3",
     "git-revision-webpack-plugin": "^2.5.1",
-    "nodemon": "^1.18.3",
-    "webpack": "^4.16.5",
-    "webpack-cli": "^2.1.5",
-    "webpack-dev-server": "^3.1.5"
+    "nodemon": "^1.18.5",
+    "webpack": "^4.23.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.10"
   },
   "scripts": {
     "dev": "webpack-dev-server --mode development",
