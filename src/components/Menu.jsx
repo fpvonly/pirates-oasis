@@ -116,6 +116,7 @@ class Menu extends React.Component {
   }
 
   render() {
+    let menuWrapper = null;
     let mainMenu = null;
     let extraSubMenu = null;
 
@@ -141,19 +142,21 @@ class Menu extends React.Component {
           <div className='extra_close_btn' onClick={this.handleShowExtraClick}>Close</div>
         </div>;
       }
+
+      menuWrapper = <div className='main_menu_wrapper'>
+        {mainMenu}
+        <ReactCSSTransitionGroup
+          transitionName="slide"
+          transitionAppear={true}
+          transitionAppearTimeout={500}
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}>
+            {extraSubMenu}
+        </ReactCSSTransitionGroup>
+      </div>;
     }
 
-    return <div className='main_menu_wrapper'>
-      {mainMenu}
-      <ReactCSSTransitionGroup
-        transitionName="slide"
-        transitionAppear={true}
-        transitionAppearTimeout={500}
-        transitionEnterTimeout={500}
-        transitionLeaveTimeout={500}>
-          {extraSubMenu}
-      </ReactCSSTransitionGroup>
-    </div>;
+    return menuWrapper;
   }
 }
 

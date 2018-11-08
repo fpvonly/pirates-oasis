@@ -490,6 +490,13 @@ class Game extends React.Component {
   render() {
     let canvasWidth = (window.innerWidth > 1024 ? window.innerWidth * 0.8 : window.innerWidth);
     let canvasHeight = (window.innerHeight > 768 ? window.innerHeight * 0.8 : window.innerHeight);
+    let canvasVisibility = null;
+
+    if (this.props.gameState === C.RUN) {
+      canvasVisibility = {'display': 'block'};
+    } else {
+      canvasVisibility = {'display': 'none'};
+    }
 
     return <div className='container'>
       <div className={'bg'} />
@@ -497,7 +504,8 @@ class Game extends React.Component {
         ref={this.getCanvasRef}
         id='canvas'
         width={(canvasWidth > 1920 ? 1920 : canvasWidth)}
-        height={(canvasHeight > 1080 ? 1080 : canvasHeight)}>
+        height={(canvasHeight > 1080 ? 1080 : canvasHeight)}
+        style={canvasVisibility}>
           Your browser doesn't support HTML5 canvas API. Please update your browser.
       </canvas>
       {(DEBUG === true ? <DebugFPS ref={this.getDebugFPSRef} /> : null)}

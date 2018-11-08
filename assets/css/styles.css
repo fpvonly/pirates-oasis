@@ -149,7 +149,22 @@ canvas {
 }
 
 
+/* Menu */
 
+.main_menu_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+}
+
+.menu {
+  position: absolute;
+  font-size: 4rem;
+}
 
 
 /* GAME Debugging related */

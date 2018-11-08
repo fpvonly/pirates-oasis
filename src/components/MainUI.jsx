@@ -46,7 +46,7 @@ class UI extends React.Component {
         }, () => {
           this.setState({
             isHydrating: false,
-            GAME_STATE: C.RUN
+            GAME_STATE: C.STOP
           });
           this.loadingIntervalCount = 0;
           clearInterval(this.loadingInterval);
