@@ -163,7 +163,41 @@ canvas {
 
 .menu {
   position: absolute;
-  font-size: 4rem;
+  font-size: 8rem;
+
+}
+
+.menu_btn {
+  color: #ffffff;
+  text-shadow: -3px 3px #edc200;
+  text-align: center;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu_btn .text:hover {
+  text-shadow: -3px 3px #297414;
+  cursor: pointer;
+}
+
+.menu_btn .text:hover:before {
+  content: url('../images/kisspng/skull-pirate-coin-small.png');
+  position: absolute;
+  left: -100px;
+  animation: spin 4s linear infinite;
+  width: 90px;
+  height: 90px;
+}
+
+.menu_btn .text:hover:after {
+  content: url('../images/kisspng/skull-pirate-coin-small.png');
+  position: absolute;
+  right: -100px;
+  animation: spin 4s linear infinite;
+  width: 90px;
+  height: 90px;
 }
 
 

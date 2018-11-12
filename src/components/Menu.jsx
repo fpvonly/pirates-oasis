@@ -122,9 +122,9 @@ class Menu extends React.Component {
 
     if (this.props.visible === true) {
       mainMenu = <div className='menu'>
-          <div className='menu_btn new_game' onClick={this.handleNewGameClick}><div className='circle'><span>New game</span></div></div>
-          <div className='menu_btn extra'><div className='circle' onClick={this.handleShowExtraClick}><span>Extra</span></div></div>
-          <div className='menu_btn quit' onClick={this.handleQuitClick}><div className='circle'><span>Quit</span></div></div>
+          <div className='menu_btn new_game' onClick={this.handleNewGameClick}><div className='text'><span>New game</span></div></div>
+          <div className='menu_btn extra'><div className='text' onClick={this.handleShowExtraClick}><span>Extra</span></div></div>
+          <div className='menu_btn quit' onClick={this.handleQuitClick}><div className='text'><span>Quit</span></div></div>
           <div className='menu_btn music' onClick={this.handlePlayMusicClick}>
             {(this.props.musicState === true ? 'Stop music' : 'Play music')}
           </div>
