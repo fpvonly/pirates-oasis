@@ -13,9 +13,12 @@ class Menu extends React.Component {
   constructor(props) {
     super(props);
 
+    this.menuTimer = null;
     this.extraSubMenu = null;
     this.state = {
-      extraSubMenuVisible: false
+      extraSubMenuVisible: false,
+      mainMenuBtnState: [false, false, false],
+      mainMenuBtnStateSelectedIndex: null
     };
   }
 
@@ -23,24 +26,86 @@ class Menu extends React.Component {
     visible: true,
     setGameState: () => {},
     controlMusic: () => {},
-    musicState: false
+    musicState: false,
+    fullscreenState: false,
+    setExitFullscreenState: () => {}
   };
 
   static propTypes = {
     visible: PropTypes.bool,
     setGameState: PropTypes.func,
     controlMusic: PropTypes.func,
-    musicState: PropTypes.bool
+    musicState: PropTypes.bool,
+    fullscreenState: PropTypes.bool,
+    setExitFullscreenState: PropTypes.func
   };
 
   componentDidMount = () => {
     if (typeof window.localStorage === 'undefined' || localStorage.getItem('playMusic') === null) {
-//TODO
       try {
         Sounds.playMusic();
       } catch(err) {
         this.props.controlMusic(false);
       }
+    }
+
+    window.addEventListener("keyup", this.handleKeyboard, false);
+  //  window.addEventListener("mouseover", this.handleMouseHover, false);
+
+  }
+
+  handleKeyboard = (e) => {
+    e.preventDefault();
+    let keycode = e.key;
+    clearTimeout(this.menuTimer);
+
+    if (this.props.visible === true) {
+      if (keycode === 'ArrowUp') {
+        if (this.state.mainMenuBtnStateSelectedIndex === null) {
+          this.setState({mainMenuBtnStateSelectedIndex: 2});
+        } else {
+          if (this.state.mainMenuBtnStateSelectedIndex === 0) {
+            this.setState({mainMenuBtnStateSelectedIndex: 2});
+          } else {
+            this.setState({mainMenuBtnStateSelectedIndex: this.state.mainMenuBtnStateSelectedIndex - 1});
+          }
+        }
+      } else if (keycode === 'ArrowDown') {
+        if (this.state.mainMenuBtnStateSelectedIndex === null) {
+          this.setState({mainMenuBtnStateSelectedIndex: 0});
+        } else {
+          if (this.state.mainMenuBtnStateSelectedIndex === 2) {
+            this.setState({mainMenuBtnStateSelectedIndex: 0});
+          } else {
+            this.setState({mainMenuBtnStateSelectedIndex: this.state.mainMenuBtnStateSelectedIndex + 1});
+          }
+        }
+      }
+      this.menuTimer = setTimeout(() => {
+        this.setState({mainMenuBtnStateSelectedIndex: null});
+      }, 2000);
+    }
+  }
+
+  handleMouseHover = (e) => {
+    clearTimeout(this.menuTimer);
+    if (this.props.visible === true) {
+      if (e.currentTarget.classList.contains('new_game')) {
+        this.setState({mainMenuBtnStateSelectedIndex: 0});
+      } else if (e.currentTarget.classList.contains('settings')) {
+        this.setState({mainMenuBtnStateSelectedIndex: 1});
+      } else if (e.currentTarget.classList.contains('quit')) {
+        this.setState({mainMenuBtnStateSelectedIndex: 2});
+      }
+    }
+  }
+
+  handleMouseOut = (e) => {
+    clearTimeout(this.menuTimer);
+    if (this.props.visible === true) {
+      this.menuTimer = setTimeout(() => {
+        this.setState({mainMenuBtnStateSelectedIndex: null});
+      }, 2000);
     }
   }
 
@@ -74,6 +139,7 @@ class Menu extends React.Component {
       } else if (appWrapper.webkitRequestFullscreen) {
         appWrapper.webkitRequestFullscreen();
       }
+      this.props.setExitFullscreenState(true);
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -84,6 +150,7 @@ class Menu extends React.Component {
       } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
       }
+      this.props.setExitFullscreenState(false);
     }
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
@@ -122,14 +189,32 @@ class Menu extends React.Component {
 
     if (this.props.visible === true) {
       mainMenu = <div className='menu'>
-          <div className='menu_btn new_game' onClick={this.handleNewGameClick}><div className='text'><span>New game</span></div></div>
-          <div className='menu_btn extra'><div className='text' onClick={this.handleShowExtraClick}><span>Extra</span></div></div>
-          <div className='menu_btn quit' onClick={this.handleQuitClick}><div className='text'><span>Quit</span></div></div>
+          <div
+            className={'menu_btn new_game' + (this.state.mainMenuBtnStateSelectedIndex === 0 ? ' active' : '')}
+            onClick={this.handleNewGameClick}
+            onMouseOver={this.handleMouseHover}
+            onMouseOut={this.handleMouseOut}>
+              <span className='main_btn_text'>New game</span>
+          </div>
+          <div
+            className={'menu_btn settings' + (this.state.mainMenuBtnStateSelectedIndex === 1 ? ' active' : '')}
+            onClick={this.handleShowExtraClick}
+            onMouseOver={this.handleMouseHover}
+            onMouseOut={this.handleMouseOut}>
+              <span className='main_btn_text'>Settings</span>
+          </div>
+          <div
+            className={'menu_btn quit' + (this.state.mainMenuBtnStateSelectedIndex === 2 ? ' active' : '')}
+            onClick={this.handleQuitClick}
+            onMouseOver={this.handleMouseHover}
+            onMouseOut={this.handleMouseOut}>
+              <span className='main_btn_text'>Quit</span>
+          </div>
           <div className='menu_btn music' onClick={this.handlePlayMusicClick}>
-            {(this.props.musicState === true ? 'Stop music' : 'Play music')}
+            {(this.props.musicState === true ? 'Pause music' : 'Play music')}
           </div>
           <div className='menu_btn fullscreen' onClick={this.handleFullscreenClick}>
-            {(this.isFullScreenActive() ? 'Normal screen' : 'Full screen' )}
+            {(this.props.fullscreenState === true ? 'Normal screen' : 'Fullscreen' )}
           </div>
         </div>;
 

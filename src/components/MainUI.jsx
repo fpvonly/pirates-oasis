@@ -12,12 +12,14 @@ class UI extends React.Component {
 
   constructor(props) {
     super(props);
+    
     this.state = {
       isHydrating: true,
       loadingSoundsStatusInfoText: '',
       loadingSpritesStatusInfoText: '',
       GAME_STATE: C.STOP,
-      musicState: this.getmusicStateFromStorage()
+      musicState: this.getmusicStateFromStorage(),
+      fullscreenState: false
     }
 
     this.loadingInterval = null;
@@ -63,7 +65,7 @@ class UI extends React.Component {
 
   componentDidUpdate() {
     if(this.state.isHydrating === false && this.state.musicState === true) {
-    //  Sounds.playMusic();
+      Sounds.playMusic();
     }
   }
 
@@ -73,23 +75,24 @@ class UI extends React.Component {
 
   controlMusic = (value) => {
     if (typeof value !== 'undefined') {
-      this.setmusicStateToStorage(value);
+      this.playMusic(value);
     } else {
-      if (this.state.musicState === true) {
-        //Sounds.pauseMusic();
-        this.setmusicStateToStorage(false);
-      } else {
-        //Sounds.playMusic();
-        this.setmusicStateToStorage(true);
-      }
+      this.playMusic(!this.state.musicState);
     }
   }
 
-  setmusicStateToStorage = (value = false) => {
+  playMusic = (value = false) => {
+    if (value === false) {
+      Sounds.pauseMusic();
+    } else {
+      Sounds.playMusic();
+    }
+
     if (window.localStorage) {
       localStorage.setItem('playMusic', value);
-      this.setState({musicState: value});
     }
+
+    this.setState({musicState: value});
   }
 
   getmusicStateFromStorage = () => {
@@ -99,6 +102,11 @@ class UI extends React.Component {
     }
     return (value && value !== null ? (value == 'true') : false);
   }
+
+  setExitFullscreenState = (val = false) => {
+    this.setState({fullscreenState: val});
+  }
+
 
   render() {
     return (this.state.isHydrating === true)
@@ -123,6 +131,8 @@ class UI extends React.Component {
                     setGameState={this.setGameState}
                     controlMusic={this.controlMusic}
                     musicState={this.state.musicState}
+                    fullscreenState={this.state.fullscreenState}
+                    setExitFullscreenState={this.setExitFullscreenState}
                     updateBGCallback={this.updateBGCallback} />
                   <TitleBanner gameState={this.state.GAME_STATE} />
               </div>
