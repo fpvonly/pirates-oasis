@@ -12,7 +12,7 @@ class UI extends React.Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       isHydrating: true,
       loadingSoundsStatusInfoText: '',

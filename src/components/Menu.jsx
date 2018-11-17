@@ -12,12 +12,11 @@ class Menu extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.menuTimer = null;
     this.extraSubMenu = null;
+    this.mainMenuBtns = {};
     this.state = {
       extraSubMenuVisible: false,
-      mainMenuBtnState: [false, false, false],
       mainMenuBtnStateSelectedIndex: null
     };
   }
@@ -50,8 +49,18 @@ class Menu extends React.Component {
     }
 
     window.addEventListener("keyup", this.handleKeyboard, false);
-  //  window.addEventListener("mouseover", this.handleMouseHover, false);
-
+    document.addEventListener("fullscreenchange", (event) => {
+      this.props.setExitFullscreenState(!this.props.fullscreenState);
+    });
+    document.addEventListener("mozfullscreenchange",(event) => {
+      this.props.setExitFullscreenState(!this.props.fullscreenState);
+    });
+    document.addEventListener("webkitfullscreenchange", (event) => {
+      this.props.setExitFullscreenState(!this.props.fullscreenState);
+    });
+    document.addEventListener("msfullscreenchange", (event) => {
+      this.props.setExitFullscreenState(!this.props.fullscreenState);
+    });
   }
 
   handleKeyboard = (e) => {
@@ -60,6 +69,21 @@ class Menu extends React.Component {
     clearTimeout(this.menuTimer);
 
     if (this.props.visible === true) {
+      if (keycode === 'Enter' && this.state.mainMenuBtnStateSelectedIndex !== null) {
+        switch (this.state.mainMenuBtnStateSelectedIndex) {
+          case 0:
+            this.mainMenuBtns.new_game_btn.click();
+            break;
+          case 1:
+            this.mainMenuBtns.settings_btn.click();
+            break;
+          case 2:
+            this.mainMenuBtns.quit_btn.click();
+            break;
+
+        }
+      }
+
       if (keycode === 'ArrowUp') {
         if (this.state.mainMenuBtnStateSelectedIndex === null) {
           this.setState({mainMenuBtnStateSelectedIndex: 2});
@@ -128,7 +152,8 @@ class Menu extends React.Component {
   }
 
   handleFullscreenClick = (e) => {
-    let appWrapper = document.getElementById('app');
+    let appWrapper = document.getElementsByTagName('body')[0];
+
     if (this.isFullScreenActive() === false) {
       if (appWrapper.requestFullscreen) {
         appWrapper.requestFullscreen();
@@ -139,7 +164,6 @@ class Menu extends React.Component {
       } else if (appWrapper.webkitRequestFullscreen) {
         appWrapper.webkitRequestFullscreen();
       }
-      this.props.setExitFullscreenState(true);
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -150,7 +174,6 @@ class Menu extends React.Component {
       } else if (document.webkitExitFullscreen) {
         document.webkitExitFullscreen();
       }
-      this.props.setExitFullscreenState(false);
     }
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
@@ -190,6 +213,7 @@ class Menu extends React.Component {
     if (this.props.visible === true) {
       mainMenu = <div className='menu'>
           <div
+            ref={(c) => { this.mainMenuBtns['new_game_btn'] = c;}}
             className={'menu_btn new_game' + (this.state.mainMenuBtnStateSelectedIndex === 0 ? ' active' : '')}
             onClick={this.handleNewGameClick}
             onMouseOver={this.handleMouseHover}
@@ -197,6 +221,7 @@ class Menu extends React.Component {
               <span className='main_btn_text'>New game</span>
           </div>
           <div
+            ref={(c) => { this.mainMenuBtns['settings_btn'] = c;}}
             className={'menu_btn settings' + (this.state.mainMenuBtnStateSelectedIndex === 1 ? ' active' : '')}
             onClick={this.handleShowExtraClick}
             onMouseOver={this.handleMouseHover}
@@ -204,6 +229,7 @@ class Menu extends React.Component {
               <span className='main_btn_text'>Settings</span>
           </div>
           <div
+            ref={(c) => { this.mainMenuBtns['quit_btn'] = c;}}
             className={'menu_btn quit' + (this.state.mainMenuBtnStateSelectedIndex === 2 ? ' active' : '')}
             onClick={this.handleQuitClick}
             onMouseOver={this.handleMouseHover}

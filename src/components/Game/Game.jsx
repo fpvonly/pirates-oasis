@@ -87,26 +87,14 @@ class Game extends React.Component {
         clearTimeout
     })();
     window.addEventListener('resize', this.resizeCanvas, false);
-    window.addEventListener('keyup', this.gameOver, false);
-  }
-
-  componentDidMount () {
-    this.canvas.addEventListener('mousemove', this.handleMouseMove, false);
-    this.canvas.addEventListener('mouseleave', function(e) {
-      this.mousePointY = null;
-      this.mousePointX = null;
-    }.bind(this), false);
-// TODO REMOVE
-    if(this.props.gameState === C.RUN) {
-     this.startGame();
-    }
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeCanvas, false);
     window.removeEventListener('mousedown', this.endGame, false);
-    window.removeEventListener('mousemove', this.endGame, false);
-    window.removeEventListener('mouseleave', this.endGame, false);
+    window.removeEventListener('keyup', this.endGame, false);
+    this.canvas.removeEventListener('mouseleave', this.handleMouseOut, false);
+    this.canvas.removeEventListener('mousemove', this.handleMouseMove, false);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -118,7 +106,15 @@ class Game extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if(this.props.gameState === C.RUN && prevProps.gameState === C.STOP) {
-     this.startGame();
+      this.canvas.addEventListener('mousemove', this.handleMouseMove, false);
+      this.canvas.addEventListener('mouseleave', this.handleMouseOut, false);
+      window.addEventListener('keyup', this.endGame, false);
+      this.startGame();
+    } else if (this.props.gameState === C.STOP && prevProps.gameState === C.RUN) {
+      window.removeEventListener('mousedown', this.endGame, false);
+      window.removeEventListener('keyup', this.endGame, false);
+      this.canvas.removeEventListener('mouseleave', this.handleMouseOut, false);
+      this.canvas.removeEventListener('mousemove', this.handleMouseMove, false);
     }
   }
 
@@ -145,6 +141,11 @@ class Game extends React.Component {
       this.mousePointY = null;
       this.mousePointX = null;
     }
+  }
+
+  handleMouseOut= (e) => {
+    this.mousePointY = null;
+    this.mousePointX = null;
   }
 
   resizeCanvas = (e) => {
@@ -226,6 +227,7 @@ class Game extends React.Component {
       this.getTileCoordinates);
     this.initEnemies();
     this.points = 0;
+    this.GAME_OVER = false;
   }
 
   gameOver = () => {
