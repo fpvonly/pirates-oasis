@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import PropTypes from 'prop-types';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import Toggle from 'react-toggle'
+import SubMenu from './SubMenu.jsx';
 import Sounds from './Game/Objects/Sound';
 
 import conf from '../conf.json';
@@ -188,23 +188,6 @@ class Menu extends React.Component {
     }
   }
 
-  getInfo = () => {
-    return <div className='extra_info'>
-      <span className='info_title'>Info:</span>
-      <div>
-        <p>
-          e.spaceX is a 2D space shooter. It uses React framework as a base for the app and HTML5 Canvas API for the game itself.
-          The game is designed for FullHD-resolution and desktop browsers but it is still responsive for adjusting the game area size.
-          The game should work on the newest desktop versions of the modern browsers of major vendors. See more info and project code on GitHub:
-        </p>
-          <a href={conf.git_url} target='_blank'>Link to GitHub</a>
-        <p>
-          &copy; {new Date().getFullYear()} Ari Petäjäjärvi
-        </p>
-      </div>
-    </div>;
-  }
-
   render() {
     let menuWrapper = null;
     let mainMenu = null;
@@ -245,13 +228,7 @@ class Menu extends React.Component {
         </div>;
 
       if (this.state.extraSubMenuVisible === true) {
-        extraSubMenu = <div ref={(c) => {this.extraSubMenu = c;}} className='extra_sub_menu'>
-          <div className='bg' />
-          <div className='padding'>
-            {this.getInfo()}
-          </div>
-          <div className='extra_close_btn' onClick={this.handleShowExtraClick}>Close</div>
-        </div>;
+        extraSubMenu = <SubMenu />;
       }
 
       menuWrapper = <div className='main_menu_wrapper'>
