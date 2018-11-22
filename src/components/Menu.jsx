@@ -139,7 +139,7 @@ class Menu extends React.Component {
     });
   }
 
-  handleShowExtraClick = () => {
+  handleShowSettingsClick = () => {
     this.setState({extraSubMenuVisible: !this.state.extraSubMenuVisible});
   }
 
@@ -188,6 +188,10 @@ class Menu extends React.Component {
     }
   }
 
+  closeSubMenu = () => {
+    this.setState({extraSubMenuVisible: false});
+  }
+
   render() {
     let menuWrapper = null;
     let mainMenu = null;
@@ -206,7 +210,7 @@ class Menu extends React.Component {
           <div
             ref={(c) => { this.mainMenuBtns['settings_btn'] = c;}}
             className={'menu_btn settings' + (this.state.mainMenuBtnStateSelectedIndex === 1 ? ' active' : '')}
-            onClick={this.handleShowExtraClick}
+            onClick={this.handleShowSettingsClick}
             onMouseOver={this.handleMouseHover}
             onMouseOut={this.handleMouseOut}>
               <span className='main_btn_text'>Settings</span>
@@ -228,7 +232,7 @@ class Menu extends React.Component {
         </div>;
 
       if (this.state.extraSubMenuVisible === true) {
-        extraSubMenu = <SubMenu />;
+        extraSubMenu = <SubMenu closeSubMenu={this.closeSubMenu} />;
       }
 
       menuWrapper = <div className='main_menu_wrapper'>

@@ -240,7 +240,8 @@ canvas {
 .menu_btn.music:hover, .menu_btn.fullscreen:hover {
   text-shadow: -1px 1px #ea8200;
   color: #000000;
-  transition: color 1s;
+  transition: all 0.3s;
+  font-size: 3.2rem;
 }
 
 /* Sub menu */
@@ -259,10 +260,41 @@ canvas {
 
 .sub_menu {
   width: 40vw;
-  height: 40vh;
   background: #9cd500;
   box-shadow: 0px -2px 10px 3px #318a00;
   border-radius: 20px;
+  position: relative;
+}
+
+.settings_close_btn {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  cursor: pointer;
+  text-shadow: -3px 3px #000000;
+  transition: all 0.3s;
+}
+
+.settings_close_btn:hover {
+  font-size: 3.2rem;
+  text-shadow: -3px 3px #ea8200;
+}
+
+.settings_title {
+  font-size: 4.6rem;
+  text-shadow: -1px 1px #000000;
+}
+
+.setting_wrapper {
+  padding: 25px;
+}
+
+.enemies_amount_title {
+  margin-bottom: 10px;
+}
+
+.max_enemies_setting .react-numeric-input input {
+  width: 150px;
 }
 
 
