@@ -16,12 +16,16 @@ class SubMenu extends React.Component {
 
   static defaultProps = {
     visible: true,
-    closeSubMenu: () => {}
+    closeSubMenu: () => {},
+    setNumberOfEnemies: () => {},
+    getNumberOfEnemiesFromStorage: () => {}
   };
 
   static propTypes = {
     visible: PropTypes.bool,
-    closeSubMenu: PropTypes.func
+    closeSubMenu: PropTypes.func,
+    setNumberOfEnemies: PropTypes.func,
+    getNumberOfEnemiesFromStorage: PropTypes.func
   };
 
   componentDidMount = () => {
@@ -57,8 +61,7 @@ class SubMenu extends React.Component {
   }
 
   render() {
-
-    return <div ref={(c) => {this.extraSubMenu = c;}} className='extra_sub_menu_wapper'>
+    return <div ref={(c) => {this.extraSubMenu = c;}} className='extra_sub_menu_wrapper'>
       <div className='sub_menu'>
         <div className='setting_wrapper'>
           <span className='settings_title'>Settings:</span>

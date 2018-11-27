@@ -17,9 +17,7 @@ class UI extends React.Component {
       isHydrating: true,
       loadingSoundsStatusInfoText: '',
       loadingSpritesStatusInfoText: '',
-      GAME_STATE: C.STOP,
-      musicState: this.getmusicStateFromStorage(),
-      fullscreenState: false
+      GAME_STATE: C.STOP
     }
 
     this.loadingInterval = null;
@@ -63,50 +61,9 @@ class UI extends React.Component {
     }, 1000);
   }
 
-  componentDidUpdate() {
-    if(this.state.isHydrating === false && this.state.musicState === true) {
-      Sounds.playMusic();
-    }
-  }
-
   setGameState = (state = C.STOP, info = '') => {
     this.setState({GAME_STATE: state});
   }
-
-  controlMusic = (value) => {
-    if (typeof value !== 'undefined') {
-      this.playMusic(value);
-    } else {
-      this.playMusic(!this.state.musicState);
-    }
-  }
-
-  playMusic = (value = false) => {
-    if (value === false) {
-      Sounds.pauseMusic();
-    } else {
-      Sounds.playMusic();
-    }
-
-    if (window.localStorage) {
-      localStorage.setItem('playMusic', value);
-    }
-
-    this.setState({musicState: value});
-  }
-
-  getmusicStateFromStorage = () => {
-    let value = true;
-    if (window.localStorage) {
-      value = localStorage.getItem('playMusic');
-    }
-    return (value && value !== null ? (value == 'true') : false);
-  }
-
-  setExitFullscreenState = (val = false) => {
-    this.setState({fullscreenState: val});
-  }
-
 
   render() {
     return (this.state.isHydrating === true)
@@ -128,12 +85,7 @@ class UI extends React.Component {
                     setGameState={this.setGameState} />
                   <Menu
                     visible={(this.state.GAME_STATE !== C.RUN ? true : false)}
-                    setGameState={this.setGameState}
-                    controlMusic={this.controlMusic}
-                    musicState={this.state.musicState}
-                    fullscreenState={this.state.fullscreenState}
-                    setExitFullscreenState={this.setExitFullscreenState}
-                    updateBGCallback={this.updateBGCallback} />
+                    setGameState={this.setGameState} />
                   <TitleBanner gameState={this.state.GAME_STATE} />
               </div>
 

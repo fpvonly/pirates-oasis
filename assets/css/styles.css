@@ -61,6 +61,16 @@ html, body {
   color: #ffffff;
 }
 
+.title {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  font-size: 7rem;
+  display: flex;
+  justify-content: center;
+}
+
 .notice {
   position: fixed;
   transform: rotate(-34deg);
@@ -237,6 +247,10 @@ canvas {
   color: #ffffff;
 }
 
+.topmost {
+  z-index: 9999;
+}
+
 .menu_btn.music:hover, .menu_btn.fullscreen:hover {
   text-shadow: -1px 1px #ea8200;
   color: #000000;
@@ -246,7 +260,20 @@ canvas {
 
 /* Sub menu */
 
-.extra_sub_menu_wapper {
+.extra_sub_menu_wrapper.slide-enter { opacity: 0; }
+.extra_sub_menu_wrapper.slide-enter.slide-enter-active {
+  transition: all 0.5s ease-out;
+  opacity: 1;
+}
+.extra_sub_menu_wrapper.slide-leave {
+  opacity: 1;
+}
+.extra_sub_menu_wrapper.slide-leave.slide-leave-active {
+  opacity: 0;
+  transition: all 0.5s ease-out;
+}
+
+.extra_sub_menu_wrapper {
   width: 100vw;
   height: 100vh;
   font-size: 3rem;

@@ -17,26 +17,20 @@ class Menu extends React.Component {
     this.mainMenuBtns = {};
     this.state = {
       extraSubMenuVisible: false,
-      mainMenuBtnStateSelectedIndex: null
+      mainMenuBtnStateSelectedIndex: null,
+      musicState: this.getmusicStateFromStorage(),
+      fullscreenState: false
     };
   }
 
   static defaultProps = {
     visible: true,
-    setGameState: () => {},
-    controlMusic: () => {},
-    musicState: false,
-    fullscreenState: false,
-    setExitFullscreenState: () => {}
+    setGameState: () => {}
   };
 
   static propTypes = {
     visible: PropTypes.bool,
-    setGameState: PropTypes.func,
-    controlMusic: PropTypes.func,
-    musicState: PropTypes.bool,
-    fullscreenState: PropTypes.bool,
-    setExitFullscreenState: PropTypes.func
+    setGameState: PropTypes.func
   };
 
   componentDidMount = () => {
@@ -44,22 +38,24 @@ class Menu extends React.Component {
       try {
         Sounds.playMusic();
       } catch(err) {
-        this.props.controlMusic(false);
+        this.controlMusic(false);
       }
+    } else if (this.state.musicState === true) {
+      Sounds.playMusic();
     }
 
     window.addEventListener("keyup", this.handleKeyboard, false);
     document.addEventListener("fullscreenchange", (event) => {
-      this.props.setExitFullscreenState(!this.props.fullscreenState);
+      this.setFullscreenState(!this.state.fullscreenState);
     });
     document.addEventListener("mozfullscreenchange",(event) => {
-      this.props.setExitFullscreenState(!this.props.fullscreenState);
+      this.setFullscreenState(!this.state.fullscreenState);
     });
     document.addEventListener("webkitfullscreenchange", (event) => {
-      this.props.setExitFullscreenState(!this.props.fullscreenState);
+      this.setFullscreenState(!this.state.fullscreenState);
     });
     document.addEventListener("msfullscreenchange", (event) => {
-      this.props.setExitFullscreenState(!this.props.fullscreenState);
+      this.setFullscreenState(!this.state.fullscreenState);
     });
   }
 
@@ -80,7 +76,6 @@ class Menu extends React.Component {
           case 2:
             this.mainMenuBtns.quit_btn.click();
             break;
-
         }
       }
 
@@ -148,7 +143,7 @@ class Menu extends React.Component {
   }
 
   handlePlayMusicClick = (e) => {
-    this.props.controlMusic();
+    this.controlMusic();
   }
 
   handleFullscreenClick = (e) => {
@@ -192,6 +187,54 @@ class Menu extends React.Component {
     this.setState({extraSubMenuVisible: false});
   }
 
+  controlMusic = (value) => {
+    if (typeof value !== 'undefined') {
+      this.playMusic(value);
+    } else {
+      this.playMusic(!this.state.musicState);
+    }
+  }
+
+  playMusic = (value = false) => {
+    if (value === false) {
+      Sounds.pauseMusic();
+    } else {
+      Sounds.playMusic();
+    }
+
+    if (window.localStorage) {
+      localStorage.setItem('playMusic', value);
+    }
+
+    this.setState({musicState: value});
+  }
+
+  getmusicStateFromStorage = () => {
+    let value = true;
+    if (window.localStorage) {
+      value = localStorage.getItem('playMusic');
+    }
+    return (value && value !== null ? (value == 'true') : false);
+  }
+
+  setFullscreenState = (val = false) => {
+    this.setState({fullscreenState: val});
+  }
+
+  setNumberOfEnemies = (value) => {
+    if (window.localStorage) {
+      localStorage.setItem('number_of_enemies', value);
+    }
+  }
+
+  getNumberOfEnemiesFromStorage = () => {
+    let value = 1;
+    if (window.localStorage) {
+      value = localStorage.getItem('number_of_enemies');
+    }
+    return (value && value !== null ? value : 1);
+  }
+
   render() {
     let menuWrapper = null;
     let mainMenu = null;
@@ -223,24 +266,25 @@ class Menu extends React.Component {
             onMouseOut={this.handleMouseOut}>
               <span className='main_btn_text'>Quit</span>
           </div>
-          <div className='menu_btn music' onClick={this.handlePlayMusicClick}>
-            {(this.props.musicState === true ? 'Pause music' : 'Play music')}
+          <div className='menu_btn music topmost' onClick={this.handlePlayMusicClick}>
+            {(this.state.musicState === true ? 'Pause music' : 'Play music')}
           </div>
-          <div className='menu_btn fullscreen' onClick={this.handleFullscreenClick}>
-            {(this.props.fullscreenState === true ? 'Normal screen' : 'Fullscreen' )}
+          <div className='menu_btn fullscreen topmost' onClick={this.handleFullscreenClick}>
+            {(this.state.fullscreenState === true ? 'Normal screen' : 'Fullscreen' )}
           </div>
         </div>;
 
       if (this.state.extraSubMenuVisible === true) {
-        extraSubMenu = <SubMenu closeSubMenu={this.closeSubMenu} />;
+        extraSubMenu = <SubMenu
+          closeSubMenu={this.closeSubMenu}
+          setNumberOfEnemies={this.setNumberOfEnemies}
+          getNumberOfEnemiesFromStorage={this.getNumberOfEnemiesFromStorage} />;
       }
 
       menuWrapper = <div className='main_menu_wrapper'>
         {mainMenu}
         <ReactCSSTransitionGroup
           transitionName="slide"
-          transitionAppear={true}
-          transitionAppearTimeout={500}
           transitionEnterTimeout={500}
           transitionLeaveTimeout={500}>
             {extraSubMenu}
