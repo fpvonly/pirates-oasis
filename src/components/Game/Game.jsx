@@ -289,7 +289,7 @@ class Game extends React.Component {
 
   initEnemies = () => {
     this.enemies = [];
-    for (let i = 0; i < 1; i++) { // TODO
+    for (let i = 0; i < this.getNumberOfEnemiesFromStorage(); i++) {
       this.enemies.push(
         new EnemyShip(
           this.context,
@@ -302,6 +302,14 @@ class Game extends React.Component {
           this.gameOver)
       );
     }
+  }
+
+  getNumberOfEnemiesFromStorage = () => {
+    let value = 1;
+    if (window.localStorage) {
+      value = localStorage.getItem('number_of_enemies');
+    }
+    return (value && value !== null ? value : 1);
   }
 
   createMovableMapBase = (on = 'land') => {
@@ -382,7 +390,6 @@ class Game extends React.Component {
   }
 
   drawFrame = () => {
-
     // reset
     this.context.setTransform(1, 0, 0, 1, 0, 0);
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -401,8 +408,7 @@ class Game extends React.Component {
         this.originX -= this.scrollSpeed;
       }
     }
-    // move origo
-    this.context.setTransform(1, 0, 0, 1, this.originX, this.originY);
+    this.context.setTransform(1, 0, 0, 1, this.originX, this.originY); // move origo
 
     // Draw base tile graphics
     for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
@@ -410,7 +416,6 @@ class Game extends React.Component {
         let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedXTile === x && this.selectedYTile === y ? true : false));
       }
     }
-
 
     // Draw only one player object in this game version
     this.playerObjects[0].draw();

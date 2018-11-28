@@ -38,10 +38,11 @@ class SubMenu extends React.Component {
 
   getInfo = () => {
     return <div className='extra_info'>
-      <span className='info_title'>Info:</span>
       <div>
         <p>
-          Lorem
+          Pirate's Oasis is a  mouse controlled isometric pirate-themed game.
+          It uses React framework as a base for the app and HTML5 Canvas API for the game itself.
+          The game is designed for desktop browsers.
         </p>
           <a href={conf.git_url} target='_blank'>Link to GitHub</a>
         <p>
@@ -60,6 +61,12 @@ class SubMenu extends React.Component {
     }
   }
 
+  handleEnemiesInput = (value) => {
+    if (Number.isInteger(value) && value > 0 && value <= 4) {
+      this.props.setNumberOfEnemies(value);
+    }
+  }
+
   render() {
     return <div ref={(c) => {this.extraSubMenu = c;}} className='extra_sub_menu_wrapper'>
       <div className='sub_menu'>
@@ -67,12 +74,12 @@ class SubMenu extends React.Component {
           <span className='settings_title'>Settings:</span>
           <hr />
           <div className='enemies_amount_title'>Max amount of enemies on screen</div>
-          <NumericInput min={1} max={4} value={1} />
+          <NumericInput min={1} max={4} value={1} value={this.props.getNumberOfEnemiesFromStorage()} onChange={this.handleEnemiesInput} />
         </div>
         <div className='setting_wrapper'>
           <span className='settings_title'>Info:</span>
           <hr />
-          <div className='enemies_amount_title'>TODO---</div>
+          {this.getInfo()}
         </div>
         <div className='settings_close_btn' onClick={this.close}>Close</div>
       </div>

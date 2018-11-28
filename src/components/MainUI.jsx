@@ -83,10 +83,10 @@ class UI extends React.Component {
                   <Game
                     gameState={this.state.GAME_STATE}
                     setGameState={this.setGameState} />
+                  <TitleBanner gameState={this.state.GAME_STATE} />
                   <Menu
                     visible={(this.state.GAME_STATE !== C.RUN ? true : false)}
                     setGameState={this.setGameState} />
-                  <TitleBanner gameState={this.state.GAME_STATE} />
               </div>
 
   }
