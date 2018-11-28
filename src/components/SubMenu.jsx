@@ -40,7 +40,7 @@ class SubMenu extends React.Component {
     return <div className='extra_info'>
       <div>
         <p>
-          Pirate's Oasis is a  mouse controlled isometric pirate-themed game.
+          Pirate's Oasis is a  mouse controlled isometric pirate-themed game. The goal of the game is to prevent enemy ships reaching the three towers on the island.
           It uses React framework as a base for the app and HTML5 Canvas API for the game itself.
           The game is designed for desktop browsers.
         </p>
