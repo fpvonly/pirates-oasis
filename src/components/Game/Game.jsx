@@ -149,10 +149,8 @@ class Game extends React.Component {
   }
 
   resizeCanvas = (e) => {
-    //this.canvas.width = window.innerWidth;
-    //  this.canvas.height = window.innerHeight;
-    //  this.resetGame();
-    //  this.props.setGameState(C.STOP);
+    this.resetGame();
+    this.props.setGameState(C.STOP);
   }
 
   getOriginX = () => {
@@ -510,8 +508,8 @@ class Game extends React.Component {
       <canvas
         ref={this.getCanvasRef}
         id='canvas'
-        width={(canvasWidth > 1920 ? 1920 : canvasWidth)}
-        height={(canvasHeight > 1080 ? 1080 : canvasHeight)}
+        width={(canvasWidth > 1920 ? 1920 : (canvasWidth > 800 ? canvasWidth : 800))}
+        height={(canvasHeight > 1080 ? 1080 : (canvasHeight > 600 ? canvasHeight : 600))}
         style={canvasVisibility}>
           Your browser doesn't support HTML5 canvas API. Please update your browser.
       </canvas>

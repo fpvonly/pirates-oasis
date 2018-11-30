@@ -61,16 +61,32 @@ html, body {
   color: #ffffff;
 }
 
+#app {
+  min-width: 800px;
+  min-height: 600px;
+  height: 100vh;
+}
+
+#app > div {
+  width: 100%;
+  height: 100%;
+}
+
+.banner {
+  min-width: 800px;
+}
+
 .title {
   position: absolute;
   width: 100%;
-  top: 0;
+  top: 20px;
   left: 0;
   font-size: 14rem;
   color: #2de581;
   text-shadow: -3px 3px 10px #000000;
   display: flex;
   justify-content: center;
+  min-width: 800px;
 }
 
 .notice {
@@ -93,6 +109,7 @@ html, body {
   display: flex;
   width: 100%;
   height: 100vh;
+  min-height: 600px;
   background: url('../images/bg_island.jpg');
   background-color: transparent;
   background-size: cover;
@@ -186,11 +203,12 @@ canvas {
   position: absolute;
   top: 0;
   width: 100%;
+  min-width: 800px;
   height: 100vh;
+  min-height: 600px;
 }
 
 .menu {
-  position: absolute;
   font-size: 8rem;
 
 }
@@ -235,7 +253,7 @@ canvas {
 }
 
 .menu_btn.music {
-  position: fixed;
+  position: absolute;
   left: 10px;
   top: 10px;
   font-size: 3rem;
@@ -244,7 +262,7 @@ canvas {
 }
 
 .menu_btn.fullscreen {
-  position: fixed;
+  position: absolute;
   right: 10px;
   top: 10px;
   font-size: 3rem;
