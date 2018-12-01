@@ -297,7 +297,8 @@ class Game extends React.Component {
           this.allowedTilesOnWaterMapYX,
           this.allowedTilesOnWaterMapXY,
           this.getTileCoordinates,
-          this.gameOver)
+          this.gameOver,
+          i * 5)
       );
     }
   }
@@ -387,6 +388,35 @@ class Game extends React.Component {
     return this.fps;
   }
 
+  /*
+    Basic draw order deciding function for enemy ships.
+    Not perfect as the ships are ghost ships, so no need ...
+
+    @returns {array} arranged enemy ship objects in 'back to front' order
+  */
+  getEnemyDrawOrder = () => {
+    let enemyDrawOrder = [];
+    for (let enemy of this.enemies) {
+      if (enemyDrawOrder.length === 0) {
+        enemyDrawOrder.push(enemy);
+      } else {
+        let index = -1;
+        for (let i = enemyDrawOrder.length - 1; i >= 0 ; i--) {
+          if (enemy.yI <= enemyDrawOrder[i].yI) {
+            index = i;
+          }
+        }
+        if (index === -1) {
+           enemyDrawOrder.push(enemy);
+        } else {
+          enemyDrawOrder.splice(index, 0, enemy);
+        }
+      }
+    }
+
+    return enemyDrawOrder;
+  }
+
   drawFrame = () => {
     // reset
     this.context.setTransform(1, 0, 0, 1, 0, 0);
@@ -419,8 +449,9 @@ class Game extends React.Component {
     this.playerObjects[0].draw();
 
     // Draw enemies
-    for (let enemy of this.enemies) {
-      if (MapData.areTileLayersNextTo(enemy.xI, enemy.yI) === true) {
+    let enemyDrawOrder = this.getEnemyDrawOrder();
+    for (let enemy of enemyDrawOrder) {
+      if (enemy.initialLoadDone === true && MapData.areTileLayersNextTo(enemy.xI, enemy.yI) === true) {
         enemy.draw();
       }
     }
@@ -433,8 +464,8 @@ class Game extends React.Component {
     }
 
     // Draw enemies
-    for (let enemy of this.enemies) {
-      if (MapData.areTileLayersNextTo(enemy.xI, enemy.yI) === false) {
+    for (let enemy of enemyDrawOrder) {
+      if (enemy.initialLoadDone === true && MapData.areTileLayersNextTo(enemy.xI, enemy.yI) === false) {
         enemy.draw();
       }
     }
@@ -447,7 +478,7 @@ class Game extends React.Component {
 
     // Enemy hits
     for (let enemy of this.enemies) {
-      if(enemy.destroyed === false && enemy.active === true) {
+      if(enemy.initialLoadDone === true && enemy.destroyed === false) {
         // did player's cannon balls hit the enemy?
         let cannonBalls = this.playerObjects[0].getActiveCannonBalls();
         for (let cannonBall of cannonBalls) {
@@ -460,6 +491,7 @@ class Game extends React.Component {
         }
       }
     }
+
     if (this.GAME_OVER === true) {
       this.drawEndScreen();
     }

@@ -7,27 +7,95 @@ import * as C from '../Constants';
 
 class EnemyShip extends GameObject {
 
-  constructor(context, canvas, width, height, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates, gameOver) {
+  constructor(context, canvas, width, height, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates, gameOver, timeoutSeconds = 1) {
 
-    super(context, canvas, width, height, 0, 0, 5);
+    super(context, canvas, width, height, 0, 0, 1);
 
     this.getTileCoordinates = getTileCoordinates;
     this.gameOver = gameOver;
     this.bg = Sprites.getEnemyShip();
     this.matrixOfMapForWater = matrixOfMapForWater;
-    this.reset();
 
-    this.active = true; // true if should be hit-tested with shot cannon balls, false if should be drawn on screen nut NOT be hit-tested
+    this.active = true; // true if should be drawn on screen
     this.timeout = null;
+    this.timeoutSeconds = timeoutSeconds;
+    this.timeout = setTimeout(() => {
+      this.reset();
+    }, this.timeoutSeconds*1000);
+
+    this.initialLoadDone = false;
+  }
+
+  reset = () => {
+    let mapSide = this.getRndMapSide();
+    this.removeEnemyWarnings();
+
+    if (mapSide === 'top') {
+      this.xI = this.getRndInteger(0, 19);
+      this.yI = 0;
+      if (this.xI <= 12) {
+        this.canvas.classList.add('warning_shadow_left');
+      } else {
+        this.canvas.classList.add('warning_shadow_top');
+      }
+    } else if (mapSide === 'bottom') {
+      this.xI = this.getRndInteger(0, 17);
+      this.yI = 23;
+      if (this.xI <= 12) {
+        this.canvas.classList.add('warning_shadow_bottom');
+      } else {
+        this.canvas.classList.add('warning_shadow_right');
+      }
+    } else if (mapSide === 'left') {
+      this.xI = 0;
+      this.yI = this.getRndInteger(0, 24);
+      if (this.yI <= 12) {
+        this.canvas.classList.add('warning_shadow_left');
+      } else {
+        this.canvas.classList.add('warning_shadow_bottom');
+      }
+    } else if (mapSide === 'right') {
+      this.xI = 23;
+      this.yI = this.getRndInteger(5, 23);
+      if (this.yI <= 12) {
+        this.canvas.classList.add('warning_shadow_top');
+      } else {
+        this.canvas.classList.add('warning_shadow_right');
+      }
+    }
+    this.warningTimeout = setTimeout(() => {
+      this.removeEnemyWarnings();
+    }, 3000);
+
+    let sourceTileCoords =this. getTileCoordinates(this.xI, this.yI);
+    this.x = sourceTileCoords.tileX - this.width/2;
+    this.y = sourceTileCoords.tileY - this.height/2;
+
+    this.finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true});
+    let grid = new PF.Grid(this.matrixOfMapForWater);
+    let target = MapData.enemyWinTargetPositions[this.getRndInteger(0, 3)]; // three, because getRndInteger uses Math.floor
+    this.path = this.finder.findPath(this.xI, this.yI, target[0], target[1], grid);
+    this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
+    this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
+    this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
+    this.angle = this.calculateDirectionAngle();
+    this.newAngleSpriteIndex = 0;
+
+    this.destroyed = false;
+    this.destructionAnimFrame = 1;
+    this.active = true;
+    this.initialLoadDone = true;
   }
 
   draw = () => {
-    if (this.destroyed === false) {
-      let shipSprite = this.getEnemyShipSprite();
-      let done = this.steer();
-      this.context.drawImage(shipSprite, this.x, this.y, this.width, this.height);
-    } else {
-      this.playDestructionAnim();
+    if (this.initialLoadDone === true && this.active === true) {
+      if (this.destroyed === false) {
+        let shipSprite = this.getEnemyShipSprite();
+        let done = this.steer();
+        this.context.drawImage(shipSprite, this.x, this.y, this.width, this.height);
+      } else {
+        this.playDestructionAnim();
+      }
     }
   }
 
@@ -35,14 +103,18 @@ class EnemyShip extends GameObject {
     let shipSprite = this.getEnemyShipSprite();
     let hIncrement = this.height/30;
     this.context.drawImage(shipSprite, 0, 0, this.width, hIncrement*(30 - this.destructionAnimFrame), this.x, this.y + (hIncrement*this.destructionAnimFrame), this.width, hIncrement*(30 - this.destructionAnimFrame));
-    this.active = false;
 
     if (this.destructionAnimFrame === 1) {
       Sounds.playCrashSound();
     }
-    this.destructionAnimFrame++;
-    if (this.destructionAnimFrame > 30) {
-      this.reset();
+
+    if (this.destructionAnimFrame === 31) {
+      this.active = false;
+      this.timeout = setTimeout(() => {
+        this.reset();
+      }, this.timeoutSeconds * 1000);
+    } else {
+      this.destructionAnimFrame++;
     }
   }
 
@@ -84,7 +156,6 @@ class EnemyShip extends GameObject {
               let done = this.calculateDirectionAngle();
             } else {
               this.gameOver(); // enemy reached the target tower destination
-              this.active = false;
             }
           }
         }
@@ -140,66 +211,6 @@ class EnemyShip extends GameObject {
     this.angle = Math.atan2(this.targetXScreen - wrapperCenter[0], - (this.targetYScreen - wrapperCenter[1])) * (180/Math.PI);
 
     return this.angle;
-  }
-
-  reset = () => {
-    let mapSide = this.getRndMapSide();
-    this.removeEnemyWarnings();
-
-    if (mapSide === 'top') {
-      this.xI = this.getRndInteger(0, 18);
-      this.yI = 0;
-      if (this.xI <= 12) {
-        this.canvas.classList.add('warning_shadow_left');
-      } else {
-        this.canvas.classList.add('warning_shadow_top');
-      }
-    } else if (mapSide === 'bottom') {
-      this.xI = this.getRndInteger(0, 16);
-      this.yI = 23;
-      if (this.xI <= 12) {
-        this.canvas.classList.add('warning_shadow_bottom');
-      } else {
-        this.canvas.classList.add('warning_shadow_right');
-      }
-    } else if (mapSide === 'left') {
-      this.xI = 0;
-      this.yI = this.getRndInteger(0, 23);
-      if (this.yI <= 12) {
-        this.canvas.classList.add('warning_shadow_left');
-      } else {
-        this.canvas.classList.add('warning_shadow_bottom');
-      }
-    } else if (mapSide === 'right') {
-      this.xI = 23;
-      this.yI = this.getRndInteger(5, 23);
-      if (this.yI <= 12) {
-        this.canvas.classList.add('warning_shadow_top');
-      } else {
-        this.canvas.classList.add('warning_shadow_right');
-      }
-    }
-    this.warningTimeout = setTimeout(() => {
-      this.removeEnemyWarnings();
-    }, 3000);
-
-    let sourceTileCoords =this. getTileCoordinates(this.xI, this.yI);
-    this.x = sourceTileCoords.tileX - this.width/2;
-    this.y = sourceTileCoords.tileY - this.height/2;
-
-    this.finder = new PF.AStarFinder({allowDiagonal: true, dontCrossCorners: true});
-    let grid = new PF.Grid(this.matrixOfMapForWater);
-    let target = MapData.enemyWinTargetPositions[this.getRndInteger(0, 2)];
-    this.path = this.finder.findPath(this.xI, this.yI, target[0], target[1], grid);
-    this.targetTileCoords = this.getTileCoordinates(this.path[0][0], this.path[0][1]);
-    this.targetXScreen = this.targetTileCoords.tileX + MapData.tileDiagonalWidth/2;
-    this.targetYScreen = this.targetTileCoords.tileY + MapData.tileDiagonalHeight/2;
-    this.angle = this.calculateDirectionAngle();
-    this.newAngleSpriteIndex = 0;
-
-    this.destroyed = false;
-    this.destructionAnimFrame = 1;
-    this.active = true;
   }
 
   removeEnemyWarnings = () => {

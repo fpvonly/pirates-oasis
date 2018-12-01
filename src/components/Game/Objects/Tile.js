@@ -15,7 +15,7 @@ class Tile {
     this.baseTileSprite = Sprites.getTile(MapData.map[xI][yI]);
     this.layers = layers;
     this.allowPlayerMovement = layers === null ? false : true; // if there are layers on the tile, no player movement allowed
-    this.speed = 0.5;
+    this.speed = 0.2;
     this.animate = false;
     if (this.baseTileSprite.src.indexOf('water_waves') !== -1) {
       this.animate = true;
