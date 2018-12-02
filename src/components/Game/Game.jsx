@@ -287,7 +287,7 @@ class Game extends React.Component {
 
   initEnemies = () => {
     this.enemies = [];
-    for (let i = 0; i < this.getNumberOfEnemiesFromStorage(); i++) {
+    for (let i = 0; i < this.getNumberOfEnemies(); i++) {
       this.enemies.push(
         new EnemyShip(
           this.context,
@@ -303,12 +303,28 @@ class Game extends React.Component {
     }
   }
 
-  getNumberOfEnemiesFromStorage = () => {
+  getNumberOfEnemies = () => {
     let value = 1;
     if (window.localStorage) {
       value = localStorage.getItem('number_of_enemies');
     }
     return (value && value !== null ? value : 1);
+  }
+
+  getNightmode = () => {
+    let value = false;
+    if (window.localStorage) {
+      value = localStorage.getItem('nightmode');
+    }
+    return (value !== null && value == 'true' ? true : false);
+  }
+
+  getFPSMode = () => {
+    let value = false;
+    if (window.localStorage) {
+      value = localStorage.getItem('fpsmode');
+    }
+    return (value !== null && value == 'true' ? true : false);
   }
 
   createMovableMapBase = (on = 'land') => {
@@ -379,7 +395,7 @@ class Game extends React.Component {
     this.animation = requestAnimFrame(this.animate);
     this.drawFrame();
 
-    if (DEBUG === true) {
+    if (this.props.gameState === C.RUN && this.getFPSMode() === true) {
       this.debugFPSREF.updateFPS(this.fps);
     }
   }
@@ -535,8 +551,7 @@ class Game extends React.Component {
       canvasVisibility = {'display': 'none'};
     }
 
-    return <div className='container night_mode'>
-      <div className={'bg'} />
+    return <div className={'game_wrapper' + (this.props.gameState === C.RUN && this.getNightmode() === true ? ' night_mode' : '')}>
       <canvas
         ref={this.getCanvasRef}
         id='canvas'
@@ -545,7 +560,7 @@ class Game extends React.Component {
         style={canvasVisibility}>
           Your browser doesn't support HTML5 canvas API. Please update your browser.
       </canvas>
-      {(DEBUG === true ? <DebugFPS ref={this.getDebugFPSRef} /> : null)}
+      {(this.props.gameState === C.RUN && this.getFPSMode() === true ? <DebugFPS ref={this.getDebugFPSRef} /> : null)}
     </div>
   }
 }

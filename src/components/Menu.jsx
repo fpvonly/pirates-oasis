@@ -18,8 +18,10 @@ class Menu extends React.Component {
     this.state = {
       extraSubMenuVisible: false,
       mainMenuBtnStateSelectedIndex: null,
-      musicState: this.getmusicStateFromStorage(),
-      fullscreenState: false
+      musicState: this.getmusicState(),
+      fullscreenState: false,
+      nightmode: this.getNightmode(),
+      fpsMode: this.getFPSMode()
     };
   }
 
@@ -209,7 +211,7 @@ class Menu extends React.Component {
     this.setState({musicState: value});
   }
 
-  getmusicStateFromStorage = () => {
+  getmusicState = () => {
     let value = true;
     if (window.localStorage) {
       value = localStorage.getItem('playMusic');
@@ -227,12 +229,42 @@ class Menu extends React.Component {
     }
   }
 
-  getNumberOfEnemiesFromStorage = () => {
+  getNumberOfEnemies = () => {
     let value = 1;
     if (window.localStorage) {
       value = localStorage.getItem('number_of_enemies');
     }
     return (value && value !== null ? value : 1);
+  }
+
+  setNightmode = (value) => {
+    if (window.localStorage) {
+      localStorage.setItem('nightmode', value);
+    }
+    this.setState({nightmode: value});
+  }
+
+  getNightmode = () => {
+    let value = false;
+    if (window.localStorage) {
+      value = localStorage.getItem('nightmode');
+    }
+    return (value !== null && value == 'true' ? true : false);
+  }
+
+  setFPSMode = (value) => {
+    if (window.localStorage) {
+      localStorage.setItem('fpsmode', value);
+    }
+    this.setState({fpsMode: value});
+  }
+
+  getFPSMode = () => {
+    let value = false;
+    if (window.localStorage) {
+      value = localStorage.getItem('fpsmode');
+    }
+    return (value !== null && value == 'true' ? true : false);
   }
 
   render() {
@@ -278,7 +310,13 @@ class Menu extends React.Component {
         extraSubMenu = <SubMenu
           closeSubMenu={this.closeSubMenu}
           setNumberOfEnemies={this.setNumberOfEnemies}
-          getNumberOfEnemiesFromStorage={this.getNumberOfEnemiesFromStorage} />;
+          getNumberOfEnemies={this.getNumberOfEnemies}
+          nightmode={this.state.nightmode}
+          setNightmode={this.setNightmode}
+          getNightmode={this.getNightmode}
+          fpsMode={this.state.fpsMode}
+          setFPSMode={this.setFPSMode}
+          getFPSMode={this.getFPSMode} />;
       }
 
       menuWrapper = <div className='main_menu_wrapper'>
