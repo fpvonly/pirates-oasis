@@ -117,7 +117,7 @@ html, body {
 }
 
 .night_mode {
-  filter: invert(1) hue-rotate(240deg);
+  filter: invert(1) hue-rotate(210deg);
 }
 
 .loading {

@@ -31,7 +31,7 @@ class Game extends React.Component {
     this.scrollSpeed = 50;
     this.scrollY = 0;
     this.scrollX = 0;
-    this.playerObjects = []; // all player controlled units
+    this.playerObject = null;
     this.enemies = [];
     this.points = 0;
 
@@ -214,7 +214,7 @@ class Game extends React.Component {
     this.maxYSpan = this.originY + MapData.tileDiagonalHeight * MapData.rows/2 - 200;
 
     this.initMapTiles();
-    this.initPlayerObjects();
+    this.initPlayerObject();
     this.parrot = new Parrot(
       this.context,
       this.canvas,
@@ -268,21 +268,21 @@ class Game extends React.Component {
     this.allowedTilesOnWaterMapXY = allowedTilesOnWater.xy;
   }
 
-  initPlayerObjects = () => {
-    this.playerObjects = [];
-    this.playerObjects.push(new Player(
+  initPlayerObject = () => {
+    let initialPosCoords = this.getTileCoordinates(13, 10);
+    this.playerObject = new Player(
       this.context,
       this.canvas,
       40,
       40,
-      24*75,
-      1,
+      initialPosCoords.tileX + MapData.tileDiagonalWidth/2,
+      initialPosCoords.tileY + MapData.tileDiagonalHeight/2,
       this.getOriginX,
       this.getOriginY,
       this.allowedTilesOnLandMapYX,
       this.getTileCoordinates,
       this.getTileCoordIndexes,
-      this.getFPS));
+      this.getFPS);
   }
 
   initEnemies = () => {
@@ -446,7 +446,7 @@ class Game extends React.Component {
     }
 
     // Draw only one player object in this game version
-    this.playerObjects[0].draw();
+    this.playerObject.draw();
 
     // Draw enemies
     let enemyDrawOrder = this.getEnemyDrawOrder();
@@ -471,7 +471,7 @@ class Game extends React.Component {
     }
 
     // Draw cannon balls
-    this.playerObjects[0].drawCannonBalls();
+    this.playerObject.drawCannonBalls();
 
     // Draw flying parrot on top of everything
     this.parrot.draw();
@@ -480,7 +480,7 @@ class Game extends React.Component {
     for (let enemy of this.enemies) {
       if(enemy.initialLoadDone === true && enemy.destroyed === false) {
         // did player's cannon balls hit the enemy?
-        let cannonBalls = this.playerObjects[0].getActiveCannonBalls();
+        let cannonBalls = this.playerObject.getActiveCannonBalls();
         for (let cannonBall of cannonBalls) {
           if(cannonBall.active === true && cannonBall.didCollideWith(enemy) === true) {
             enemy.destroy();
