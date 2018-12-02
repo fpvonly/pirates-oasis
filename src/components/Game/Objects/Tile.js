@@ -1,5 +1,7 @@
 import Sprites from './Sprite';
 
+const DEBUG = (process.env.NODE_ENV === 'development' ? true : false);
+
 class Tile {
 
   constructor(xI, yI, x, y, MapData, layers, canvas, context, getOriginX, getOriginY) {
@@ -42,12 +44,6 @@ class Tile {
       this.getOriginY() + this.y <= this.canvas.height) {
         this.shouldBeDrawn = true;
     }
-    /*this.context.moveTo(this.x, this.y + this.MapData.tileDiagonalHeight / 2);
-    this.context.lineTo(this.x + this.MapData.tileDiagonalWidth / 2, this.y, this.x + this.MapData.tileDiagonalWidth, this.y + this.MapData.tileDiagonalHeight / 2);
-    this.context.lineTo(this.x + this.MapData.tileDiagonalWidth, this.y +this. MapData.tileDiagonalHeight / 2, this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight);
-    this.context.lineTo(this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight, this.x, this.y + this.MapData.tileDiagonalHeight / 2);
-    this.context.closePath();
-    this.context.fill();*/
 
     if (this.shouldBeDrawn === true) {
       if (this.animate === true) {
@@ -78,16 +74,15 @@ class Tile {
       }
     }
 
-    /*let color = '#fff';
-    this.drawOutline(this.x, this.y + this.MapData.tileDiagonalHeight / 2, this.x + this.MapData.tileDiagonalWidth / 2, this.y, color);
-    this.drawOutline(this.x + this.MapData.tileDiagonalWidth / 2, this.y, this.x + this.MapData.tileDiagonalWidth, this.y + this.MapData.tileDiagonalHeight / 2, color);
-    this.drawOutline(this.x + this.MapData.tileDiagonalWidth, this.y + this.MapData.tileDiagonalHeight / 2, this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight, color);
-    this.drawOutline(this.x + this.MapData.tileDiagonalWidth / 2, this.y + this.MapData.tileDiagonalHeight, this.x, this.y + this.MapData.tileDiagonalHeight / 2, color);
-*/
-    this.context.beginPath();
-    this.context.shadowOffsetX = 0;
-    this.context.fillText(this.xI + ", " + this.yI, this.x + this.MapData.tileDiagonalWidth/2 - 9, this.y + this.MapData.tileDiagonalHeight/2 + 3);
-    this.context.closePath();
+    // show tile xI, yI in dev server mode
+    /*
+    if (DEBUG === true) {
+      this.context.beginPath();
+      this.context.shadowOffsetX = 0;
+      this.context.fillText(this.xI + ", " + this.yI, this.x + this.MapData.tileDiagonalWidth/2 - 9, this.y + this.MapData.tileDiagonalHeight/2 + 3);
+      this.context.closePath();
+    }
+    */
 
     return true;
   }
@@ -107,7 +102,6 @@ class Tile {
         );
       }
     }
-
 
     return true;
   }

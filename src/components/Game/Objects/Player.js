@@ -12,7 +12,7 @@ class Player extends GameObject {
 
   constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTileCoordinates, getTileCoordIndexes, getFPS) {
 
-    super(context, canvas, width, height, x - width/2, y - height/2, 5);
+    super(context, canvas, width, height, x - width/2, y - height/2, 3);
 
     this.getOriginX = getOriginX;
     this.getOriginY = getOriginY;

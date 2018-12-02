@@ -43,9 +43,6 @@
     "url": "git+https://github.com/fpvonly/pirates-oasis.git"
   },
   "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/fpvonly/pirates-oasis/issues"
-  },
+  "license": "",
   "homepage": "https://github.com/fpvonly/pirates-oasis#readme"
 }

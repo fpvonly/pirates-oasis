@@ -140,7 +140,6 @@ class Sprite {
       }
     }
 
-
     return 'Images: ' + Math.floor((loaded/all)*100) + '%';
   }
 

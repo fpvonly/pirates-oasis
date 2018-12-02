@@ -7,7 +7,7 @@ class Parrot extends GameObject {
 
   constructor(context, canvas, width, height, xI, yI, getTileCoordinates) {
     let sourceTileCoords = getTileCoordinates(xI, yI);
-    super(context, canvas, width, height, sourceTileCoords.tileX - width/2, sourceTileCoords.tileY - height/2, 10);
+    super(context, canvas, width, height, sourceTileCoords.tileX - width/2, sourceTileCoords.tileY - height/2, 4);
 
     this.getTileCoordinates = getTileCoordinates;
     this.targetXScreen = null;

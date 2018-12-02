@@ -118,7 +118,7 @@ html, body {
   display: flex;
   justify-content: center;
   width: 100%;
-  min-height: 600px;
+  min-height: 100vh;
   background: url('../images/bg_island.jpg');
   background-color: transparent;
   background-size: cover;

@@ -12,8 +12,6 @@ import EnemyShip from './Objects/EnemyShip.js';
 import Player from './Objects/Player.js';
 import * as C from './Constants';
 
-const DEBUG = (process.env.NODE_ENV === 'development' ? true : false);
-
 class Game extends React.Component {
 
   constructor(props) {
