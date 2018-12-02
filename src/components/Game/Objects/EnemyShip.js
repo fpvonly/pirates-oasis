@@ -92,7 +92,10 @@ class EnemyShip extends GameObject {
       if (this.destroyed === false) {
         let shipSprite = this.getEnemyShipSprite();
         let done = this.steer();
+        this.context.save();
+        this.context.globalAlpha = 0.7;
         this.context.drawImage(shipSprite, this.x, this.y, this.width, this.height);
+        this.context.restore();
       } else {
         this.playDestructionAnim();
       }
@@ -102,8 +105,10 @@ class EnemyShip extends GameObject {
   playDestructionAnim = () => {
     let shipSprite = this.getEnemyShipSprite();
     let hIncrement = this.height/30;
+    this.context.save();
+    this.context.globalAlpha = 0.7;
     this.context.drawImage(shipSprite, 0, 0, this.width, hIncrement*(30 - this.destructionAnimFrame), this.x, this.y + (hIncrement*this.destructionAnimFrame), this.width, hIncrement*(30 - this.destructionAnimFrame));
-
+    this.context.restore();
     if (this.destructionAnimFrame === 1) {
       Sounds.playCrashSound();
     }

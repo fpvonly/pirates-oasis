@@ -535,7 +535,7 @@ class Game extends React.Component {
       canvasVisibility = {'display': 'none'};
     }
 
-    return <div className='container'>
+    return <div className='container night_mode'>
       <div className={'bg'} />
       <canvas
         ref={this.getCanvasRef}

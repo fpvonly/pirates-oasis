@@ -116,6 +116,10 @@ html, body {
   background-position-y: center;
 }
 
+.night_mode {
+  filter: invert(1) hue-rotate(240deg);
+}
+
 .loading {
   display: flex;
   align-items: center;
