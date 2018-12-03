@@ -71,7 +71,7 @@ class CannonBall extends GameObject {
             this.animationSeconds,
             {
               x: this.target.x,
-              y : this.target.y,
+              y: this.target.y,
               ease: "linear",
               onComplete: () => {
                 this.x = this.target.x;

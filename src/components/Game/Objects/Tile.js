@@ -52,7 +52,7 @@ class Tile {
         } else if (this.currentAnimationIncVal <= 0) {
           this.speed = this.speed * -1;
         }
-        this.currentAnimationIncVal = this.currentAnimationIncVal + this.speed;
+        this.currentAnimationIncVal = this.currentAnimationIncVal + this.speed * window.GAME_FPS_ADJUST;
         this.context.drawImage(this.baseTileSprite, this.x, this.y, this.baseTileSprite.width, this.baseTileSprite.height - this.currentAnimationIncVal);
       } else {
         this.context.drawImage(this.baseTileSprite, this.x, this.y, this.baseTileSprite.width, this.baseTileSprite.height);

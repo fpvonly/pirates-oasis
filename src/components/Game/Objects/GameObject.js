@@ -15,19 +15,19 @@ class GameObject {
   }
 
   moveRight = (amount = 1) => {
-    this.x += amount;
+    this.x += amount * window.GAME_FPS_ADJUST;
   }
 
   moveLeft = (amount = 1) => {
-    this.x -= amount;
+    this.x -= amount * window.GAME_FPS_ADJUST;
   }
 
   moveUp = (amount = 1) => {
-    this.y -= amount;
+    this.y -= amount * window.GAME_FPS_ADJUST;
   }
 
   moveDown = (amount = 1) => {
-    this.y += amount;
+    this.y += amount * window.GAME_FPS_ADJUST;
   }
 
   moveToX = (x = this.xOriginal) => {

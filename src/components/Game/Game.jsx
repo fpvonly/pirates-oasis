@@ -12,6 +12,8 @@ import EnemyShip from './Objects/EnemyShip.js';
 import Player from './Objects/Player.js';
 import * as C from './Constants';
 
+window.GAME_FPS_ADJUST = 1;
+
 class Game extends React.Component {
 
   constructor(props) {
@@ -50,9 +52,12 @@ class Game extends React.Component {
     this.mousePointX = null;
 
     this.fps = 0;
-    this.previousFrameTime = 0;
     this.framesThisSecond = 0;
     this.lastFpsUpdate = 0;
+    this.fpsInterval = 1000/30;
+    this.now = 0;
+    this.then = Date.now();
+    this.elapsed = 0;
   }
 
   static defaultProps = {
@@ -384,14 +389,24 @@ class Game extends React.Component {
   }
 
   animate = (time) => {
-    if (time > this.lastFpsUpdate + 1000) { // update fps every second
-      this.fps = this.framesThisSecond;
-      this.lastFpsUpdate = time;
-      this.framesThisSecond = 0;
-    }
-    this.framesThisSecond++;
     this.animation = requestAnimFrame(this.animate);
-    this.drawFrame();
+    this.now = Date.now();
+    this.elapsed = this.now - this.then;
+
+    if (this.elapsed > this.fpsInterval) { // limit fps to 30 frames per second
+      if (time > this.lastFpsUpdate + 1000) { // update fps every second
+        this.fps = this.framesThisSecond;
+        this.lastFpsUpdate = time;
+        if (this.fps > 15 && this.framesThisSecond > 0) { // check for both variable to prevent "speed ups" after window resize
+          window.GAME_FPS_ADJUST = 30/(this.fps >= 30 ? 30 : this.fps);
+        }
+        this.framesThisSecond = 0;
+      }
+      this.framesThisSecond++;
+      this.then = this.now - (this.elapsed % this.fpsInterval);
+
+      this.drawFrame();
+    }
 
     if (this.props.gameState === C.RUN && this.getFPSMode() === true) {
       this.debugFPSREF.updateFPS(this.fps);
@@ -440,14 +455,14 @@ class Game extends React.Component {
     let tileId = this.getTileCoordIndexes(this.mousePointX, this.mousePointY);
     if (tileId.selectedXTile !== null && tileId.selectedYTile !== null) {
       if (this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
-        this.originY += this.scrollSpeed;
+        this.originY += this.scrollSpeed * window.GAME_FPS_ADJUST;
       } else if (this.mousePointY > window.innerHeight*0.8 && this.originY >= this.minYSpan) {
-        this.originY -= this.scrollSpeed;
+        this.originY -= this.scrollSpeed * window.GAME_FPS_ADJUST;
       }
       if (this.mousePointX < this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
-        this.originX += this.scrollSpeed;
+        this.originX += this.scrollSpeed * window.GAME_FPS_ADJUST;
       } else if (this.mousePointX > this.canvas.width*0.8 && this.originX >= this.minXSpan) {
-        this.originX -= this.scrollSpeed;
+        this.originX -= this.scrollSpeed * window.GAME_FPS_ADJUST;
       }
     }
     this.context.setTransform(1, 0, 0, 1, this.originX, this.originY); // move origo
