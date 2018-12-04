@@ -97,16 +97,16 @@ class SubMenu extends React.Component {
         <div className='setting_wrapper'>
           <span className='settings_title'>Settings:</span>
           <hr />
-          <div className='enemies_amount_title'>Max amount of enemies on screen</div>
+          <div className='sub_title'>Max number of enemies on screen</div>
           <NumericInput min={1} max={4} value={1} value={this.props.getNumberOfEnemies()} onChange={this.handleEnemiesInput} />
         </div>
         <div className='setting_wrapper'>
-          <div className='enemies_amount_title'>Nightmode of the in-game (experimental)</div>
+          <div className='sub_title'>Nightmode of the game (experimental)</div>
           <Toggle checked={this.props.nightmode} onChange={this.handleNightmodeClick} />
           <span className='toggle_label'>{(this.props.nightmode ? 'Nightmode ON' : 'Nightmode OFF')}</span>
         </div>
         <div className='setting_wrapper'>
-          <div className='enemies_amount_title'>Performance counter (max. 30fps)</div>
+          <div className='sub_title'>Performance counter (max. 30fps)</div>
           <Toggle checked={this.props.fpsMode} onChange={this.handleFPSModeClick} />
           <span className='toggle_label'>{(this.props.fpsMode ? 'Show FPS ON' : 'Show FPS OFF')}</span>
         </div>

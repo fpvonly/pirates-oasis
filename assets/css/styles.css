@@ -66,7 +66,7 @@ html, body {
 }
 
 body {
-overflow: hidden;
+  overflow: hidden;
 }
 
 .no_flex {
@@ -83,7 +83,6 @@ overflow: hidden;
 
 #app {
   min-width: 744px;
-  overflow: hidden;
 }
 
 #app > div {
@@ -154,6 +153,11 @@ overflow: hidden;
   left: 0;
   width: 100%;
   height: 100%;
+  background: url('../images/bg_island.jpg');
+  background-color: transparent;
+  background-size: cover;
+  background-position-y: center;
+  background-repeat: repeat;
 }
 
 
@@ -435,12 +439,15 @@ canvas {
   padding: 25px;
 }
 
-.enemies_amount_title {
+.sub_title {
   margin-bottom: 10px;
+  text-shadow: -1px 1px #000000;
 }
 
-.max_enemies_setting .react-numeric-input input {
+.react-numeric-input input {
   width: 150px;
+  background-color: #2bd26e !important;
+  color: #ffffff !important;
 }
 
 

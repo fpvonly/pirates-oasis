@@ -544,6 +544,7 @@ class Game extends React.Component {
     this.context.shadowOffsetX = -4 * textRatio;
     this.context.fillText("Press esc or click on the screen to return to main menu", this.canvas.width/2 - this.originX, (this.canvas.height - this.originY) - 70);
     this.context.closePath();
+    this.context.shadowOffsetX = 0;
     this.canvas.style = 'cursor: pointer;' ;
   }
 
@@ -564,14 +565,17 @@ class Game extends React.Component {
       canvasVisibility = {'display': 'none'};
     }
 
-    return <div className={'game_wrapper'+ (this.props.gameState === C.RUN && this.getNightmode() === true ? ' night_mode' : '')}>
+    return <div
+      className={'game_wrapper'+ (this.props.gameState === C.RUN && this.getNightmode() === true ? ' night_mode' : '')}
+      title='Press Esc to exit'>
       <canvas
         ref={this.getCanvasRef}
         id='canvas'
         className={(window.innerHeight <= 768 ? ' no_vert_centering' : '') + (window.innerWidth <= 1024 ? ' no_hor_centering' : '')}
         width={canvasWidth}
         height={canvasHeight}
-        style={canvasVisibility}>
+        style={canvasVisibility}
+        title=' '>
           Your browser doesn't support HTML5 canvas API. Please update your browser.
       </canvas>
       {(this.props.gameState === C.RUN && this.getFPSMode() === true ? <DebugFPS ref={this.getDebugFPSRef} /> : null)}
