@@ -91,7 +91,8 @@ class SubMenu extends React.Component {
   }
 
   render() {
-    return <div ref={(c) => {this.extraSubMenu = c;}} className='extra_sub_menu_wrapper'>
+    return <div ref={(c) => {this.extraSubMenu = c;}} className='extra_sub_menu_wrapper topmost'>
+      <div className='overlay' />
       <div className='sub_menu'>
         <div className='setting_wrapper'>
           <span className='settings_title'>Settings:</span>

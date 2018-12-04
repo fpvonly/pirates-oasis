@@ -131,8 +131,8 @@ class Game extends React.Component {
   }
 
   handleMouseMove = (e) => {
-    // which tile????? ->
-    let selectedTileID = this.getTileCoordIndexes(e.pageX, e.pageY);
+    // which tile? ->
+    let selectedTileID = this.getTileCoordIndexes(e.pageX, e.pageY); // event coords are tied to canvas (not window)
     let selectedXi = selectedTileID.selectedXTile;
     let selectedYi = selectedTileID.selectedYTile;
 
@@ -169,7 +169,7 @@ class Game extends React.Component {
       return {selectedXTile: null, selectedYTile: null};
     }
 
-    x = x - this.originX - MapData.tileDiagonalWidth/2 -this.canvasOffsetLeft;
+    x = x - this.originX - MapData.tileDiagonalWidth/2 - this.canvasOffsetLeft;
     y = y - this.originY - MapData.tileDiagonalHeight/2 - this.canvasOffsetTop;
     let tileX = Math.round(x / MapData.tileDiagonalWidth - y / MapData.tileDiagonalHeight);
     let tileY = Math.round(x / MapData.tileDiagonalWidth + y / MapData.tileDiagonalHeight);
@@ -564,12 +564,13 @@ class Game extends React.Component {
       canvasVisibility = {'display': 'none'};
     }
 
-    return <div className={'game_wrapper' + (this.props.gameState === C.RUN && this.getNightmode() === true ? ' night_mode' : '')}>
+    return <div className={'game_wrapper'+ (this.props.gameState === C.RUN && this.getNightmode() === true ? ' night_mode' : '')}>
       <canvas
         ref={this.getCanvasRef}
         id='canvas'
-        width={(canvasWidth > 1920 ? 1920 : (canvasWidth > 800 ? canvasWidth : 800))}
-        height={(canvasHeight > 1080 ? 1080 : (canvasHeight > 600 ? canvasHeight : 600))}
+        className={(window.innerHeight <= 768 ? ' no_vert_centering' : '') + (window.innerWidth <= 1024 ? ' no_hor_centering' : '')}
+        width={canvasWidth}
+        height={canvasHeight}
         style={canvasVisibility}>
           Your browser doesn't support HTML5 canvas API. Please update your browser.
       </canvas>

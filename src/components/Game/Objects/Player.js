@@ -136,10 +136,8 @@ class Player extends GameObject {
     this.targetYScreenFinalPos = this.targetYScreen;
 
     // The actual x,y coordinates (i.e. order numbers) of the map tile (not screen coordinates)
-    let selectedXScreen = e.pageX;
-    let selectedYScreen = e.pageY;
-    selectedXScreen = selectedXScreen - this.getOriginX() - MapData.tileDiagonalWidth/2 - this.canvas.getBoundingClientRect().left;
-    selectedYScreen = selectedYScreen - this.getOriginY() - MapData.tileDiagonalHeight/2 -  this.canvas.getBoundingClientRect().top;
+    let selectedXScreen = this.targetXScreen- MapData.tileDiagonalWidth/2;
+    let selectedYScreen = this.targetYScreen - MapData.tileDiagonalHeight/2;
     let selectedXTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth - selectedYScreen / MapData.tileDiagonalHeight);
     let selectedYTileI = Math.round(selectedXScreen / MapData.tileDiagonalWidth + selectedYScreen / MapData.tileDiagonalHeight);
 

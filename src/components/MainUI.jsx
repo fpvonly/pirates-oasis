@@ -80,7 +80,7 @@ class UI extends React.Component {
                       </span>
                     </div>
                   </div>
-                : <div className='container'>
+                : <div className={'container' + (this.state.GAME_STATE === C.RUN ? ' game_is_running' : '')}>
                     <Game
                       gameState={this.state.GAME_STATE}
                       setGameState={this.setGameState} />

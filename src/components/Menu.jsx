@@ -137,6 +137,7 @@ class Menu extends React.Component {
   }
 
   handleShowSettingsClick = () => {
+    document.body.style = 'overflow: auto;'
     this.setState({extraSubMenuVisible: !this.state.extraSubMenuVisible});
   }
 
@@ -186,6 +187,7 @@ class Menu extends React.Component {
   }
 
   closeSubMenu = () => {
+    document.body.style = 'overflow: none;'
     this.setState({extraSubMenuVisible: false});
   }
 
