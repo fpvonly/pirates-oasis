@@ -21,7 +21,8 @@ class Menu extends React.Component {
       musicState: this.getmusicState(),
       fullscreenState: false,
       nightmode: this.getNightmode(),
-      fpsMode: this.getFPSMode()
+      fpsMode: this.getFPSMode(),
+      enemySpeedMode: this.getEnemySpeedMode()
     };
   }
 
@@ -269,6 +270,21 @@ class Menu extends React.Component {
     return (value !== null && value == 'true' ? true : false);
   }
 
+  setEnemySpeedMode = (value) => {
+    if (window.localStorage) {
+      localStorage.setItem('enemy_speed_mode', value);
+    }
+    this.setState({enemySpeedMode: value});
+  }
+
+  getEnemySpeedMode = () => {
+    let value = false;
+    if (window.localStorage) {
+      value = localStorage.getItem('enemy_speed_mode');
+    }
+    return (value !== null && value == 'true' ? true : false);
+  }
+
   render() {
     let menuWrapper = null;
     let mainMenu = null;
@@ -318,7 +334,10 @@ class Menu extends React.Component {
           getNightmode={this.getNightmode}
           fpsMode={this.state.fpsMode}
           setFPSMode={this.setFPSMode}
-          getFPSMode={this.getFPSMode} />;
+          getFPSMode={this.getFPSMode}
+          enemySpeedMode={this.state.enemySpeedMode}
+          setEnemySpeedMode={this.setEnemySpeedMode}
+          getEnemySpeedMode={this.getEnemySpeedMode} />;
       }
 
       menuWrapper = <div className='main_menu_wrapper'>

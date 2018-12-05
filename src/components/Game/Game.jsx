@@ -5,6 +5,7 @@ import PF from 'pathfinding';
 
 import DebugFPS from './DebugFPS.jsx';
 import Sprites from './Objects/Sprite';
+import Sounds from './Objects/Sound';
 import {MapData} from './Objects/Map/Map_L1.js' // for now we have only L1
 import {Tile} from './Objects/Tile.js';
 import Parrot from './Objects/Parrot.js';
@@ -28,7 +29,7 @@ class Game extends React.Component {
 
     this.GAME_OVER = false;
     this.animation = null; // the requested animation frame
-    this.scrollSpeed = 50;
+    this.scrollSpeed = 15;
     this.scrollY = 0;
     this.scrollX = 0;
     this.playerObject = null;
@@ -191,16 +192,18 @@ class Game extends React.Component {
     return {tileX: xCoord, tileY: yCoord};
   }
 
+  startGame = () => {
+    Sounds.playSeaWaveSound();
+    this.resetGame();
+    this.animate();
+  }
+
   endGame = (e) => {
     if (e.key === 'Escape' || e.keyCode === 27 || e.type === 'mousedown') {
+      Sounds.stopSeaWaveSound();
       this.resetGame();
       this.props.setGameState(C.STOP);
     }
-  }
-
-  startGame = () => {
-    this.resetGame();
-    this.animate();
   }
 
   resetGame = () => {
@@ -233,7 +236,9 @@ class Game extends React.Component {
 
   gameOver = () => {
     if (this.GAME_OVER === false) {
-      window.addEventListener('mousedown', this.endGame, false);
+      setTimeout(() => {
+        window.addEventListener('mousedown', this.endGame, false);
+      }, 2000);
     }
     this.GAME_OVER = true;
   }
@@ -301,7 +306,8 @@ class Game extends React.Component {
           this.allowedTilesOnWaterMapXY,
           this.getTileCoordinates,
           this.gameOver,
-          i * 5)
+          i * 5,
+          (this.getEnemySpeedMode() === true ? 2 : 1))
       );
     }
   }
@@ -312,6 +318,14 @@ class Game extends React.Component {
       value = localStorage.getItem('number_of_enemies');
     }
     return (value && value !== null ? value : 1);
+  }
+
+  getEnemySpeedMode = () => {
+    let value = false;
+    if (window.localStorage) {
+      value = localStorage.getItem('enemy_speed_mode');
+    }
+    return (value !== null && value == 'true' ? true : false);
   }
 
   getNightmode = () => {

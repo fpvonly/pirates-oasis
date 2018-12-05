@@ -60,15 +60,14 @@ class Player extends GameObject {
       if (this.path.length === 1) {
         this.targetXScreen = this.targetXScreenFinalPos;
         this.targetYScreen = this.targetYScreenFinalPos;
+        this.calculateDirectionAngle();
       } else {
         this.targetXScreen = tileCoords.tileX + MapData.tileDiagonalWidth/2;
         this.targetYScreen = tileCoords.tileY + MapData.tileDiagonalHeight/2;
       }
 
       if (this.targetXScreen !== null && this.targetYScreen !== null) {
-
         this.calculateDirectionAngle();
-
         let tx = this.targetXScreen - this.x - this.width/2;
         let ty = this.targetYScreen - this.y - this.height/2;
         let dist = Math.sqrt(tx * tx + ty * ty);

@@ -7,9 +7,9 @@ import * as C from '../Constants';
 
 class EnemyShip extends GameObject {
 
-  constructor(context, canvas, width, height, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates, gameOver, timeoutSeconds = 1) {
+  constructor(context, canvas, width, height, matrixOfMapForWater, matrixOfMapForWaterXY, getTileCoordinates, gameOver, timeoutSeconds = 1, speed) {
 
-    super(context, canvas, width, height, 0, 0, 1);
+    super(context, canvas, width, height, 0, 0, speed);
 
     this.getTileCoordinates = getTileCoordinates;
     this.gameOver = gameOver;

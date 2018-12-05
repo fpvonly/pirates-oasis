@@ -25,7 +25,10 @@ class SubMenu extends React.Component {
     getNightmode: () => {},
     fpsMode: false,
     setFPSMode: () => {},
-    getFPSMode: () => {}
+    getFPSMode: () => {},
+    enemySpeedMode: false,
+    setEnemySpeedMode: () => {},
+    getEnemySpeedMode: () => {}
   };
 
   static propTypes = {
@@ -38,7 +41,10 @@ class SubMenu extends React.Component {
     getNightmode: PropTypes.func,
     fpsMode: PropTypes.bool,
     setFPSMode: PropTypes.func,
-    getFPSMode: PropTypes.func
+    getFPSMode: PropTypes.func,
+    enemySpeedMode: PropTypes.bool,
+    setEnemySpeedMode: PropTypes.func,
+    getEnemySpeedMode: PropTypes.func
   };
 
   componentDidMount = () => {
@@ -66,7 +72,7 @@ class SubMenu extends React.Component {
           The goal of the game is to prevent enemy ghost pirate ships from reaching any of the three towers on the island
           and stealing your treasure, hidden in the skull cave.
           The game uses React framework as a base for the app and HTML5 Canvas API for the game itself.
-          It is designed for desktop browsers.
+          The game is designed for desktop browsers and FullHD resolution.
         </p>
           <a href={conf.git_url} target='_blank'>Link to GitHub</a>
         <p>
@@ -86,6 +92,11 @@ class SubMenu extends React.Component {
     this.props.setNightmode(e.target.checked);
   }
 
+
+  handleEnemySpeedClick = (e) => {
+    this.props.setEnemySpeedMode(e.target.checked);
+  }
+
   handleFPSModeClick = (e) => {
     this.props.setFPSMode(e.target.checked);
   }
@@ -100,6 +111,13 @@ class SubMenu extends React.Component {
           <div className='sub_title'>Max number of enemies on screen</div>
           <NumericInput min={1} max={4} value={1} value={this.props.getNumberOfEnemies()} onChange={this.handleEnemiesInput} />
         </div>
+
+        <div className='setting_wrapper'>
+          <div className='sub_title'>Enemy speed</div>
+          <Toggle checked={this.props.enemySpeedMode} onChange={this.handleEnemySpeedClick} />
+          <span className='toggle_label'>{(this.props.enemySpeedMode ? 'Fast enemies ON' : 'Fast enemies OFF')}</span>
+        </div>
+
         <div className='setting_wrapper'>
           <div className='sub_title'>Nightmode of the game (experimental)</div>
           <Toggle checked={this.props.nightmode} onChange={this.handleNightmodeClick} />

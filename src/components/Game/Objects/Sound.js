@@ -4,12 +4,14 @@ class Sound {
   static crashSounds = [];
   static explosionSounds = [];
   static splashSounds = [];
-  static music = [];
+  static music = null;
+  static waveSound = null;
 
   static waterSplashLoaded = [];
   static musicLoaded = false;
   static cannonSoundsLoaded = [];
   static crashSoundsLoaded = [];
+  static waveSoundLoaded = false;
 
   static initializeStaticClass() {
 
@@ -18,8 +20,9 @@ class Sound {
       blast.oncanplaythrough = () => {
         Sound.cannonSoundsLoaded.push(true);
       };
-      blast.volume = 0.3;
+      blast.volume = 0.2;
       blast.preload = 'auto';
+      blast.currentTime = 0;
       blast.addEventListener("ended", function() {
         blast.currentTime = 0;
       });
@@ -31,8 +34,9 @@ class Sound {
       blast.oncanplaythrough = () => {
         Sound.crashSoundsLoaded.push(true);
       };
-      blast.volume = 0.3;
+      blast.volume = 0.1;
       blast.preload = 'auto';
+      blast.currentTime = 0;
       blast.addEventListener("ended", function() {
         blast.currentTime = 0;
       });
@@ -46,29 +50,47 @@ class Sound {
       };
       splash.volume = 0.3;
       splash.preload = 'auto';
+      splash.currentTime = 0;
       splash.addEventListener("ended", function() {
         splash.currentTime = 0;
       });
       Sound.splashSounds.push(splash);
     }
 
-
     // game music
-    Sound.music = new Audio('assets/sounds/tropical-island-full-01_zJyg5U4O.mp3');
+    Sound.music = new Audio('assets/sounds/tropical-island-full-03_GkhZ9IN_.mp3');
     Sound.music.oncanplay = () => {
       Sound.musicLoaded = true;
     };
     Sound.music.loop = true;
     Sound.music.volume = 0.2;
 
+    // sea wave sound
+    Sound.waveSound = new Audio('assets/sounds/beach-waves.mp3');
+    Sound.waveSound.oncanplay = () => {
+      Sound.waveSoundLoaded = true;
+    };
+    Sound.waveSound.loop = true;
+    Sound.waveSound.volume = 0.3;
   }
 
   static getLoadingStatusInfo = () => {
-    return 'Sounds: ' + Math.floor(((((Sound.musicLoaded === true ? 1 : 0) + Sound.cannonSoundsLoaded.length + Sound.crashSounds.length + Sound.waterSplashLoaded.length)/13)*100)) + '%';
+    return 'Sounds: '
+      + Math.floor((((
+        (Sound.musicLoaded === true ? 1 : 0)
+        + (Sound.waveSoundLoaded === true ? 1 : 0)
+        + Sound.cannonSoundsLoaded.length
+        + Sound.crashSoundsLoaded.length
+        + Sound.waterSplashLoaded.length)/14)*100)) + '%';
   }
 
   static soundsLoaded = () => {
-    return (Sound.musicLoaded === true && Sound.crashSounds.length === 4 && Sound.cannonSoundsLoaded.length === 4 && Sound.waterSplashLoaded.length === 4);
+    return (
+      Sound.musicLoaded === true &&
+      Sound.waveSoundLoaded === true &&
+      Sound.crashSoundsLoaded.length === 4 &&
+      Sound.cannonSoundsLoaded.length === 4 &&
+      Sound.waterSplashLoaded.length === 4);
   }
 
   static playCannonBlastSound = () => {
@@ -121,6 +143,15 @@ class Sound {
     if (playSound !== null) {
       playSound.play();
     }
+  }
+
+  static playSeaWaveSound = () => {
+    Sound.waveSound.play();
+  }
+
+  static stopSeaWaveSound = () => {
+    Sound.waveSound.pause();
+    Sound.waveSound.currentTime = 0;
   }
 
   static playMusic = () => {
