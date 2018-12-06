@@ -69,6 +69,8 @@ class Parrot extends GameObject {
         }, 3000);
       }
     }
+
+    return true;
   }
 
 }

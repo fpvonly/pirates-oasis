@@ -97,29 +97,44 @@ class EnemyShip extends GameObject {
         this.context.drawImage(shipSprite, this.x, this.y, this.width, this.height);
         this.context.restore();
       } else {
-        this.playDestructionAnim();
+        let done = this.playDestructionAnim();
       }
     }
+
+    return true;
   }
 
   playDestructionAnim = () => {
     let shipSprite = this.getEnemyShipSprite();
     let hIncrement = this.height/30;
+    let clippedHeight = Math.max(1, hIncrement*(30 - this.destructionAnimFrame));
+
     this.context.save();
     this.context.globalAlpha = 0.7;
-    this.context.drawImage(shipSprite, 0, 0, this.width, hIncrement*(30 - this.destructionAnimFrame), this.x, this.y + (hIncrement*this.destructionAnimFrame), this.width, hIncrement*(30 - this.destructionAnimFrame));
+    this.context.drawImage(
+      shipSprite,
+      0,
+      0,
+      this.width,
+      clippedHeight, // must be positive and >= 1
+      this.x, // coordinate on canvas
+      this.y + (hIncrement*this.destructionAnimFrame), // coordinate is on canvas, so can be negative
+      this.width,
+      clippedHeight //  must be positive and >= 1
+    );
     this.context.restore();
+
     if (this.destructionAnimFrame === 1) {
       Sounds.playCrashSound();
     }
+
+    this.destructionAnimFrame++;
 
     if (this.destructionAnimFrame === 31) {
       this.active = false;
       this.timeout = setTimeout(() => {
         this.reset();
       }, this.timeoutSeconds * 1000);
-    } else {
-      this.destructionAnimFrame++;
     }
   }
 

@@ -153,6 +153,7 @@ class Game extends React.Component {
   }
 
   resizeCanvas = (e) => {
+    Sounds.stopSeaWaveSound();
     this.resetGame();
     this.props.setGameState(C.STOP);
   }
@@ -419,7 +420,7 @@ class Game extends React.Component {
       this.framesThisSecond++;
       this.then = this.now - (this.elapsed % this.fpsInterval);
 
-      this.drawFrame();
+      let done = this.drawFrame();
     }
 
     if (this.props.gameState === C.RUN && this.getFPSMode() === true) {
@@ -481,43 +482,44 @@ class Game extends React.Component {
     }
     this.context.setTransform(1, 0, 0, 1, this.originX, this.originY); // move origo
 
+    let done = null;
     // Draw base tile graphics
     for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
       for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-        let done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedXTile === x && this.selectedYTile === y ? true : false));
+        done = this.generatedTileObjects[x][y].drawBaseTile((this.selectedXTile === x && this.selectedYTile === y ? true : false));
       }
     }
 
     // Draw only one player object in this game version
-    this.playerObject.draw();
+    done = this.playerObject.draw();
 
     // Draw enemies
     let enemyDrawOrder = this.getEnemyDrawOrder();
     for (let enemy of enemyDrawOrder) {
       if (enemy.initialLoadDone === true && MapData.areTileLayersNextTo(enemy.xI, enemy.yI) === true) {
-        enemy.draw();
+        done = enemy.draw();
       }
     }
 
     // Draw tile layer graphics
     for(let x = this.generatedTileObjects.length - 1; x >= 0; x--) {
       for (let y = 0; y < this.generatedTileObjects[x].length; y++) {
-        let done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
+        done = this.generatedTileObjects[x][y].drawTileLayers((this.selectedXTile === x && this.selectedYTile === y ? true : false));
       }
     }
 
     // Draw enemies
     for (let enemy of enemyDrawOrder) {
       if (enemy.initialLoadDone === true && MapData.areTileLayersNextTo(enemy.xI, enemy.yI) === false) {
-        enemy.draw();
+        done = enemy.draw();
       }
     }
 
     // Draw cannon balls
-    this.playerObject.drawCannonBalls();
+    done = this.playerObject.drawCannonBalls();
 
     // Draw flying parrot on top of everything
-    this.parrot.draw();
+    done = this.parrot.draw();
 
     // Enemy hits
     for (let enemy of this.enemies) {

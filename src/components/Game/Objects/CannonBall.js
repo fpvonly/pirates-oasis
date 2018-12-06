@@ -104,6 +104,7 @@ class CannonBall extends GameObject {
         }
       }
     }
+
     return true;
   }
 
