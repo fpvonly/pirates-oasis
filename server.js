@@ -3,7 +3,7 @@ var path = require('path');
 
 var app = express();
 var server = app.listen(32, function() {
-  console.log('Pirate\'s Osasis game server started');
+  console.log("Pirate's Osasis game server started");
 });
 
 app.use('/assets', express.static(path.resolve('assets')));
