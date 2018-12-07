@@ -35,7 +35,7 @@
     "dev": "webpack-dev-server --mode development",
     "devbackend": "cross-env NODE_ENV=development nodemon server.js",
     "prodbuild": "webpack --mode production",
-    "prodbackend": "forever start server.js",
+    "prodbackend": "forever start --append server.js",
     "foreverrestart": "forever restart server.js"
   },
   "repository": {
