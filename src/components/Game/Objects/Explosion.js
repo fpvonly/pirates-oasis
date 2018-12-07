@@ -17,7 +17,6 @@ class Explosion extends GameObject {
 
   draw = () => {
     if (this.isExplosionAnimationComplete() === false) {
-      this.playCannonBlastSound();
       this.context.drawImage(this.explosionFrames[0], this.x, this.y, this.width, this.height);
       this.now = Date.now();
       this.delta = this.now - this.then;
@@ -25,6 +24,7 @@ class Explosion extends GameObject {
         this.then = this.now - (this.delta % 1000/this.explosionFPS);
         this.explosionFrames.shift();
       }
+      this.playCannonBlastSound();
     }
     return true;
   }

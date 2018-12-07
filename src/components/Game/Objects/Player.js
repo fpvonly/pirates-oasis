@@ -10,7 +10,7 @@ import * as C from '../Constants';
 
 class Player extends GameObject {
 
-  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMap, getTileCoordinates, getTileCoordIndexes, getFPS) {
+  constructor(context, canvas, width, height, x, y, getOriginX, getOriginY, allowedLandMapYX, allowedLandMapXY,getTileCoordinates, getTileCoordIndexes, getFPS) {
 
     super(context, canvas, width, height, x - width/2, y - height/2, 3);
 
@@ -41,7 +41,8 @@ class Player extends GameObject {
 
     this.angle = null;
     this.path = [];
-    this.matrixOfMap = allowedLandMap;
+    this.matrixOfMapYX = allowedLandMapYX;
+    this.matrixOfMapXY = allowedLandMapXY;
     this.finder = new PF.AStarFinder({allowDiagonal: true});
 
     this.justFired = false;
@@ -149,7 +150,7 @@ class Player extends GameObject {
       }
 
       // find out the route path to clicked location
-      let grid = new PF.Grid(this.matrixOfMap);
+      let grid = new PF.Grid(this.matrixOfMapYX);
       this.path = this.finder.findPath(this.xI, this.yI, selectedXTileI, selectedYTileI, grid);
       // remove the first index because it's the current tile the player in on already
       // is only one tile is on the path ie. the current position tile, allow it be for more accurate placement of player cannon on the same tile
@@ -176,7 +177,11 @@ class Player extends GameObject {
           this.canvas.style = 'cursor: no-drop;'
         }
       } else {
-        this.canvas.style = 'cursor: pointer;'
+        if (this.matrixOfMapXY[selectedXi][selectedYi] === 0) {
+          this.canvas.style = 'cursor: pointer;'
+        } else {
+          this.canvas.style = 'cursor: no-drop;'
+        }
       }
     }
   }

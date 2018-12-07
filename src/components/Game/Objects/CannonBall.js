@@ -40,7 +40,7 @@ class CannonBall extends GameObject {
     this.animationSeconds = this.targetDist/250; // 250pxs per second
     this.animationType = this.getAnimationTypeByAngle(this.cannonAngle);
 
-    TweenLite.ticker.fps(30);
+    //TweenLite.ticker.fps(30);
     this.tl = new TimelineMax();
     this.active = true;
   }
@@ -98,7 +98,7 @@ class CannonBall extends GameObject {
       }
 
       if (this.playSplash === true) {
-        this.splash.draw();
+        let done = this.splash.draw();
         if (this.splash.isSplashAnimationComplete() === true) {
           this.active = false;
         }

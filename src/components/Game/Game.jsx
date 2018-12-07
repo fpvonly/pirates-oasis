@@ -289,6 +289,7 @@ class Game extends React.Component {
       this.getOriginX,
       this.getOriginY,
       this.allowedTilesOnLandMapYX,
+      this.allowedTilesOnLandMapXY,
       this.getTileCoordinates,
       this.getTileCoordIndexes,
       this.getFPS);
@@ -420,7 +421,7 @@ class Game extends React.Component {
       this.framesThisSecond++;
       this.then = this.now - (this.elapsed % this.fpsInterval);
 
-      let done = this.drawFrame();
+      this.drawFrame();
     }
 
     if (this.props.gameState === C.RUN && this.getFPSMode() === true) {
@@ -574,16 +575,20 @@ class Game extends React.Component {
     let canvasWidth = (window.innerWidth > 1024 ? window.innerWidth * 0.8 : window.innerWidth);
     let canvasHeight = (window.innerHeight > 768 ? window.innerHeight * 0.8 : window.innerHeight);
     let canvasVisibility = null;
+    let ua = window.navigator.userAgent;
 
     if (this.props.gameState === C.RUN) {
       canvasVisibility = {'display': 'block'};
     } else {
       canvasVisibility = {'display': 'none'};
-    }
+    }  
 
     return <div
       className={'game_wrapper'+ (this.props.gameState === C.RUN && this.getNightmode() === true ? ' night_mode' : '')}
-      title='Press Esc to exit'>
+      title={'Press Esc to exit'
+        + (ua.indexOf('Edge/') || ua.indexOf('MSIE')
+          ? ' (And for better game performance, please update your browser to newest Chrome or Firefox.)'
+          : '')}>
       <canvas
         ref={this.getCanvasRef}
         id='canvas'
@@ -591,7 +596,7 @@ class Game extends React.Component {
         width={canvasWidth}
         height={canvasHeight}
         style={canvasVisibility}
-        title=' '>
+        title={ua.indexOf('Edge/') || ua.indexOf('MSIE') ? '': ' '}>
           Your browser doesn't support HTML5 canvas API. Please update your browser.
       </canvas>
       {(this.props.gameState === C.RUN && this.getFPSMode() === true ? <DebugFPS ref={this.getDebugFPSRef} /> : null)}

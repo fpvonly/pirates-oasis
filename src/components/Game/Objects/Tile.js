@@ -39,9 +39,9 @@ class Tile {
 
     this.shouldBeDrawn = false; // do not draw all tiles that are off canvas visible area
     if (this.getOriginX() + this.x >= -150 &&
-      this.getOriginX() + this.x <= this.canvas.width &&
+      this.getOriginX() + this.x <= this.canvas.width + 150 &&
       this.getOriginY() + this.y >= -150 &&
-      this.getOriginY() + this.y <= this.canvas.height) {
+      this.getOriginY() + this.y <= this.canvas.height + 150) {
         this.shouldBeDrawn = true;
     }
 

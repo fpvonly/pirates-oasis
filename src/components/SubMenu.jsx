@@ -72,7 +72,7 @@ class SubMenu extends React.Component {
           The goal of the game is to prevent enemy ghost pirate ships from reaching any of the three towers on the island
           and stealing your treasure, hidden in the skull cave.
           The game uses React framework as a base for the app and HTML5 Canvas API for the game itself.
-          The game is designed for desktop browsers and FullHD resolution.
+          The game is designed for desktop browsers and FullHD resolution. Tested and designed for the newest Chrome and Firefox browsers.
         </p>
           <a href={conf.git_url} target='_blank'>Link to GitHub</a>
         <p>

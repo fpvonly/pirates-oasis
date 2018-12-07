@@ -1,7 +1,7 @@
 {
   "name": "pirates-oasis",
   "version": "1.0.0",
-  "description": "",
+  "description": "Pirate's Oasis, pirate-themed isometric mouse controlled canvas game",
   "main": "src/app.jsx",
   "dependencies": {
     "express": "^4.16.4",
@@ -42,7 +42,7 @@
     "type": "git",
     "url": "git+https://github.com/fpvonly/pirates-oasis.git"
   },
-  "author": "",
+  "author": "Ari Petäjäjärvi",
   "license": "",
   "homepage": "https://github.com/fpvonly/pirates-oasis#readme"
 }

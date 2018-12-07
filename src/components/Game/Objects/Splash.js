@@ -16,9 +16,7 @@ class Splash extends GameObject {
   }
 
   draw = () => {
-
     if (this.isSplashAnimationComplete() === false) {
-      this.playSplashSound();
       this.context.drawImage(this.splashFrames[0], this.x, this.y, this.width, this.height);
       this.now = Date.now();
       this.delta = this.now - this.then;
@@ -26,6 +24,7 @@ class Splash extends GameObject {
         this.then = this.now - (this.delta % 1000/this.splashFPS);
         this.splashFrames.shift();
       }
+      this.playSplashSound();
     }
     return true;
   }

@@ -37,14 +37,12 @@ class Menu extends React.Component {
   };
 
   componentDidMount = () => {
-    if (typeof window.localStorage === 'undefined' || localStorage.getItem('playMusic') === null) {
+    if (this.state.musicState === true) {
       try {
         Sounds.playMusic();
       } catch(err) {
         this.controlMusic(false);
       }
-    } else if (this.state.musicState === true) {
-      Sounds.playMusic();
     }
 
     window.addEventListener("keyup", this.handleKeyboard, false);
@@ -138,7 +136,7 @@ class Menu extends React.Component {
   }
 
   handleShowSettingsClick = () => {
-    document.body.style = 'overflow: auto;'
+    document.body.style = 'overflow: auto;';
     this.setState({extraSubMenuVisible: !this.state.extraSubMenuVisible});
   }
 
@@ -188,6 +186,7 @@ class Menu extends React.Component {
   }
 
   closeSubMenu = () => {
+    window.scrollTo(0, 0);
     document.body.style = 'overflow: none;'
     this.setState({extraSubMenuVisible: false});
   }
@@ -215,7 +214,7 @@ class Menu extends React.Component {
   }
 
   getmusicState = () => {
-    let value = true;
+    let value = false;
     if (window.localStorage) {
       value = localStorage.getItem('playMusic');
     }
