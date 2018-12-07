@@ -82,25 +82,26 @@ body {
 }
 
 #app {
-  min-width: 800px;
+  min-width: 100vw;
 }
 
 .banner {
-  min-width: 800px;
-  position: fixed;
+  min-width: 100vw;
+  position: absolute;
+  height: 20vh;
 }
 
 .title {
   position: absolute;
   width: 100%;
-  top: 20px;
+  top: 0;
   left: 0;
-  font-size: 14rem;
+  font-size: 12vw;
   color: #2de581;
   text-shadow: -3px 3px 10px #000000;
   display: flex;
   justify-content: center;
-  min-width: 800px;
+  min-width: 100vw;
 }
 
 .update_message {
@@ -127,7 +128,7 @@ body {
 
 .container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   width: 100%;
   min-height: 100vh;
   background: url('../images/bg_island.jpg');
@@ -253,8 +254,8 @@ canvas {
   position: relative;
   top: 0;
   left: 0;
-  width: 100%;
-  min-width: 800px;
+  width: 100vw;
+  min-width: 600px;
   min-height: 768px;
   flex: 0 1 auto;
 
@@ -267,9 +268,10 @@ canvas {
 }
 
 .menu {
-  font-size: 8rem;
+  font-size: 6.3vw;
   position: absolute;
   top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -285,6 +287,7 @@ canvas {
   position: relative;
   transition: color 0.3s;
   cursor: pointer;
+  height: 6.3vw;
 }
 
 .menu_btn.active {
@@ -299,29 +302,49 @@ canvas {
 0% { text-shadow: -3px 3px 5px #000000; }
 }
 
+.menu_btn .main_btn_text {
+  line-height: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 6.3vw;
+  position: relative;
+}
+
 .menu_btn.active .main_btn_text:before {
-  content: url('../images/kisspng/skull-pirate-coin-small.png');
+  background-image: url('../images/kisspng/skull-pirate-coin.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   position: absolute;
-  left: -100px;
+  display: inline-block;
+  left: -6vw;
   animation: spin 4s linear infinite;
-  width: 90px;
-  height: 90px;
+  width: 5vw;
+  height: 5vw;
+  content: "";
+  top: 20%;
 }
 
 .menu_btn.active .main_btn_text:after {
-  content: url('../images/kisspng/skull-pirate-coin-small.png');
+  background-image: url('../images/kisspng/skull-pirate-coin.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   position: absolute;
-  right: -100px;
+  display: inline-block;
+  right: -6vw;
   animation: spin 4s linear infinite;
-  width: 90px;
-  height: 90px;
+  width: 5vw;
+  height: 5vw;
+  content: "";
+  top: 20%;
 }
 
 .menu_btn.music {
   position: fixed;
   left: 10px;
   top: 10px;
-  font-size: 3rem;
+  font-size: 2.5vw;
   text-shadow: -1px 1px #ea8200;
   color: #ffffff;
 }
@@ -330,7 +353,7 @@ canvas {
   position: fixed;
   right: 10px;
   top: 10px;
-  font-size: 3rem;
+  font-size: 2.5vw;
   text-shadow: -1px 1px #ea8200;
   color: #ffffff;
 }
@@ -343,7 +366,7 @@ canvas {
   text-shadow: -1px 1px #ea8200;
   color: #000000;
   transition: all 0.3s;
-  font-size: 3.2rem;
+  font-size: 2.8vw;
 }
 
 /* Sub menu */
@@ -383,8 +406,8 @@ canvas {
 }
 
 .sub_menu {
-  width: 40vw;
-  min-width: 600px;
+  min-width: 400px;
+  max-width: 600px;
   background: #2de581;
   box-shadow: 0px -2px 10px 3px #318a00;
   border-radius: 20px;
