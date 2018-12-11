@@ -93,10 +93,11 @@ body {
 
 .title {
   position: absolute;
+  white-space: nowrap;
   width: 100%;
   top: 0;
   left: 0;
-  font-size: 12vw;
+  font-size: 12vmax;
   color: #2de581;
   text-shadow: -3px 3px 10px #000000;
   display: flex;
@@ -171,7 +172,7 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  font-size: 3rem;
+  font-size: 2.5vw;
   color: #000000;
   background: url('../images/bg_island.jpg');
   background-color: transparent;
@@ -183,6 +184,7 @@ body {
    position: absolute;
    width: 30vh;
    height: 30vh;
+   margin-top: -5vh;
    animation: spin 6s linear infinite;
    background: url('../images/kisspng/skull-pirate-coin.png');
    background-position: center;
@@ -195,7 +197,7 @@ body {
   margin-top: 25vh;
   color: #ffffff;
   text-shadow: -3px 3px #000000;
-  font-size: 5rem;
+  font-size: 4vmax;
   display: flex;
   flex-wrap: wrap;
   width: 100%;
@@ -255,10 +257,8 @@ canvas {
   top: 0;
   left: 0;
   width: 100vw;
-  min-width: 600px;
   min-height: 768px;
   flex: 0 1 auto;
-
 }
 .main_menu_wrapper > span {
   display: flex;
@@ -268,12 +268,13 @@ canvas {
 }
 
 .menu {
-  font-size: 6.3vw;
+  font-size: 6.3vmax;
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  min-height: 40vw;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -287,7 +288,7 @@ canvas {
   position: relative;
   transition: color 0.3s;
   cursor: pointer;
-  height: 6.3vw;
+  height: 6.3vmax;
 }
 
 .menu_btn.active {
@@ -407,7 +408,7 @@ canvas {
 
 .sub_menu {
   min-width: 400px;
-  max-width: 600px;
+  max-width: 60vw;
   background: #2de581;
   box-shadow: 0px -2px 10px 3px #318a00;
   border-radius: 20px;
@@ -420,12 +421,12 @@ canvas {
   text-align: center;
   padding-left: 5px;
   margin: auto auto;
-  font-size: 2rem;
+  font-size: 1.3vmax;
   vertical-align: top;
 }
 
 .sub_menu .extra_info p, .sub_menu .extra_info a {
-  font-size: 1.7rem;
+  font-size: 1.0vmax;
   font-family: Arial;
   line-height: 1.3;
 }
@@ -446,25 +447,31 @@ canvas {
   cursor: pointer;
   text-shadow: -3px 3px #000000;
   transition: all 0.3s;
+  font-size: 1.6vmax;
 }
 
 .settings_close_btn:hover {
-  font-size: 3.2rem;
+  font-size: 1.8vmax;
   text-shadow: -3px 3px #ea8200;
 }
 
 .settings_title {
-  font-size: 4.6rem;
+  font-size: 3vmax;
   text-shadow: -1px 1px #000000;
 }
 
 .setting_wrapper {
-  padding: 25px;
+  padding: 1.5vmax;
 }
 
 .sub_title {
   margin-bottom: 10px;
   text-shadow: -1px 1px #000000;
+  font-size: 2vmax;
+}
+
+.react-numeric-input {
+  font-size: 1.5vmax;
 }
 
 .react-numeric-input input {

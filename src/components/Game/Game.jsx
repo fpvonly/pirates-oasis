@@ -468,16 +468,17 @@ class Game extends React.Component {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Map scroll ->
+    let canvas = this.canvas.getBoundingClientRect();
     let tileId = this.getTileCoordIndexes(this.mousePointX, this.mousePointY);
     if (tileId.selectedXTile !== null && tileId.selectedYTile !== null) {
-      if (this.mousePointY < window.innerHeight*0.2 && this.originY <= this.maxYSpan) {
+      if (this.mousePointY < canvas.top + this.canvas.height*0.2 && this.originY <= this.maxYSpan) {
         this.originY += this.scrollSpeed * window.GAME_FPS_ADJUST;
-      } else if (this.mousePointY > window.innerHeight*0.8 && this.originY >= this.minYSpan) {
+      } else if (this.mousePointY > canvas.top + this.canvas.height*0.8 && this.originY >= this.minYSpan) {
         this.originY -= this.scrollSpeed * window.GAME_FPS_ADJUST;
       }
-      if (this.mousePointX < this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
+      if (this.mousePointX < canvas.left + this.canvas.width*0.2 && this.originX <= this.maxXSpan) {
         this.originX += this.scrollSpeed * window.GAME_FPS_ADJUST;
-      } else if (this.mousePointX > this.canvas.width*0.8 && this.originX >= this.minXSpan) {
+      } else if (this.mousePointX > canvas.left + this.canvas.width*0.8 && this.originX >= this.minXSpan) {
         this.originX -= this.scrollSpeed * window.GAME_FPS_ADJUST;
       }
     }
@@ -572,8 +573,8 @@ class Game extends React.Component {
   }
 
   render() {
-    let canvasWidth = (window.innerWidth > 1024 ? window.innerWidth * 0.8 : window.innerWidth);
-    let canvasHeight = (window.innerHeight > 768 ? window.innerHeight * 0.8 : window.innerHeight);
+    let canvasWidth = (window.innerWidth > 1024 ? (window.innerWidth <= 1920 ? window.innerWidth * 0.8 : 1920) : window.innerWidth);
+    let canvasHeight = (window.innerHeight > 768 ? (window.innerHeight <= 1080 ? window.innerHeight * 0.8 : 1080) : window.innerHeight);
     let canvasVisibility = null;
     let ua = window.navigator.userAgent;
 
@@ -581,12 +582,12 @@ class Game extends React.Component {
       canvasVisibility = {'display': 'block'};
     } else {
       canvasVisibility = {'display': 'none'};
-    }  
+    }
 
     return <div
       className={'game_wrapper'+ (this.props.gameState === C.RUN && this.getNightmode() === true ? ' night_mode' : '')}
       title={'Press Esc to exit'
-        + (ua.indexOf('Edge/') || ua.indexOf('MSIE')
+        + (ua.indexOf('Edge/') !== -1 || ua.indexOf('Trident/') !== -1
           ? ' (And for better game performance, please update your browser to newest Chrome or Firefox.)'
           : '')}>
       <canvas

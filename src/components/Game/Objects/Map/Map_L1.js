@@ -71,61 +71,61 @@ const MapData = {
     [21, 21],
     [21, 22]
   ], // hard coded exclusions on allowed tiles [Xi, Yi] (for creating the allowed matrix map for water area)
-  allowedTilesOnLand: [0, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 43],
+  allowedTilesOnLand: [0, 1, 2, 3, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 43], /* these refer to MapData.tiles */
   enemyWinTargetPositions: [
-    [5, 12], [11, 14], [18, 6], [11, 14], [16, 5], [16, 6]  // first 3 indexes are the tower targets and rest are for allowing pathfinding to those targets
+    [5, 12], [11, 14], [18, 6], [11, 14], [16, 5], [16, 6]  // first 3 indexes (xI, yI) are the tower targets and rest are for allowing pathfinding to those targets
   ],
-  tiles: [
+  tiles: [ /* HOX! Some stretch scaling (e.g. width: 150 -> 152px) was required due to inconsistent source tile graphics. */
     {src: 'assets/images/base.png', width: 150, height: 75}, // 0
     {src: 'assets/images/b1-2.png', width: 150, height: 150}, // 1
     {src: 'assets/images/b1.png', width: 150, height: 150}, // 2
-    {src: 'assets/images/sands_stone_base.png', width: 152, height: 95}, // 3
+    {src: 'assets/images/sands_stone_base.png', width: 153, height: 95}, // 3
     {src: 'assets/images/water_waves.png', width: 152, height: 95}, // 4
     {src: 'assets/images/water_stones.png', width: 152, height: 95}, // 5
     {src: 'assets/images/sands_water_left_half2.png', width: 150, height: 95}, // 6
-    {src: 'assets/images/sands_water_bottom_half_left_top.png', width: 150, height: 95}, // 7
+    {src: 'assets/images/sands_water_bottom_half_left_top.png', width: 152, height: 95}, // 7
     {src: 'assets/images/sands_water_right_half.png', width: 150, height: 95}, // 8
-    {src: 'assets/images/sands_water_half_left_bottom_side.png', width: 150, height: 95}, // 9
-    {src: 'assets/images/sands_water_left_half_right_bottom.png', width: 150, height: 95}, // 10
+    {src: 'assets/images/sands_water_half_left_bottom_side.png', width: 152, height: 95}, // 9
+    {src: 'assets/images/sands_water_left_half_right_bottom.png', width: 152, height: 95}, // 10
     {src: 'assets/images/sands_water_top_half.png', width: 152, height: 95}, // 11
-    {src: 'assets/images/sands_water_right_half_left_bottom.png', width: 150, height: 95}, // 12
-    {src: 'assets/images/sands_water_half_right_bottom_side.png', width: 150, height: 95}, // 13
-    {src: 'assets/images/sands_water_bottom_half_right_top.png', width: 150, height: 95}, // 14
+    {src: 'assets/images/sands_water_right_half_left_bottom.png', width: 152, height: 95}, // 12
+    {src: 'assets/images/sands_water_half_right_bottom_side.png', width: 152, height: 95}, // 13
+    {src: 'assets/images/sands_water_bottom_half_right_top.png', width: 152, height: 95}, // 14
     {src: 'assets/images/sands_water_bottom_half.png', width: 150, height: 95}, // 15
-    {src: 'assets/images/sands_water_left_half.png', width: 150, height: 94}, // 16
-    {src: 'assets/images/sands_water_bottom_half2.png', width: 152, height: 95}, // 17
+    {src: 'assets/images/sands_water_left_half.png', width: 152, height: 95}, // 16
+    {src: 'assets/images/sands_water_bottom_half2.png', width: 153, height: 95}, // 17
     {src: 'assets/images/sands_stone_2.png', width: 150, height: 95}, // 18
     {src: 'assets/images/sands_stone_2f.png', width: 150, height: 95}, // 19
     {src: 'assets/images/sands_stone_1.png', width: 150, height: 95}, // 20
     {src: 'assets/images/sands_stone_1f.png', width: 150, height: 95}, // 21
     {src: 'assets/images/sands_stone_3.png', width: 150, height: 95}, // 22
-    {src: 'assets/images/palm_detailed_long_NE.png', width: 75, height: 104}, // 23
-    {src: 'assets/images/palm_detailed_long_NW.png', width: 75, height: 104}, // 24
-    {src: 'assets/images/palm_detailed_long_SE.png', width: 75, height: 104}, // 25
-    {src: 'assets/images/palm_detailed_long_SW.png', width: 75, height: 104}, // 26
-    {src: 'assets/images/palm_detailed_short_NE.png', width: 75, height: 104}, // 27
-    {src: 'assets/images/palm_detailed_short_NW.png', width: 75, height: 104}, // 28
-    {src: 'assets/images/palm_detailed_short_SE.png', width: 75, height: 104}, // 29
-    {src: 'assets/images/palm_detailed_short_SW.png', width: 75, height: 104}, // 30
-    {src: 'assets/images/palm_long_NE.png', width: 75, height: 104}, // 31
-    {src: 'assets/images/palm_long_NW.png', width: 75, height: 104}, // 32
-    {src: 'assets/images/palm_long_SE.png', width: 75, height: 104}, // 33
-    {src: 'assets/images/palm_long_SW.png', width: 75, height: 104}, // 34
-    {src: 'assets/images/tower_SE.png', width: 105, height: 134}, // 35
-    {src: 'assets/images/tower_NE.png', width: 105, height: 134}, // 36
-    {src: 'assets/images/tower_NW.png', width: 105, height: 134}, // 37
-    {src: 'assets/images/tower_SW.png', width: 105, height: 134}, // 38
-    {src: 'assets/images/ship_wreck_SW.png', width: 150, height: 120}, // 39
-    {src: 'assets/images/formation_stone_NE.png', width: 150, height: 120}, // 40
-    {src: 'assets/images/formationLarge_stone_SE.png', width: 65, height: 100}, // 41
-    {src: 'assets/images/formationLarge_stone_SW.png', width: 65, height: 100}, // 42
+    {src: 'assets/images/pirate-kit/palm_detailed_long_NE.png', width: 75, height: 104}, // 23
+    {src: 'assets/images/pirate-kit/palm_detailed_long_NW.png', width: 75, height: 104}, // 24
+    {src: 'assets/images/pirate-kit/palm_detailed_long_SE.png', width: 75, height: 104}, // 25
+    {src: 'assets/images/pirate-kit/palm_detailed_long_SW.png', width: 75, height: 104}, // 26
+    {src: 'assets/images/pirate-kit/palm_detailed_short_NE.png', width: 75, height: 104}, // 27
+    {src: 'assets/images/pirate-kit/palm_detailed_short_NW.png', width: 75, height: 104}, // 28
+    {src: 'assets/images/pirate-kit/palm_detailed_short_SE.png', width: 75, height: 104}, // 29
+    {src: 'assets/images/pirate-kit/palm_detailed_short_SW.png', width: 75, height: 104}, // 30
+    {src: 'assets/images/pirate-kit/palm_long_NE.png', width: 75, height: 104}, // 31
+    {src: 'assets/images/pirate-kit/palm_long_NW.png', width: 75, height: 104}, // 32
+    {src: 'assets/images/pirate-kit/palm_long_SE.png', width: 75, height: 104}, // 33
+    {src: 'assets/images/pirate-kit/palm_long_SW.png', width: 75, height: 104}, // 34
+    {src: 'assets/images/pirate-kit/tower_SE.png', width: 105, height: 134}, // 35
+    {src: 'assets/images/pirate-kit/tower_NE.png', width: 105, height: 134}, // 36
+    {src: 'assets/images/pirate-kit/tower_NW.png', width: 105, height: 134}, // 37
+    {src: 'assets/images/pirate-kit/tower_SW.png', width: 105, height: 134}, // 38
+    {src: 'assets/images/pirate-kit/ship_wreck_SW.png', width: 150, height: 120}, // 39
+    {src: 'assets/images/pirate-kit/formation_stone_NE.png', width: 150, height: 120}, // 40
+    {src: 'assets/images/pirate-kit/formationLarge_stone_SE.png', width: 65, height: 100}, // 41
+    {src: 'assets/images/pirate-kit/formationLarge_stone_SW.png', width: 65, height: 100}, // 42
     {src: 'assets/images/field_brown_512.png', width: 150, height: 75}, // 43
     {src: 'assets/images/b-4.png', width: 150, height: 150}, // 44
-    {src: 'assets/images/chest_SE.png', width: 34, height: 40}, // 45
-    {src: 'assets/images/bottle_SW.png', width: 10, height: 21}, // 46
+    {src: 'assets/images/pirate-kit/chest_SE.png', width: 34, height: 40}, // 45
+    {src: 'assets/images/pirate-kit/bottle_SW.png', width: 10, height: 21}, // 46
     {src: 'assets/images/lily.png', width: 75, height: 35}, // 47
-    {src: 'assets/images/boat_large_NW.png', width: 62, height: 45}, // 48
-    {src: 'assets/images/shovel_NE.png', width: 50, height: 25}, // 49
+    {src: 'assets/images/pirate-kit/boat_large_NW.png', width: 62, height: 45}, // 48
+    {src: 'assets/images/pirate-kit/shovel_NE.png', width: 50, height: 25}, // 49
     {src: 'assets/images/goldforge/skull_mountain_small_1.png', width: 187, height: 200}, // 50
     {src: 'assets/images/goldforge/tower.png', width: 112, height: 110}, // 51
     {src: 'assets/images/kisspng/maya_stone.png', width: 52, height: 100}, // 52
@@ -783,7 +783,7 @@ const MapData = {
       null
     ]
   ],
-  areTileLayersNextTo: (xI, yI) => { /* Map specific drawing logic for enemy ships*/
+  areTileLayersNextTo: (xI, yI) => { /* Map specific drawing logic for enemy ships */
     let layersExist = false;
 
     if (MapData.mapLayers[xI][(yI < 23 ? yI + 1 : yI)] !== null) {
