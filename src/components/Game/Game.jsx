@@ -525,11 +525,11 @@ class Game extends React.Component {
 
     // Enemy hits
     for (let enemy of this.enemies) {
-      if(enemy.initialLoadDone === true && enemy.destroyed === false) {
+      if (enemy.initialLoadDone === true && enemy.destroyed === false) {
         // did player's cannon balls hit the enemy?
         let cannonBalls = this.playerObject.getActiveCannonBalls();
         for (let cannonBall of cannonBalls) {
-          if(cannonBall.active === true && cannonBall.didCollideWith(enemy) === true) {
+          if (cannonBall.active === true && cannonBall.didCollideWith(enemy) === true && this.GAME_OVER === false) {
             enemy.destroy();
             cannonBall.active = false; // cannon ball is used now
             this.points++;

@@ -127,9 +127,8 @@ const MapData = {
     {src: 'assets/images/pirate-kit/boat_large_NW.png', width: 62, height: 45}, // 48
     {src: 'assets/images/pirate-kit/shovel_NE.png', width: 50, height: 25}, // 49
     {src: 'assets/images/goldforge/skull_mountain_small_1.png', width: 187, height: 200}, // 50
-    {src: 'assets/images/goldforge/tower.png', width: 112, height: 110}, // 51
-    {src: 'assets/images/kisspng/maya_stone.png', width: 52, height: 100}, // 52
-    {src: 'assets/images/kisspng/temple.png', width: 149, height: 200} // 53
+    {src: 'assets/images/kisspng/maya_stone.png', width: 52, height: 100}, // 51
+    {src: 'assets/images/kisspng/temple.png', width: 149, height: 200} // 52
   ],
   map: [ // x, map's left diagonal side to top right
     [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4], // y, map's left diagonal side down towards bottom right
@@ -532,7 +531,7 @@ const MapData = {
       null,
       null,
       null,
-      [{tileId: 28, offsetX: 30, offsetY: 85}, {tileId: 27, offsetX: 0, offsetY: 80}, {tileId: 30, offsetX: 25, offsetY: 65}, {tileId: 52, offsetX: 80, offsetY: 50}],
+      [{tileId: 28, offsetX: 30, offsetY: 85}, {tileId: 27, offsetX: 0, offsetY: 80}, {tileId: 30, offsetX: 25, offsetY: 65}, {tileId: 51, offsetX: 80, offsetY: 50}],
       null,
       null,
       null,
@@ -562,7 +561,7 @@ const MapData = {
       null,
       [{tileId: 28, offsetX: 60, offsetY: 65}, {tileId: 27, offsetX: 15, offsetY: 60}, {tileId: 30, offsetX: 55, offsetY: 45}],
       null,
-      [{tileId: 53, offsetX: 70, offsetY: 130}],
+      [{tileId: 52, offsetX: 70, offsetY: 130}],
       null,
       null,
       null,

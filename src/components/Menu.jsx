@@ -38,11 +38,9 @@ class Menu extends React.Component {
 
   componentDidMount = () => {
     if (this.state.musicState === true) {
-      try {
-        Sounds.playMusic();
-      } catch(err) {
+      Sounds.playMusic().catch((err) => {
         this.controlMusic(false);
-      }
+      });
     }
 
     window.addEventListener("keyup", this.handleKeyboard, false);
@@ -207,7 +205,7 @@ class Menu extends React.Component {
     }
 
     if (window.localStorage) {
-      localStorage.setItem('playMusic', value);
+      localStorage.setItem('play_music', value);
     }
 
     this.setState({musicState: value});
@@ -216,7 +214,7 @@ class Menu extends React.Component {
   getmusicState = () => {
     let value = false;
     if (window.localStorage) {
-      value = localStorage.getItem('playMusic');
+      value = localStorage.getItem('play_music');
     }
     return (value && value !== null ? (value == 'true') : false);
   }

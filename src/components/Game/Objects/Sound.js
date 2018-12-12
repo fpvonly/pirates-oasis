@@ -22,7 +22,6 @@ class Sound {
       };
       blast.volume = 0.2;
       blast.preload = 'auto';
-      blast.currentTime = 0;
       blast.addEventListener("ended", function() {
         blast.currentTime = 0;
       });
@@ -36,7 +35,6 @@ class Sound {
       };
       blast.volume = 0.1;
       blast.preload = 'auto';
-      blast.currentTime = 0;
       blast.addEventListener("ended", function() {
         blast.currentTime = 0;
       });
@@ -50,7 +48,6 @@ class Sound {
       };
       splash.volume = 0.3;
       splash.preload = 'auto';
-      splash.currentTime = 0;
       splash.addEventListener("ended", function() {
         splash.currentTime = 0;
       });
@@ -155,7 +152,7 @@ class Sound {
   }
 
   static playMusic = () => {
-    Sound.music.play();
+    return Sound.music.play();
   }
 
   static pauseMusic = () => {

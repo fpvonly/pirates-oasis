@@ -1,4 +1,4 @@
-# pirates-oasis
+# Pirate's Oasis
 
 [ ![Codeship Status for fpvonly/pirates-oasis](https://app.codeship.com/projects/3a407a90-dbeb-0136-4d73-329e4a623b3a/status?branch=master)](https://app.codeship.com/projects/317850)
 

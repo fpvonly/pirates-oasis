@@ -59,21 +59,6 @@ class Tile {
       }
     }
 
-    if (this.shouldBeDrawn === true && this.layers !== null) {
-      let layer = null;
-      let layerTile = null;
-      for (let layer of this.layers) {
-        layerTile = Sprites.getTile(layer.tileId);
-        this.context.drawImage(
-          layerTile,
-          this.x + layer.offsetX,
-          this.y - layer.offsetY,
-          layerTile.width,
-          layerTile.height
-        );
-      }
-    }
-
     // show tile xI, yI in dev server mode
     /*
     if (DEBUG === true) {
