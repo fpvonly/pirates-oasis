@@ -15,22 +15,13 @@ class UI extends React.Component {
 
     this.state = {
       isHydrating: true,
-      loadingSoundsStatusInfoText: '',
-      loadingSpritesStatusInfoText: '',
+      loadingSoundsStatusInfoText: Sounds.getLoadingStatusInfo(),
+      loadingSpritesStatusInfoText: Sprites.getLoadingStatusInfo(),
       GAME_STATE: C.STOP
     }
 
     this.loadingInterval = null;
     this.loadingIntervalCount = 0;
-  }
-
-  componentWillMount() {
-    let soundAssetsLoadInfo = Sounds.getLoadingStatusInfo();
-    let spriteAssetsLoadInfo = Sprites.getLoadingStatusInfo();
-    this.setState({
-      loadingSoundsStatusInfoText: soundAssetsLoadInfo,
-      loadingSpritesStatusInfoText: spriteAssetsLoadInfo
-    });
   }
 
   componentDidMount() {

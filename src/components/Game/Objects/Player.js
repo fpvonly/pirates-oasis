@@ -116,9 +116,35 @@ class Player extends GameObject {
           10,
           10,
           this.angle,
-          this.getTileCoordinates)
-        );
-      this.explosion = new Explosion(this.context, this.canvas, startPoint.x, startPoint.y, 40, 40);
+          this.getTileCoordinates
+        )
+      );
+
+      let explosionX = startPoint.x;
+      let explosionY = startPoint.y;
+      let cannonSprite = this.getPlayerCannonSprite();
+      if (cannonSprite.src && cannonSprite.src.indexOf('cannonMobile_SW') !== -1) {
+        explosionX = startPoint.x - 10;
+        explosionY = startPoint.y - 10;
+      } else if (cannonSprite.src && cannonSprite.src.indexOf('cannonMobile_SE') !== -1) {
+        explosionX = startPoint.x + 10;
+        explosionY = startPoint.y - 10;
+      } else if (cannonSprite.src && cannonSprite.src.indexOf('cannonMobile_W') !== -1) {
+        explosionX = startPoint.x - 15;
+        explosionY = startPoint.y - 5;
+      } else if (cannonSprite.src && cannonSprite.src.indexOf('cannonMobile_E') !== -1) {
+        explosionX = startPoint.x + 15;
+        explosionY = startPoint.y - 5;
+      } else if (cannonSprite.src && cannonSprite.src.indexOf('cannonMobile_NE') !== -1) {
+        explosionX = startPoint.x + 10;
+        explosionY = startPoint.y - 10;
+      } else if (cannonSprite.src && cannonSprite.src.indexOf('cannonMobile_NW') !== -1) {
+        explosionX = startPoint.x - 10;
+        explosionY = startPoint.y - 10;
+      } else if (cannonSprite.src && cannonSprite.src.indexOf('cannonMobile_N') !== -1) {
+        explosionY = startPoint.y - 15;
+      }
+      this.explosion = new Explosion(this.context, this.canvas, explosionX, explosionY, 40, 40);
       this.shooterTimeout = setTimeout(() => {
         this.justFired = false;
       }, 2000);

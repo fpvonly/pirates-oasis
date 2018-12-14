@@ -42,7 +42,7 @@ class Game extends React.Component {
     this.maxYSpan = 0;
     this.originX = 0;
     this.originY = 0;
-    this.tileImages = []; // loaded sprite images for map, empty for this example
+    this.tileImages = [];
     this.generatedTileObjects = [];
     this.allowedTilesOnLandMapYX = [];
     this.allowedTilesOnWaterMapYX = [];
@@ -59,19 +59,7 @@ class Game extends React.Component {
     this.now = 0;
     this.then = Date.now();
     this.elapsed = 0;
-  }
 
-  static defaultProps = {
-    gameState: '',
-    setGameState: () => {}
-  };
-
-  static propTypes = {
-    gameState: PropTypes.string,
-    setGameState: PropTypes.func
-  };
-
-  componentWillMount() {
     window.requestAnimFrame = (function(){
       return window.requestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
@@ -92,6 +80,16 @@ class Game extends React.Component {
     })();
     window.addEventListener('resize', this.resizeCanvas, false);
   }
+
+  static defaultProps = {
+    gameState: '',
+    setGameState: () => {}
+  };
+
+  static propTypes = {
+    gameState: PropTypes.string,
+    setGameState: PropTypes.func
+  };
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.resizeCanvas, false);
@@ -133,7 +131,7 @@ class Game extends React.Component {
 
   handleMouseMove = (e) => {
     // which tile? ->
-    let selectedTileID = this.getTileCoordIndexes(e.pageX, e.pageY); // event coords are tied to canvas (not window)
+    let selectedTileID = this.getTileCoordIndexes(e.pageX, e.pageY);
     let selectedXi = selectedTileID.selectedXTile;
     let selectedYi = selectedTileID.selectedYTile;
 
@@ -413,7 +411,7 @@ class Game extends React.Component {
       if (time > this.lastFpsUpdate + 1000) { // update fps every second
         this.fps = this.framesThisSecond;
         this.lastFpsUpdate = time;
-        if (this.fps > 15 && this.framesThisSecond > 0) { // check for both variable to prevent "speed ups" after window resize
+        if (this.fps > 15 && this.framesThisSecond > 0) {
           window.GAME_FPS_ADJUST = 30/(this.fps >= 30 ? 30 : this.fps);
         }
         this.framesThisSecond = 0;
