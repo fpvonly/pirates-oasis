@@ -98,7 +98,7 @@ class Sound {
         break;
       }
     }
-    if (playSound !== null) {
+    if (playSound !== null && playSound.play) {
       playSound.play();
     }
   }
@@ -111,7 +111,7 @@ class Sound {
         break;
       }
     }
-    if (playSound !== null) {
+    if (playSound !== null && playSound.play) {
       playSound.play();
     }
   }
@@ -124,7 +124,7 @@ class Sound {
         break;
       }
     }
-    if (playSound !== null) {
+    if (playSound !== null && playSound.play) {
       playSound.play();
     }
   }
@@ -137,18 +137,22 @@ class Sound {
         break;
       }
     }
-    if (playSound !== null) {
+    if (playSound !== null && playSound.play) {
       playSound.play();
     }
   }
 
   static playSeaWaveSound = () => {
-    Sound.waveSound.play();
+    if (Sound.waveSound !== null && Sound.waveSound.play) {
+      Sound.waveSound.play();
+    }
   }
 
   static stopSeaWaveSound = () => {
-    Sound.waveSound.pause();
-    Sound.waveSound.currentTime = 0;
+    if (Sound.waveSound !== null && Sound.waveSound.pause) {
+      Sound.waveSound.pause();
+      Sound.waveSound.currentTime = 0;
+    }    
   }
 
   static playMusic = () => {
@@ -156,7 +160,9 @@ class Sound {
   }
 
   static pauseMusic = () => {
-    Sound.music.pause();
+    if (Sound.music !== null && Sound.music.pause) {
+      Sound.music.pause();
+    }
   }
 
 }
