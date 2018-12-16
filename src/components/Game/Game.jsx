@@ -218,6 +218,14 @@ class Game extends React.Component {
     this.minYSpan = this.originY - MapData.tileDiagonalHeight * MapData.rows/2 + 200;
     this.maxYSpan = this.originY + MapData.tileDiagonalHeight * MapData.rows/2 - 200;
 
+    window.GAME_FPS_ADJUST = 1;
+    this.fps = 0;
+    this.lastFpsUpdate = 0;
+    this.framesThisSecond = 0;
+    this.now = 0;
+    this.then = Date.now();
+    this.elapsed = 0;
+
     this.initMapTiles();
     this.initPlayerObject();
     this.parrot = new Parrot(
@@ -404,11 +412,11 @@ class Game extends React.Component {
 
   animate = (time) => {
     this.animation = requestAnimFrame(this.animate);
+
     this.now = Date.now();
     this.elapsed = this.now - this.then;
-
-    if (this.elapsed > this.fpsInterval) { // limit fps to 30 frames per second
-      if (time > this.lastFpsUpdate + 1000) { // update fps every second
+    if (this.elapsed >= this.fpsInterval) { // limit fps to 30 frames per second
+      if (time >= this.lastFpsUpdate + 1000) { // update fps every second
         this.fps = this.framesThisSecond;
         this.lastFpsUpdate = time;
         if (this.fps > 15 && this.framesThisSecond > 0) {

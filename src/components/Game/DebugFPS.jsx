@@ -24,7 +24,7 @@ class DebugFPS extends React.Component {
   }
 
   updateFPS = (fps) => {
-    this.setState({degugFPS: fps});
+    this.setState({degugFPS: (fps > 0 ? fps - 1 : 0)});
   }
 
   render() {
