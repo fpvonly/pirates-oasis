@@ -655,6 +655,12 @@ border-color: rgba(255, 255, 255, 1) transparent transparent !important;
   top: 0;
   z-index: 99999;
   background: #fff;
-  font-size: 20px;
+  font-size: 25px;
   color: #000;
+}
+
+@media only screen and (min-width: 1981px) {
+  .debugFPS {
+    font-size: 1.7vw;
+  }
 }
