@@ -317,8 +317,17 @@ canvas {
   position: relative;
 }
 
-.menu_btn.active .main_btn_text:before {
+.menu_btn .main_btn_text:before {
+  display: none;
   background-image: url('../images/kisspng/skull-pirate-coin.png');
+}
+
+.menu_btn .main_btn_text:after {
+  display: none;
+  background-image: url('../images/kisspng/skull-pirate-coin.png');
+}
+
+.menu_btn.active .main_btn_text:before {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
