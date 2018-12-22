@@ -321,38 +321,38 @@ canvas {
   background-image: url('../images/kisspng/skull-pirate-coin.png');
   background-repeat: no-repeat;
   background-position: -9999px -9999px;
+  position: absolute;
+  display: inline-block;
+  width: 5vw;
+  height: 5vw;
+  content: "";
+  top: 20%;
 }
 
 .menu_btn .main_btn_text:after {
   background-image: url('../images/kisspng/skull-pirate-coin.png');
   background-repeat: no-repeat;
   background-position: -9999px -9999px;
+  position: absolute;
+  display: inline-block;
+  width: 5vw;
+  height: 5vw;
+  content: "";
+  top: 20%;
 }
 
 .menu_btn.active .main_btn_text:before {
   background-position: center center;
   background-size: cover;
-  position: absolute;
-  display: inline-block;
   left: -6vw;
   animation: spin 4s linear infinite;
-  width: 5vw;
-  height: 5vw;
-  content: "";
-  top: 20%;
 }
 
 .menu_btn.active .main_btn_text:after {
   background-position: center center;
   background-size: cover;
-  position: absolute;
-  display: inline-block;
   right: -6vw;
   animation: spin 4s linear infinite;
-  width: 5vw;
-  height: 5vw;
-  content: "";
-  top: 20%;
 }
 
 .menu_btn.music {
