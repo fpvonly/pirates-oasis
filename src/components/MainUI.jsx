@@ -30,7 +30,7 @@ class UI extends React.Component {
       let soundAssetsLoadInfo = Sounds.getLoadingStatusInfo();
       let spriteAssetsLoadInfo = Sprites.getLoadingStatusInfo();
 
-      if ((Sounds.soundsLoaded() === true && Sprites.spritesLoaded() === true && this.loadingIntervalCount >= 2) || this.loadingIntervalCount === 20) {
+      if ((Sounds.soundsLoaded() === true && Sprites.spritesLoaded() === true && this.loadingIntervalCount >= 3) || this.loadingIntervalCount === 20) {
         this.setState({
           loadingSoundsStatusInfoText: soundAssetsLoadInfo,
           loadingSpritesStatusInfoText: spriteAssetsLoadInfo
